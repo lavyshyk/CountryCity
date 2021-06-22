@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CountryCity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello it is Country and city App</string>
+    <string name="start">Start</string>
+    <string name="list_frag">List</string>
 </resources>

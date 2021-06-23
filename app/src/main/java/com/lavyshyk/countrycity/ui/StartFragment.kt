@@ -6,22 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.databinding.FragmentStartBinding
+
+/*
+binding fragment by constructor
+
+ */
+class StartFragment : Fragment(R.layout.fragment_start) {
+    private var fragmentStartBinding: FragmentStartBinding? = null
 
 
-class StartFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val binding = FragmentStartBinding.bind(view)
+        fragmentStartBinding = binding
+
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_start, container, false)
+    override fun onDestroyView() {
+        fragmentStartBinding = null
+        super.onDestroyView()
+
     }
-
-
 }

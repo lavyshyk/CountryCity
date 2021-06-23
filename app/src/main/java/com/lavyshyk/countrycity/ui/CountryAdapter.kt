@@ -13,10 +13,7 @@ class CountryAdapter: RecyclerView.Adapter<ViewHolder>() {
     private val data = listOf<String>("Англия","Беларусь","Венгрия","Дания")
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val textView: TextView
-        init {
-            textView = view.findViewById(R.id.textView)
-        }
+        val textView: TextView = view.findViewById(R.id.textView)
 
     }
 

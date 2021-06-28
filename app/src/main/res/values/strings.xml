@@ -5,4 +5,6 @@
     <string name="start">Start</string>
     <string name="list_frag">List</string>
     <string name="item_text">TextView</string>
+    <string name="item_sort_to_small">Sort Country to small</string>
+    <string name="item_sort_to_big">Sort Country to big</string>
 </resources>

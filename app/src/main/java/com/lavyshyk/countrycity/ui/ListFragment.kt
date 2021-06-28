@@ -28,6 +28,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.recView.layoutManager = LinearLayoutManager(activity)
         binding.recView.adapter = CountryAdapter()
+
 //        recycler = view.findViewById(R.id.rec_view)
 //        recycler.layoutManager = LinearLayoutManager(activity)
 //        recycler.adapter = CountryAdapter()

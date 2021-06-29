@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/sortCountryFromBigToSmall"
+        android:icon="@drawable/ic_action_item_menu_to_dawn"
+        android:title="@string/item_sort_to_small" />
+    <item
+        android:id="@+id/sortCountryFromSmallToBig"
+        android:title="@string/item_sort_to_big"/>
+</menu>

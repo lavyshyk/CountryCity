@@ -6,20 +6,25 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.data.CountryData
 import com.lavyshyk.countrycity.ui.CountryAdapter.ViewHolder
 
-class CountryAdapter(): RecyclerView.Adapter<ViewHolder>() {
+class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapter<ViewHolder>() {
 //    lateinit var fragmentListBinding: FragmentListBinding
 //    lateinit var fragmentItemBinding: FragmentItemBinding
 //    var binding: FragmentItemBinding = fragmentItemBinding
 
-    private val data = listOf<String>("Англия","Беларусь","Венгрия","Дания")
+   //private val data = listOf<String>("Англия","Беларусь","Венгрия","Дания")
+    private var data = dataCountry
+
 
 
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        val  textView: AppCompatTextView = view.findViewById(R.id.textView)
+        val  tvCountry: AppCompatTextView = view.findViewById(R.id.textViewCountry)
+        val  tvCapital: AppCompatTextView = view.findViewById(R.id.textViewCapital)
+        val  tvLanguages: AppCompatTextView = view.findViewById(R.id.textViewLang)
 
 
     }
@@ -34,11 +39,19 @@ class CountryAdapter(): RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = data[position]
+        val list = data[position]
+        holder.tvCountry.text = "country : ${list.name}"
+        holder.tvCapital.text = "capital is ${list.capital}"
+        holder.tvLanguages.text = "languages : ${list.languages.let { it.map { it.name }.toString() }}"
 
     }
 
     override fun getItemCount(): Int {
+//        return try {
+//            data.size
+//        }catch (e:Exception){
+//            0
+//        }
         return data.size
     }
 }

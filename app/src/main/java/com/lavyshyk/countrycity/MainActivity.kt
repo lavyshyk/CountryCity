@@ -1,7 +1,6 @@
 package com.lavyshyk.countrycity
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -36,18 +35,18 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
-            R.id.sortCountryFromBigToSmall -> {
-                true
-                //TODO
-            }
-            R.id.sortCountryFromSmallToBig -> {
-                //TODO
-                true
-            }
-        else -> {super.onOptionsItemSelected(item)}
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
+//            R.id.sortCountryFromBigToSmall -> {
+//                true
+//                //TODO
+//            }
+//            R.id.sortCountryFromSmallToBig -> {
+//                //TODO
+//                true
+//            }
+//        else -> {super.onOptionsItemSelected(item)}
+//        }
+   }
 
 
 

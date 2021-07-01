@@ -41,10 +41,15 @@ class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapte
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = data[position]
-        holder.tvCountry.text = "country : ${list.name}"
+        holder.tvCountry.text = "${list.name}"
       //  holder.tv3alpha.text = list.alpha3Code
         holder.tvCapital.text = "capital is ${list.capital}"
-        holder.tvLanguages.text = "languages : ${list.languages.let { it.map { it.name }.toString() }}"
+        holder.tvLanguages.text = "languages : ${list.languages
+            .let { 
+                it.map { it.name }
+                    .joinToString(", ")
+            }
+        }"
 
     }
 

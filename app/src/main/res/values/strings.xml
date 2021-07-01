@@ -7,4 +7,5 @@
     <string name="item_text">TextView</string>
     <string name="item_sort_to_small">Big -> small (by area)</string>
     <string name="item_sort_to_big">Small -> big (by area)</string>
+    <string name="capital">capital</string>
 </resources>

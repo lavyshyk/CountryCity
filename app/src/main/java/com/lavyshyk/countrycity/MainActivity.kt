@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
 
         val navController = navHostFragment.navController
-        setSupportActionBar(findViewById(R.id.tool_bar))
-
+        val toolBar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tool_bar)
+        setSupportActionBar(toolBar)
         setupBottomNavMenu(navController)
     }
     private fun setupBottomNavMenu(navController: NavController) {

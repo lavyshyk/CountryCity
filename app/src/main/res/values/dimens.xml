@@ -2,4 +2,11 @@
 <resources>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="zero_dp">0dp</dimen>
+    <dimen name="line_view">2dp</dimen>
+    <dimen name="text_3alpha">48sp</dimen>
+    <dimen name="text_view">32sp</dimen>
+    <dimen name="text_view_small">12</dimen>
+    <dimen name="text_view_from_small">46</dimen>
+    <dimen name="text_view_to_line">66</dimen>
+    <dimen name="elev_tool_bar">4dp</dimen>
 </resources>

@@ -25,6 +25,7 @@ class CountryData (
 
 )
 {
+
     data class Languages (
 
         @SerializedName("name")

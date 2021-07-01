@@ -11,7 +11,7 @@ import com.lavyshyk.countrycity.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    lateinit var view: View
+    private lateinit var view: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,30 +22,17 @@ class MainActivity : AppCompatActivity() {
         //val navHostFragment = binding.fragmentContainerView.let { supportFragmentManager } as NavHostFragment
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
         val navController = navHostFragment.navController
-        //   NavigationUI.setupActionBarWithNavController(this,navController)
+        setSupportActionBar(findViewById(R.id.tool_bar))
 
         setupBottomNavMenu(navController)
-       // setSupportActionBar(binding.toolBar)
-
     }
     private fun setupBottomNavMenu(navController: NavController) {
 
         val bottomNav = binding.bottomNavView
         bottomNav.setupWithNavController(navController)
     }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean = when(item.itemId){
-//            R.id.sortCountryFromBigToSmall -> {
-//                true
-//                //TODO
-//            }
-//            R.id.sortCountryFromSmallToBig -> {
-//                //TODO
-//                true
-//            }
-//        else -> {super.onOptionsItemSelected(item)}
-//        }
    }
 
 

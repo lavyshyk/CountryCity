@@ -20,6 +20,6 @@ val retrofit: Retrofit = Retrofit.Builder()
     .build()
 
 object CountryApi {
-   val retrofitService: RESTCountryService = retrofit.create(RESTCountryService::class.java)
+   val retrofitService: RESTCountryService  by lazy { retrofit.create(RESTCountryService::class.java) }
 
 }

@@ -10,15 +10,8 @@ import com.lavyshyk.countrycity.data.CountryData
 import com.lavyshyk.countrycity.ui.CountryAdapter.ViewHolder
 
 class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapter<ViewHolder>() {
-//    lateinit var fragmentListBinding: FragmentListBinding
-//    lateinit var fragmentItemBinding: FragmentItemBinding
-//    var binding: FragmentItemBinding = fragmentItemBinding
 
-   //private val data = listOf<String>("Англия","Беларусь","Венгрия","Дания")
     private var data = dataCountry
-
-
-
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
@@ -31,34 +24,28 @@ class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapte
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //fragmentItemBinding = FragmentItemBinding.bind(parent)
-        //return ViewHolder(fragmentItemBinding.root)
+
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_item,parent,false)
-       return ViewHolder(view)
+        return ViewHolder(view)
 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = data[position]
-        holder.tvCountry.text = "${list.name}"
-      //  holder.tv3alpha.text = list.alpha3Code
-        holder.tvCapital.text = "capital is ${list.capital}"
-        holder.tvLanguages.text = "languages : ${list.languages
-            .let { 
-                it.map { it.name }
-                    .joinToString(", ")
-            }
-        }"
-
+        holder.tvCountry.text = list.name
+        //  holder.tv3alpha.text = list.alpha3Code
+        holder.tvCapital.text = holder.itemView.context.getString(R.string.capital_is,list.capital)
+        val strLang = list.languages.let { it.joinToString(", ") {it.name} }
+        holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
     }
 
     override fun getItemCount(): Int {
-//        return try {
-//            data.size
-//        }catch (e:Exception){
-//            0
-//        }
-        return data.size
+        return try {
+            data.size
+        } catch (e: Exception) {
+            0
+        }
     }
+
 }

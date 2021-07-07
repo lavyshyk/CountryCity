@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity.data
 
 import com.google.gson.annotations.SerializedName
 
-class CountryData (
+data class CountryData (
 
     @SerializedName("name")
     val name : String,
@@ -18,28 +18,28 @@ class CountryData (
     val area : Float,
     @SerializedName("numericCode")
     val numericCode : Int,
-//    @SerializedName("currencies")
-//    val currencies : List<Currencies>,
-//    @SerializedName("languages")
-//    val languages : List<Languages>,
+    @SerializedName("currencies")
+    val currencies : List<Currencies>,
+    @SerializedName("languages")
+    val languages : List<Languages>,
 
 )
 {
 
-//    data class Languages (
-//
-//        @SerializedName("name")
-//        val name : String,
-//        @SerializedName("nativeName")
-//        val nativeName : String
-//    )
-//    data class Currencies (
-//
-//        @SerializedName("code")
-//        val code : String,
-//        @SerializedName("name")
-//        val name : String,
-//        @SerializedName("symbol")
-//        val symbol : String
-//    )
+    data class Languages (
+
+        @SerializedName("name")
+        val name : String,
+        @SerializedName("nativeName")
+        val nativeName : String
+    )
+    data class Currencies (
+
+        @SerializedName("code")
+        val code : String,
+        @SerializedName("name")
+        val name : String,
+        @SerializedName("symbol")
+        val symbol : String
+    )
 }

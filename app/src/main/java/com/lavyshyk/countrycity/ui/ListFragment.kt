@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.data.CountryData
+import com.lavyshyk.countrycity.data.CountryDataDto
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
-import com.lavyshyk.countrycity.room.Country
 import com.lavyshyk.countrycity.room.CountryDao
-import com.lavyshyk.countrycity.room.CountryDatabase
+import com.lavyshyk.countrycity.util.transformEntitiesToCountry
+import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,14 +22,12 @@ binding fragment by inflater
  */
 class ListFragment : Fragment() {
 
-    var responseBody: MutableList<CountryData>? = null
+    var mListCountry: MutableList<CountryDataDto>? = null
     private var fragmentListBinding: FragmentListBinding? = null
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
-    private lateinit var db: CountryDatabase
     private lateinit var countryDao: CountryDao
-    private lateinit var list2: MutableList<Country>
-    //lateinit var call: Callback<MutableList<CountryData>>
+    private lateinit var list2: MutableList<CountryData>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,6 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -49,11 +48,13 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
+        mAdapter = CountryAdapter()
+        binding.recView.adapter = mAdapter
+        database?.let { mAdapter.addItem((it.countryDao().getListCountry()).transformEntitiesToCountryDto()) }
 
-//       }
-
+        // database?.let { it.countryDao().getListCountry().also { list2 = it. } }
+        //sharedPref
         getResultRequest()
-
 
 //        countryDao.setListCountry(responseBody)
 
@@ -62,60 +63,71 @@ class ListFragment : Fragment() {
 
     override fun onDestroyView() {
 
-        countryDao.setListCountry(convertCountry(responseBody!!))
+//        countryDao.setListCountry(convertCountry(mListCountry!!))
 
         fragmentListBinding = null
         super.onDestroyView()
     }
 
+
     private fun getResultRequest() = retrofitService.getCountryInfo().enqueue(object :
-        Callback<MutableList<CountryData>> {
+        Callback<MutableList<CountryDataDto>> {
         override fun onResponse(
-            call: Call<MutableList<CountryData>>,
-            response: Response<MutableList<CountryData>>
+            call: Call<MutableList<CountryDataDto>>,
+            response: Response<MutableList<CountryDataDto>>
         ) {
-            responseBody = response.body() as MutableList<CountryData>
-            mAdapter = CountryAdapter(responseBody!!)
-            binding.recView.adapter = mAdapter
+//            mListCountry = response.body() as MutableList<CountryDataDto>
+//            mListCountry?.let { mAdapter.addItem(mListCountry) }
+            mListCountry = response.body()
+            mListCountry?.let { mAdapter.addItem(it) }
+            mListCountry?.let { database?.countryDao()?.setListCountry(it.transformEntitiesToCountry()) }
+
+
         }
 
-        override fun onFailure(call: Call<MutableList<CountryData>>, t: Throwable) {
+        override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
             t.printStackTrace()
         }
-
     })
 
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.tool_bar_menu, menu)
+        inflater.inflate(R.menu.tool_bar_one_icon, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.sortCountryFromBigToSmall -> {
-            responseBody?.sortByDescending { it.area }
-            mAdapter.notifyDataSetChanged()
+        R.id.sortCountries -> {
+            if (item.isChecked){
+                mAdapter.sortDescendingAndReplaceItem()
+                item.isChecked = false
+                item.setIcon(R.drawable.ic_action_list_sort_to_big)
+            }else{
+                mAdapter.sortAndReplaceItem()
+                item.isChecked = true
+                item.setIcon(R.drawable.ic_action_list_sort_to_small)
+            }
             true
         }
 
-        R.id.sortCountryFromSmallToBig -> {
-            responseBody?.sortBy { it.area }
-            mAdapter.notifyDataSetChanged()
-            true
-        }
+//        R.id.sortCountryFromBigToSmall -> {
+////            mListCountry?.sortByDescending { it.area }
+////            mListCountry?.let { mAdapter.addItem(it) }
+//
+//            true
+//        }
+//
+//        R.id.sortCountryFromSmallToBig -> {
+////            mListCountry?.sortBy { it.area }
+////            mListCountry?.let { mAdapter.addItem(it) }
+//            mAdapter.sortAndReplaceItem()
+//            true
+//        }
 
         else ->
             super.onOptionsItemSelected(item)
     }
 
-
-    fun convertCountry(list: MutableList<CountryData>): MutableList<Country> {
-        for (i in 0..list.size) {
-            list2[i].name = list[i].name
-            list2[i].capital = list[i].capital
-
-        }
-        return list2
-    }
 }
 
 

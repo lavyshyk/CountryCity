@@ -1,8 +1,8 @@
 package com.lavyshyk.countrycity
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
+import com.lavyshyk.countrycity.data.RESTCountryService
 import com.lavyshyk.countrycity.room.CountryDatabase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,7 +18,7 @@ class CountryApp : Application() {
         private lateinit var httpClient: OkHttpClient.Builder
         const val BASE_URL = "https://restcountries.eu/rest/v2/"
         lateinit var retrofitService: RESTCountryService
-        private var database: CountryDatabase? = null
+        var database: CountryDatabase? = null
     }
 
 
@@ -26,6 +26,7 @@ class CountryApp : Application() {
         super.onCreate()
         retrofit = getRetrofit()
         retrofitService = retrofit.create(RESTCountryService::class.java)
+        database = getInstance()
     }
 
     private fun getRetrofit(): Retrofit {
@@ -44,11 +45,11 @@ class CountryApp : Application() {
             .build()
     }
 
-    private fun getInstance(context: Context): CountryDatabase? {
+    private fun getInstance(): CountryDatabase? {
         if (database == null) {
             synchronized(CountryDatabase::class) {
                 Room.databaseBuilder(
-                    context.applicationContext,
+                    applicationContext,
                     CountryDatabase::class.java, "country-database"
                 )
                     .allowMainThreadQueries()

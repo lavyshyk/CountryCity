@@ -9,4 +9,5 @@
     <string name="item_sort_to_big">Small -> big (by area)</string>
     <string name="capital_is">capital is %1$s</string>
     <string name="languages">languages : %1$s</string>
+    <string name="sort_countries">sort countries</string>
 </resources>

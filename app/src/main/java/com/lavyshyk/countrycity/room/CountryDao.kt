@@ -1,26 +1,28 @@
 package com.lavyshyk.countrycity.room
 
-import androidx.room.*
-import com.lavyshyk.countrycity.data.CountryData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface CountryDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun setCountry(country: Country)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun setListCountry(list: MutableList<Country>)
 
-    @Query("SELECT * FROM `country-database`")
-    fun getListCountry(): MutableList<CountryData>
-
-    @Update
-    fun updateCountry(country: Country)
-
-    @Update
-    fun updateListCountry(list: MutableList<Country>)
-
-    @Delete
-    fun deleteListCountry(list: List<Country>)
+    @Query("SELECT * FROM countryDB")
+    fun getListCountry(): MutableList<Country>
+//
+//    @Update
+//    fun updateCountry(country: Country)
+//
+//    @Update
+//    fun updateListCountry(list: MutableList<Country>)
+//
+//    @Delete
+//    fun deleteListCountry(list: List<Country>)
 
 }

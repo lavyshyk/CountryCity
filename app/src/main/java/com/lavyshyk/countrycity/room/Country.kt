@@ -3,20 +3,18 @@ package com.lavyshyk.countrycity.room
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "country-database")
+@Entity(tableName = "countryDB")
 data class Country(
-    @PrimaryKey(autoGenerate = true)
-    val idCountry: Int,
-    var name : String = "",
-    val alpha3Code : String,
-    var capital : String = "",
-    val region : String,
-    val population : Long,
-    val area : Float,
-    val numericCode : Int,
+    @PrimaryKey
+    //var idCountry: Int? = 0,
+    var name: String ,
+    var capital: String?,
+    var region: String?,
+    var population: Long?,
+    var area: Float?,
+    //var numericCode: Int?
+    //val languages : List<CountryDataDto.Languages> = mutableListOf(),
 //    @Ignore
-//    val currencies : List<CountryData.Currencies>,
+//    val currencies : List<CountryDataDto.Currencies> = mutableListOf() ,
 //    @Ignore
-//    val languages : List<CountryData.Languages>,
-) {
-}
+)

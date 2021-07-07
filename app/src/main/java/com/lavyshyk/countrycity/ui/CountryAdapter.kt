@@ -17,7 +17,7 @@ class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapte
 
         val  tvCountry: AppCompatTextView = view.findViewById(R.id.textViewCountry)
         val  tvCapital: AppCompatTextView = view.findViewById(R.id.textViewCapital)
-        val  tvLanguages: AppCompatTextView = view.findViewById(R.id.textViewLang)
+       // val  tvLanguages: AppCompatTextView = view.findViewById(R.id.textViewLang)
         //val  tv3alpha: AppCompatTextView = view.findViewById(R.id.text_3alpha)
 
 
@@ -36,8 +36,8 @@ class CountryAdapter(dataCountry: MutableList<CountryData>): RecyclerView.Adapte
         holder.tvCountry.text = list.name
         //  holder.tv3alpha.text = list.alpha3Code
         holder.tvCapital.text = holder.itemView.context.getString(R.string.capital_is,list.capital)
-        val strLang = list.languages.let { it.joinToString(", ") {it.name} }
-        holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
+     //   val strLang = list.languages.let { it.joinToString(", ") {it.name} }
+       // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
     }
 
     override fun getItemCount(): Int {

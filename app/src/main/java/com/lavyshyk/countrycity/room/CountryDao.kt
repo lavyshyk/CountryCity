@@ -1,9 +1,6 @@
 package com.lavyshyk.countrycity.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface CountryDao {
@@ -15,14 +12,14 @@ interface CountryDao {
 
     @Query("SELECT * FROM countryDB")
     fun getListCountry(): MutableList<Country>
-//
-//    @Update
-//    fun updateCountry(country: Country)
-//
-//    @Update
-//    fun updateListCountry(list: MutableList<Country>)
-//
-//    @Delete
-//    fun deleteListCountry(list: List<Country>)
+
+    @Update
+    fun updateCountry(country: Country)
+
+    @Update
+    fun updateListCountry(list: MutableList<Country>)
+
+    @Delete
+    fun deleteListCountry(list: List<Country>)
 
 }

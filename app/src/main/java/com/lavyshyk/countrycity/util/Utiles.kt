@@ -1,7 +1,9 @@
 package com.lavyshyk.countrycity.util
 
 import com.lavyshyk.countrycity.data.CountryDataDto
+import com.lavyshyk.countrycity.data.LanguageDto
 import com.lavyshyk.countrycity.room.Country
+import com.lavyshyk.countrycity.room.Language
 
 
 fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDataDto> {
@@ -41,6 +43,9 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
     }
 
     return list
+}
+fun LanguageDto.transformDtoToLanguage(): Language {
+    return Language(this.name, this.nativeName)
 }
 
 

@@ -10,10 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.data.CountryData
 import com.lavyshyk.countrycity.data.CountryDataDto
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
-import com.lavyshyk.countrycity.room.CountryDao
 import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import retrofit2.Call
@@ -29,13 +27,11 @@ class ListFragment : Fragment() {
     private var fragmentListBinding: FragmentListBinding? = null
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
-    private lateinit var countryDao: CountryDao
-    private lateinit var list2: MutableList<CountryData>
     private lateinit var sharedPref: SharedPreferences
-    private var STATUS : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         activity?.let {
             sharedPref = it.getSharedPreferences(Companion.APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -67,8 +63,6 @@ class ListFragment : Fragment() {
 
     }
 
-
-
     override fun onDestroyView() {
         fragmentListBinding = null
         super.onDestroyView()
@@ -86,7 +80,9 @@ class ListFragment : Fragment() {
             mListCountry?.let {
                 database?.countryDao()?.setListCountry(it.transformEntitiesToCountry())
             }
-        }
+            //mListCountry?.map { it.languages?.forEach { database?.languageDao()?.setLanguage(it.transformDtoToLanguage()) } }
+
+            }
 
         override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
             t.printStackTrace()
@@ -171,6 +167,8 @@ class ListFragment : Fragment() {
     }
 
 }
+
+
 
 
 

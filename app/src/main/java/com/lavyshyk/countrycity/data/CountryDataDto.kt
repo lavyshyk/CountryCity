@@ -8,21 +8,16 @@ data class CountryDataDto(
     var population : Long? = 0L,
     var area : Float? = 0.0F,
   //  var numericCode : Int? = 0,
-//    var currencies : List<CurrenciesDto>? = listOf(),
-//    var languages : List<LanguagesDto>? = listOf(),
+//   var currencies : List<CurrenciesDto>? = listOf(),
+    var languages : List<LanguageDto>? = listOf(),
 
     )
 {
 
-    data class LanguagesDto(
-        var name: String? = "",
-        var nativeName: String? = ""
-    )
-
-    data class CurrenciesDto(
-
-        var code: String? = "",
-        var name: String? = "",
-        var symbol: String? = ""
-    )
+//    data class CurrenciesDto(
+//
+//        var code: String? = "",
+//        var name: String? = "",
+//        var symbol: String? = ""
+//    )
 }

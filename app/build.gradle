@@ -34,7 +34,7 @@ android {
     }
     buildFeatures {
         viewBinding true
-       //bataBinding true
+       // bataBinding true
 
     }
 }
@@ -46,7 +46,7 @@ dependencies {
     final materialVersion = "1.3.0"
     final constraintLayoutVersion = "2.0.4"
     final loggingInterceptorVersion = "3.9.0"
-    final room_version = "2.3.0"
+    final room_version = "2.4.0-alpha03"
 
 
     implementation "androidx.room:room-runtime:$room_version"

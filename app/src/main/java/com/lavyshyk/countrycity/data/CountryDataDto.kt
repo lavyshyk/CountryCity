@@ -2,17 +2,16 @@ package com.lavyshyk.countrycity.data
 
 data class CountryDataDto(
 
-    var name : String,
-    var capital : String? = "",
-    var region : String? = "",
-    var population : Long? = 0L,
-    var area : Float? = 0.0F,
-  //  var numericCode : Int? = 0,
-//   var currencies : List<CurrenciesDto>? = listOf(),
-    var languages : List<LanguageDto>? = listOf(),
+    var name: String,
+    var capital: String,
+    var region: String,
+    var population: Long,
+    var area: Float,
+    //  var numericCode : Int? = 0,
+    //var languages: List<LanguageDto>
+   //  var currencies : List<CurrenciesDto>? = listOf(),
+) {
 
-    )
-{
 
 //    data class CurrenciesDto(
 //

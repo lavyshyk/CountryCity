@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
 
         setContentView(view)
+
         //val navHostFragment = binding.fragmentContainerView.let { supportFragmentManager } as NavHostFragment
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment

@@ -1,6 +1,9 @@
 package com.lavyshyk.countrycity.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,12 +31,17 @@ class ListFragment : Fragment() {
     private lateinit var mAdapter: CountryAdapter
     private lateinit var countryDao: CountryDao
     private lateinit var list2: MutableList<CountryData>
-
+    private lateinit var sharedPref: SharedPreferences
+    private var STATUS : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setHasOptionsMenu(true)
+        activity?.let {
+            sharedPref = it.getSharedPreferences(Companion.APP_PREFERENCES, Context.MODE_PRIVATE)
+        }
+
+
     }
 
     override fun onCreateView(
@@ -50,21 +58,18 @@ class ListFragment : Fragment() {
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
         mAdapter = CountryAdapter()
         binding.recView.adapter = mAdapter
-        database?.let { mAdapter.addItem((it.countryDao().getListCountry()).transformEntitiesToCountryDto()) }
-
-        // database?.let { it.countryDao().getListCountry().also { list2 = it. } }
-        //sharedPref
+        database?.let {
+            mAdapter.addItem(
+                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
+            )
+        }
         getResultRequest()
-
-//        countryDao.setListCountry(responseBody)
-
 
     }
 
+
+
     override fun onDestroyView() {
-
-//        countryDao.setListCountry(convertCountry(mListCountry!!))
-
         fragmentListBinding = null
         super.onDestroyView()
     }
@@ -76,13 +81,11 @@ class ListFragment : Fragment() {
             call: Call<MutableList<CountryDataDto>>,
             response: Response<MutableList<CountryDataDto>>
         ) {
-//            mListCountry = response.body() as MutableList<CountryDataDto>
-//            mListCountry?.let { mAdapter.addItem(mListCountry) }
             mListCountry = response.body()
             mListCountry?.let { mAdapter.addItem(it) }
-            mListCountry?.let { database?.countryDao()?.setListCountry(it.transformEntitiesToCountry()) }
-
-
+            mListCountry?.let {
+                database?.countryDao()?.setListCountry(it.transformEntitiesToCountry())
+            }
         }
 
         override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
@@ -94,19 +97,38 @@ class ListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_one_icon, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        if (getSortStatus()){
+            menu.findItem(R.id.sortCountries)
+                .setIcon(R.drawable.ic_action_list_sort_to_big)
+                .isChecked = getSortStatus()
+            mAdapter.sortAndReplaceItem()
+
+        }else{
+            menu.findItem(R.id.sortCountries)
+                .setIcon(R.drawable.ic_action_list_sort_to_small)
+                .isChecked = getSortStatus()
+            mAdapter.sortDescendingAndReplaceItem()
+        }
+
+
+
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.sortCountries -> {
-            if (item.isChecked){
+            if (item.isChecked) {
                 mAdapter.sortDescendingAndReplaceItem()
-                item.isChecked = false
+                item.isChecked = SORT_TO_BIG
+                saveSortStatus(item.isChecked)
                 item.setIcon(R.drawable.ic_action_list_sort_to_big)
-            }else{
+            } else {
                 mAdapter.sortAndReplaceItem()
-                item.isChecked = true
+                item.isChecked = SORT_TO_SMALL
+                saveSortStatus(item.isChecked)
                 item.setIcon(R.drawable.ic_action_list_sort_to_small)
             }
+
             true
         }
 
@@ -126,6 +148,26 @@ class ListFragment : Fragment() {
 
         else ->
             super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        const val APP_PREFERENCES: String = "my_preferences_file"
+        const val SORT_TO_BIG: Boolean = false
+        const val SORT_TO_SMALL: Boolean = true
+        const val ITEM_SORT_STATUS: String = "status_item"
+
+    }
+    fun saveSortStatus(status: Boolean){
+        sharedPref.edit()
+            .putBoolean(ITEM_SORT_STATUS,status)
+            .apply()
+        Log.d("STS","save status")
+
+    }
+
+    fun getSortStatus(): Boolean {
+        Log.d("STS", "load status")
+      return   sharedPref.getBoolean(ITEM_SORT_STATUS,false)
     }
 
 }

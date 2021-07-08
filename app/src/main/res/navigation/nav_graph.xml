@@ -16,7 +16,16 @@
     </fragment>
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.lavyshyk.countrycity.ui.ListFragment"
+        android:name="com.lavyshyk.countrycity.ui.countryListFragment.ListFragment"
         android:label="List of Country"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_listFragment_to_countryDetailsFragment"
+            app:destination="@id/countryDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/countryDetailsFragment"
+        android:name="com.lavyshyk.countrycity.ui.countryDetails.CountryDetailsFragment"
+        android:label="CountryDetailsFragment" >
+    </fragment>
 </navigation>

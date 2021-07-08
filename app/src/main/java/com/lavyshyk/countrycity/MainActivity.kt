@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.lavyshyk.countrycity.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -30,12 +31,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolBar)
         setupBottomNavMenu(navController)
     }
+
     private fun setupBottomNavMenu(navController: NavController) {
 
-        val bottomNav = binding.bottomNavView
+        val bottomNav: BottomNavigationView = binding.bottomNavView
         bottomNav.setupWithNavController(navController)
     }
-   }
+}
 
 
 

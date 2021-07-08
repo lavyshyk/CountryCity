@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.data
+package com.lavyshyk.countrycity.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -23,7 +23,7 @@ data class CountryData (
     @SerializedName("languages")
     val languages : List<Languages>,
 
-)
+    )
 {
 
     data class Languages (

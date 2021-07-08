@@ -1,5 +1,6 @@
 package com.lavyshyk.countrycity.util
 
+import com.lavyshyk.countrycity.CountryApp
 import com.lavyshyk.countrycity.data.CountryDataDto
 import com.lavyshyk.countrycity.data.LanguageDto
 import com.lavyshyk.countrycity.room.Country
@@ -10,6 +11,7 @@ fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDat
     val list: MutableList<CountryDataDto> = mutableListOf()
     this.let {
         it.forEach { item ->
+            val languageList = CountryApp.database.languageDao().getLanguageByCountry(item.name)
             list.add(
                 CountryDataDto(
 //                    item.idCountry,
@@ -17,8 +19,9 @@ fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDat
                     item.capital,
                     item.region,
                     item.population,
-                    item.area
-                    )
+                    item.area,
+                    languageList.transform()
+                )
             )
         }
     }
@@ -44,6 +47,7 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
 
     return list
 }
+
 fun LanguageDto.transformDtoToLanguage(): Language {
     return Language(this.name, this.nativeName)
 }

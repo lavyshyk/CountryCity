@@ -8,7 +8,7 @@ data class CountryDataDto(
     var population: Long,
     var area: Float,
     //  var numericCode : Int? = 0,
-    //var languages: List<LanguageDto>
+    var languages: List<LanguageDto>
    //  var currencies : List<CurrenciesDto>? = listOf(),
 ) {
 

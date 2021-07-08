@@ -12,8 +12,7 @@ import androidx.room.PrimaryKey
     var region: String,
     var population: Long,
     var area: Float,
-//    @Ignore
-//   var languages: List<Language>
+    //var languages: List<Language>
 //    @Ignore
 //    val currencies : List<CountryDataDto.Currencies> = mutableListOf() ,
 //    @Ignore

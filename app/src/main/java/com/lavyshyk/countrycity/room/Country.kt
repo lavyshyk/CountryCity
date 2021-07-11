@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "countryDB")
- class Country(
+ data class Country(
     @PrimaryKey
     //var idCountry: Int? = 0,
     var name: String,
@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
     var region: String,
     var population: Long,
     var area: Float,
-    //var languages: List<Language>
+  //  var languages: List<Language>
 //    @Ignore
 //    val currencies : List<CountryDataDto.Currencies> = mutableListOf() ,
 //    @Ignore

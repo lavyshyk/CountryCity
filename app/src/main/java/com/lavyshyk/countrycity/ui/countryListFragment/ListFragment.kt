@@ -47,6 +47,8 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 

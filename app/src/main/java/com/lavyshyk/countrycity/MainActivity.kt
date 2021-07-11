@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
         val toolBar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.tool_bar)
         setSupportActionBar(toolBar)
         setupBottomNavMenu(navController)
+
+
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

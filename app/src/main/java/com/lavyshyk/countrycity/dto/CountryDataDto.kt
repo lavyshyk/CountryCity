@@ -2,13 +2,13 @@ package com.lavyshyk.countrycity.dto
 
 data class CountryDataDto(
 
-    var name: String,
-    var capital: String,
-    var region: String,
-    var population: Long,
-    var area: Float,
+    var name: String?,
+    var capital: String?,
+    var region: String?,
+    var population: Long?,
+    var area: Float?,
     //  var numericCode : Int? = 0,
-    var languages: List<LanguageDto>
+    var languages: MutableList<LanguageDto>?
    //  var currencies : List<CurrenciesDto>? = listOf(),
 ) {
 

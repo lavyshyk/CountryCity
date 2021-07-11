@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity
 
 import android.app.Application
 import androidx.room.Room
-import com.lavyshyk.countrycity.data.RESTCountryService
+import com.lavyshyk.countrycity.network.RESTCountryService
 import com.lavyshyk.countrycity.room.CountryDatabase
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

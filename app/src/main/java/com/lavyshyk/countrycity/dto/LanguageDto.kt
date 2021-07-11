@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.data
+package com.lavyshyk.countrycity.dto
 
 
 data class LanguageDto(

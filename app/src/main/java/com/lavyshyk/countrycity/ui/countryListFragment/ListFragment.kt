@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.ui
+package com.lavyshyk.countrycity.ui.countryListFragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.data.CountryDataDto
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
+import com.lavyshyk.countrycity.dto.CountryDataDto
 import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import retrofit2.Call
@@ -34,7 +36,7 @@ class ListFragment : Fragment() {
         setHasOptionsMenu(true)
 
         activity?.let {
-            sharedPref = it.getSharedPreferences(Companion.APP_PREFERENCES, Context.MODE_PRIVATE)
+            sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         }
 
 
@@ -53,9 +55,14 @@ class ListFragment : Fragment() {
 
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
         mAdapter = CountryAdapter()
+        mAdapter.setItemClick { item ->
+            val bundle = Bundle()
+            bundle.putString(COUNTRY_NAME_KEY, item.name)
+            findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment, bundle)
+        }
         binding.recView.adapter = mAdapter
         database?.let {
-            mAdapter.addItem(
+            mAdapter.repopulate(
                 (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
             )
         }
@@ -76,39 +83,37 @@ class ListFragment : Fragment() {
             response: Response<MutableList<CountryDataDto>>
         ) {
             mListCountry = response.body()
-            mListCountry?.let { mAdapter.addItem(it) }
             mListCountry?.let {
-                database?.countryDao()?.setListCountry(it.transformEntitiesToCountry())
+                if (getSortStatus()) mAdapter.repopulateSorted(it) else mAdapter.repopulateDescendingSorted(
+                    it
+                )
+            }
+            mListCountry?.let {
+                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
             }
             //mListCountry?.map { it.languages?.forEach { database?.languageDao()?.setLanguage(it.transformDtoToLanguage()) } }
 
-            }
+        }
 
         override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
             t.printStackTrace()
         }
     })
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_one_icon, menu)
         super.onCreateOptionsMenu(menu, inflater)
-        if (getSortStatus()){
+        if (getSortStatus()) {
             menu.findItem(R.id.sortCountries)
                 .setIcon(R.drawable.ic_action_list_sort_to_big)
                 .isChecked = getSortStatus()
             mAdapter.sortAndReplaceItem()
-
-        }else{
+        } else {
             menu.findItem(R.id.sortCountries)
                 .setIcon(R.drawable.ic_action_list_sort_to_small)
                 .isChecked = getSortStatus()
             mAdapter.sortDescendingAndReplaceItem()
         }
-
-
-
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -153,17 +158,18 @@ class ListFragment : Fragment() {
         const val ITEM_SORT_STATUS: String = "status_item"
 
     }
-    fun saveSortStatus(status: Boolean){
+
+    fun saveSortStatus(status: Boolean) {
         sharedPref.edit()
-            .putBoolean(ITEM_SORT_STATUS,status)
+            .putBoolean(ITEM_SORT_STATUS, status)
             .apply()
-        Log.d("STS","save status")
+        Log.d("STS", "save status")
 
     }
 
     fun getSortStatus(): Boolean {
         Log.d("STS", "load status")
-      return   sharedPref.getBoolean(ITEM_SORT_STATUS,false)
+        return sharedPref.getBoolean(ITEM_SORT_STATUS, false)
     }
 
 }

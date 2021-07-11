@@ -85,9 +85,13 @@ class ListFragment : Fragment() {
             response: Response<MutableList<CountryDataDto>>
         ) {
             mListCountry = response.body()
-            mListCountry?.let { if (getSortStatus()) mAdapter.repopulateSorted(it) else mAdapter.repopulateDescendingSorted(it) }
             mListCountry?.let {
-                database?.countryDao()?.setListCountry(it.transformEntitiesToCountry())
+                if (getSortStatus()) mAdapter.repopulateSorted(it) else mAdapter.repopulateDescendingSorted(
+                    it
+                )
+            }
+            mListCountry?.let {
+                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
             }
             //mListCountry?.map { it.languages?.forEach { database?.languageDao()?.setLanguage(it.transformDtoToLanguage()) } }
 

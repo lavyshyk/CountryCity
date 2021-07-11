@@ -8,7 +8,7 @@ interface CountryDao {
     fun setCountry(country: Country)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun setListCountry(list: MutableList<Country>)
+    fun saveListCountry(list: MutableList<Country>)
 
     @Query("SELECT * FROM countryDB")
     fun getListCountry(): MutableList<Country>

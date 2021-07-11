@@ -1,18 +1,16 @@
 package com.lavyshyk.countrycity.util
 
-import com.lavyshyk.countrycity.CountryApp
 import com.lavyshyk.countrycity.dto.CountryDataDto
 import com.lavyshyk.countrycity.dto.LanguageDto
 import com.lavyshyk.countrycity.room.Country
 import com.lavyshyk.countrycity.room.Language
 
 
-fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDataDto> {
-    var list: MutableList<CountryDataDto> = mutableListOf()
-    var listOfLanguage: MutableList<LanguageDto> = mutableListOf()
+fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDataDto> {
+    val list: MutableList<CountryDataDto> = mutableListOf()
     this.let {
         it.forEach { item ->
-            //val languageList = CountryApp.database?.languageDao()?.setLanguage()
+            //val languageList = CountryApp.database.languageDao().getLanguageByCountry(item.name)
             list.add(
                 CountryDataDto(
 //                    item.idCountry,
@@ -21,7 +19,6 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
                     item.region,
                     item.population,
                     item.area,
-
                     mutableListOf()
                 )
             )
@@ -33,25 +30,17 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
 
 fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Country> {
     val list: MutableList<Country> = mutableListOf()
-    //
     this.let {
         it.forEach { item ->
             list.add(
                 Country(
-                    item.name.orEmpty(),
-                    item.capital.orEmpty(),
-                    item.region.orEmpty(),
-                    item.population ?: 0L,
-                    item.area ?: 0.0F
+                    item.name,
+                    item.capital,
+                    item.region,
+                    item.population,
+                    item.area
                 )
             )
-
-            item.languages.let {
-                it?.forEach {
-                    CountryApp.database?.languageDao()
-                        ?.setLanguage(Language(it.name.orEmpty(), it.nativeName.orEmpty()))
-                }
-            }
         }
     }
 
@@ -59,11 +48,7 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
 }
 
 fun LanguageDto.transformDtoToLanguage(): Language {
-    return Language(this.name.orEmpty(), this.nativeName.orEmpty())
-}
-
-fun Language.transformLanguageToLanguageDto(): LanguageDto {
-    return LanguageDto(this.name, this.nativeName)
+    return Language(this.name, this.nativeName)
 }
 
 

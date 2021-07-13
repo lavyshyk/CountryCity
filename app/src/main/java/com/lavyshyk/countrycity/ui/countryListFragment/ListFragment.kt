@@ -14,7 +14,6 @@ import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDataDto
-import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
@@ -88,10 +87,10 @@ class ListFragment : Fragment() {
                     it
                 )
             }
-            mListCountry?.let {
-                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
-            }
-            //mListCountry?.map { it.languages?.forEach { database?.languageDao()?.setLanguage(it.transformDtoToLanguage()) } }
+//            mListCountry?.let {
+//                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
+//    tyres merge        }
+
 
         }
 

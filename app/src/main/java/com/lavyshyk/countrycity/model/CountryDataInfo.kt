@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.dto
+package com.lavyshyk.countrycity.model
 
 import com.google.gson.annotations.SerializedName
 

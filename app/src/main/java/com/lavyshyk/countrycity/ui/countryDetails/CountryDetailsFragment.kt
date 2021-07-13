@@ -11,6 +11,10 @@ import coil.ImageLoader
 import coil.api.load
 import coil.decode.SvgDecoder
 import coil.request.LoadRequest
+import com.google.android.gms.maps.CameraUpdateFactory.newLatLng
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.ERROR
@@ -30,6 +34,8 @@ class CountryDetailsFragment : Fragment() {
     private lateinit var binding: FragmentCountryDetailsBinding
     private lateinit var mLanguageAdapter: LanguageAdapter
     private lateinit var countryDataDto: CountryDataDto
+    private lateinit var mMapView: MapView
+    private lateinit var mGoogleMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,29 +52,50 @@ class CountryDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.mTvCountryName.text = mCountryName
+
         binding.mRecyclerCountryDescription.layoutManager = LinearLayoutManager(activity)
         mLanguageAdapter = LanguageAdapter()
         binding.mRecyclerCountryDescription.adapter = mLanguageAdapter
-        binding.mTvCountryName.text = mCountryName
 
 
-
-
+        mMapView = binding.mMapCountry
+        mMapView.onCreate(savedInstanceState)
+//        mMapView.getMapAsync { mGoogleMap = it
+//        mGoogleMap.moveCamera(newLatLng( LatLng(43.1, -87.9)))
+//        }
 
         getRequestAboutCountry(mCountryName)
-       // Uri.parse("https://restcountries.eu/data/umi.svg"
-
-
-        //binding.mIVCountryFlag = getImage()
-        //binding.mTVCountryDescription.text = mCountryListInfo?.get(0)?.toString()
 
         //binding.mIVCountryFlag = setMap()
     }
 
-    override fun onDestroyOptionsMenu() {
-        fragmentCountryDetailsBinding = null
-        super.onDestroyOptionsMenu()
+    override fun onResume() {
+        mMapView.onResume()
+        super.onResume()
     }
+
+
+    override fun onPause() {
+        super.onPause()
+        mMapView.onPause()
+    }
+
+    override fun onDestroyView() {
+        fragmentCountryDetailsBinding = null
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mMapView.onLowMemory()
+    }
+
 
     private fun getRequestAboutCountry(nameCountry: String) =
         retrofitService.getInfoAboutCountry(nameCountry).enqueue(
@@ -78,10 +105,13 @@ class CountryDetailsFragment : Fragment() {
                     response: Response<MutableList<CountryDataDto>>
                 ) {
                     mCountryListInfo = response.body()
-                    countryDataDto = mCountryListInfo?.get(0)!!
+                    mCountryListInfo?.get(0)?.also { countryDataDto = it }
                     binding.mTVCountryDescription.text = getDescription(countryDataDto)
                     mLanguageAdapter.addList(countryDataDto.languages!!)
-                    binding.mIVCountryFlag.loadSvgOrOthers(countryDataDto.flag)
+                    binding.mIVCountryFlag.loadSvgFlag(countryDataDto.flag)
+                    val mCurrentLatLng: LatLng = LatLng(countryDataDto.latlng!![0],
+                        countryDataDto.latlng!![1])
+                    getCurrentLocatonOnMap(mCurrentLatLng)
                 }
 
                 override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
@@ -104,12 +134,12 @@ class CountryDetailsFragment : Fragment() {
             )
         } \n${resources.getString(R.string.region, countryDataDto.name, countryDataDto.region)}"
 
-    fun AppCompatImageView.loadSvgOrOthers(myUrl: String?) {
+    fun AppCompatImageView.loadSvgFlag(myUrl: String?) {
         myUrl?.let {
             if (it.lowercase(Locale.ENGLISH).endsWith("svg")) {
                 val imageLoader = ImageLoader.Builder(this.context)
                     .componentRegistry {
-                        add(SvgDecoder(this@loadSvgOrOthers.context))
+                        add(SvgDecoder(this@loadSvgFlag.context))
                     }
                     .build()
                 val request = LoadRequest.Builder(this.context)
@@ -120,6 +150,11 @@ class CountryDetailsFragment : Fragment() {
             } else {
                 this.load(myUrl)
             }
+        }
+    }
+    fun  getCurrentLocatonOnMap(latLng: LatLng){
+        mMapView.getMapAsync { mGoogleMap = it
+            mGoogleMap.moveCamera(newLatLng( latLng))
         }
     }
 }

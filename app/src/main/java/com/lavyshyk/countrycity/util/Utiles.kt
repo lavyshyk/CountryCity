@@ -21,8 +21,10 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
                     item.region,
                     item.population,
                     item.area,
+                    listOf(),
                     mutableListOf(),
-                    item.flag
+                    item.flag,
+
                 )
             )
         }
@@ -42,8 +44,9 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                     item.capital.orEmpty(),
                     item.region.orEmpty(),
                     item.population ?: 0L,
+//                    LatLng(item.latlng[0], item.latlng[1]),
                     item.area ?: 0.0F,
-                    item.flag.orEmpty()
+                    item.flag.orEmpty(),
                 )
             )
 
@@ -52,6 +55,8 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                     CountryApp.database?.languageDao()
                         ?.setLanguage(Language(it.name.orEmpty(), it.nativeName.orEmpty()))
                 }
+            }
+            item.latlng?.let { CountryApp.database?.latLngDao()?.setLatLang(com.lavyshyk.countrycity.room.LatLng(it[0],it[1]))
             }
 
         }

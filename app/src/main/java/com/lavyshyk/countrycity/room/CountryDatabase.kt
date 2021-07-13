@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.lavyshyk.countrycity.room.CountryDatabase.Companion.LATEST_VERSION
 
-@Database(entities = [Country::class, Language::class], version = LATEST_VERSION,
+@Database(entities = [Country::class, Language::class, LatLng::class], version = LATEST_VERSION,
 //autoMigrations = [
 //    AutoMigration(
 //        from = 1,
@@ -16,6 +16,7 @@ import com.lavyshyk.countrycity.room.CountryDatabase.Companion.LATEST_VERSION
 abstract class CountryDatabase : RoomDatabase() {
     abstract fun countryDao(): CountryDao
     abstract fun languageDao(): LanguageDao
+    abstract fun latLngDao(): LatLngDao
 
     companion object {
         const val LATEST_VERSION = 1

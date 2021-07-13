@@ -42,7 +42,8 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/mMapCountry"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/mSizeMapView"
+            android:layout_height="@dimen/map_view_height"
+            android:apiKey="@string/API_KEY"
             app:layout_constraintTop_toBottomOf="@id/mTVCountryDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/mRecyclerCountryDescription"/>

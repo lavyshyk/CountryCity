@@ -47,8 +47,6 @@ class ListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentListBinding.inflate(inflater, container, false)
-
-
         return binding.root
     }
 
@@ -78,7 +76,7 @@ class ListFragment : Fragment() {
     }
 
 
-    private fun getResultRequest() = retrofitService.getCountryInfo().enqueue(object :
+    private fun getResultRequest() = retrofitService.getCountriesInfo().enqueue(object :
         Callback<MutableList<CountryDataDto>> {
         override fun onResponse(
             call: Call<MutableList<CountryDataDto>>,

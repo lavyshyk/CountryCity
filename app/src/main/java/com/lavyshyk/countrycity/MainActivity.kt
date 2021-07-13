@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNav: BottomNavigationView = binding.bottomNavView
         bottomNav.setupWithNavController(navController)
     }
+
 }
 
 

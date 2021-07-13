@@ -21,8 +21,8 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
                     item.region,
                     item.population,
                     item.area,
-
-                    mutableListOf()
+                    mutableListOf(),
+                    item.flag
                 )
             )
         }
@@ -42,7 +42,8 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                     item.capital.orEmpty(),
                     item.region.orEmpty(),
                     item.population ?: 0L,
-                    item.area ?: 0.0F
+                    item.area ?: 0.0F,
+                    item.flag.orEmpty()
                 )
             )
 
@@ -52,6 +53,7 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                         ?.setLanguage(Language(it.name.orEmpty(), it.nativeName.orEmpty()))
                 }
             }
+
         }
     }
 

@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class CountryApp : Application() {
 
@@ -36,6 +37,8 @@ class CountryApp : Application() {
 
         httpClient = OkHttpClient()
             .newBuilder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(logging)
 
         return Retrofit.Builder()

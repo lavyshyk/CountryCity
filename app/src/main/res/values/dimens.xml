@@ -11,4 +11,6 @@
     <dimen name="elev_tool_bar">18dp</dimen>
     <dimen name="text_view_capit">24sp</dimen>
     <dimen name="marg_item">8dp</dimen>
+    <dimen name="mSizeMapView">100dp</dimen>
+    <dimen name="description_text">14sp</dimen>
 </resources>

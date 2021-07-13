@@ -1,18 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/list_fragment"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".ui.countryDetails.CountryDetailsFragment">
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".ui.countryDetails.CountryDetailsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/mTvCountryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/mIVCountryFlag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/app_name"
+            android:textSize="@dimen/text_view"
+            />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/mIVCountryFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/mTvCountryName"
+            app:layout_constraintBottom_toTopOf="@id/mTVCountryDescription"
+            app:layout_constraintStart_toStartOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mTVCountryDescription"
+            android:textSize="@dimen/description_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/mMapCountry"
+            app:layout_constraintTop_toBottomOf="@id/mIVCountryFlag"/>
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mMapCountry"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/mSizeMapView"
+            app:layout_constraintTop_toBottomOf="@id/mTVCountryDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/mRecyclerCountryDescription"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mRecyclerCountryDescription"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mMapCountry"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
-	<androidx.appcompat.widget.AppCompatTextView
-		android:id="@+id/mTvCountryName"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

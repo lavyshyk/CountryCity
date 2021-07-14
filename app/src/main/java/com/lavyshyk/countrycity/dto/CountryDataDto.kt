@@ -14,22 +14,9 @@ data class CountryDataDto(
     var population: Long?,
     @SerializedName("area")
     var area: Float?,
-    @SerializedName("latlng")
-    var latlng: List<Double>?,
-    //@SerializedName("name")
-    //  var numericCode : Int? = 0,
     @SerializedName("languages")
     var languages: MutableList<LanguageDto>?,
     @SerializedName("flag")
     var flag: String?
-    //  var currencies : List<CurrenciesDto>? = listOf(),
-) {
 
-
-//    data class CurrenciesDto(
-//
-//        var code: String? = "",
-//        var name: String? = "",
-//        var symbol: String? = ""
-//    )
-}
+)

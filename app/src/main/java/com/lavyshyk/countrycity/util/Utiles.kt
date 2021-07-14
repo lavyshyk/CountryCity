@@ -7,7 +7,7 @@ import com.lavyshyk.countrycity.room.Country
 import com.lavyshyk.countrycity.room.Language
 
 
-fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDataDto> {
+fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDataDto> {
     var list: MutableList<CountryDataDto> = mutableListOf()
     var listOfLanguage: MutableList<LanguageDto> = mutableListOf()
     this.let {
@@ -15,16 +15,13 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
             //val languageList = CountryApp.database?.languageDao()?.setLanguage()
             list.add(
                 CountryDataDto(
-//                    item.idCountry,
                     item.name,
                     item.capital,
                     item.region,
                     item.population,
                     item.area,
-                    listOf(),
                     mutableListOf(),
                     item.flag,
-
                 )
             )
         }
@@ -35,8 +32,8 @@ fun MutableList<Country>. transformEntitiesToCountryDto(): MutableList<CountryDa
 
 fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Country> {
     val list: MutableList<Country> = mutableListOf()
-    //
-    this.let {
+
+    this.let { it ->
         it.forEach { item ->
             list.add(
                 Country(
@@ -44,7 +41,6 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                     item.capital.orEmpty(),
                     item.region.orEmpty(),
                     item.population ?: 0L,
-//                    LatLng(item.latlng[0], item.latlng[1]),
                     item.area ?: 0.0F,
                     item.flag.orEmpty(),
                 )
@@ -56,9 +52,6 @@ fun MutableList<CountryDataDto>.transformEntitiesToCountry(): MutableList<Countr
                         ?.setLanguage(Language(it.name.orEmpty(), it.nativeName.orEmpty()))
                 }
             }
-            item.latlng?.let { CountryApp.database?.latLngDao()?.setLatLang(com.lavyshyk.countrycity.room.LatLng(it[0],it[1]))
-            }
-
         }
     }
 

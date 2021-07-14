@@ -5,15 +5,16 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
+import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
-import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDataDto
+import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,6 +30,7 @@ class ListFragment : Fragment() {
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
     private lateinit var sharedPref: SharedPreferences
+    private lateinit var mProcess: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class ListFragment : Fragment() {
         mAdapter.setItemClick { item ->
             val bundle = Bundle()
             bundle.putString(COUNTRY_NAME_KEY, item.name)
-            findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment, bundle)
+            findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment, bundle,)
         }
         binding.recView.adapter = mAdapter
         database?.let {
@@ -65,7 +67,11 @@ class ListFragment : Fragment() {
                 (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
             )
         }
+        mProcess = binding.mPBarList
+        mProcess.visibility = View.VISIBLE
+
         getResultRequest()
+
 
     }
 
@@ -87,15 +93,16 @@ class ListFragment : Fragment() {
                     it
                 )
             }
-//            mListCountry?.let {
-//                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
-//    tyres merge        }
+            mListCountry?.let {
+                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
+         }
 
-
+            mProcess.visibility = View.GONE
         }
 
         override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
             t.printStackTrace()
+            mProcess.visibility = View.GONE
         }
     })
 
@@ -128,35 +135,13 @@ class ListFragment : Fragment() {
                 saveSortStatus(item.isChecked)
                 item.setIcon(R.drawable.ic_action_list_sort_to_small)
             }
-
             true
         }
-
-//        R.id.sortCountryFromBigToSmall -> {
-////            mListCountry?.sortByDescending { it.area }
-////            mListCountry?.let { mAdapter.addItem(it) }
-//
-//            true
-//        }
-//
-//        R.id.sortCountryFromSmallToBig -> {
-////            mListCountry?.sortBy { it.area }
-////            mListCountry?.let { mAdapter.addItem(it) }
-//            mAdapter.sortAndReplaceItem()
-//            true
-//        }
-
         else ->
             super.onOptionsItemSelected(item)
     }
 
-    companion object {
-        const val APP_PREFERENCES: String = "my_preferences_file"
-        const val SORT_TO_BIG: Boolean = false
-        const val SORT_TO_SMALL: Boolean = true
-        const val ITEM_SORT_STATUS: String = "status_item"
 
-    }
 
     fun saveSortStatus(status: Boolean) {
         sharedPref.edit()

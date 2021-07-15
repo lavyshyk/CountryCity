@@ -31,8 +31,6 @@ class MainActivity : AppCompatActivity() {
         val toolBar = binding.toolBar
         setSupportActionBar(toolBar)
         setupBottomNavMenu(navController)
-
-
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

@@ -10,11 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lavyshyk.countrycity.*
+import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDto
 import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
+import com.lavyshyk.countrycity.util.transformEntitiesToCountry
+import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import com.lavyshyk.countrycity.util.transformToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,11 +86,11 @@ class ListFragment : Fragment() {
 
 
         binding.recView.adapter = mAdapter
-//        database?.let {
-//            mAdapter.repopulate(
-//                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
-//            )
-//        }
+        database?.let {
+            mAdapter.repopulate(
+                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
+            )
+        }
         mProcess = binding.mPBarList
         mProcess.visibility = View.VISIBLE
 
@@ -116,7 +119,7 @@ class ListFragment : Fragment() {
                 )
             }
 
-            //database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
+            database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
 
             mProcess.visibility = View.GONE
         }
@@ -150,6 +153,7 @@ class ListFragment : Fragment() {
                 bundle.putString(COUNTRY_NAME_KEY,s)
                 findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment,
                   bundle  )
+                sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
             },R.string.yes,null,bundle)
             true
         }

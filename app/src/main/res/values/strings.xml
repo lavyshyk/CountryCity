@@ -14,4 +14,9 @@
     <string name="detail">Detail</string>
     <string name="description_of_country">The area of the country is %1$s  square kilometers and the population is %2$s people. </string>
     <string name="region">The %1$s is in the %2$s region. </string>
+    <string name="enter_name_country">Enter name country</string>
+    <string name="quick_search">Quick search</string>
+    <string name="no">NO</string>
+    <string name="yes">YES</string>
+    <string name="hi_app">Hi, glad to see you, I hope you like my application.</string>
 </resources>

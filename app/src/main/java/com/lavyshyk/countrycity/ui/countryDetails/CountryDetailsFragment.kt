@@ -93,6 +93,7 @@ class CountryDetailsFragment : Fragment() {
         getRequestAboutCountry(mCountryName)
 
 
+
     }
 
     override fun onResume() {

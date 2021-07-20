@@ -14,6 +14,7 @@ import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDto
 import com.lavyshyk.countrycity.model.CountryDataInfo
+import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.transformToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,7 +31,8 @@ class ListFragment : Fragment() {
     private lateinit var mAdapter: CountryAdapter
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mProcess: FrameLayout
-    private var mPressedItem: String = ""
+    //private var mPressedItem: String = ""
+    private lateinit var bundle: Bundle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +55,7 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val bundle = Bundle()
+        bundle = Bundle()
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
         mAdapter = CountryAdapter()
         mAdapter.setItemClick { item ->
@@ -90,9 +92,8 @@ class ListFragment : Fragment() {
         mProcess.visibility = View.VISIBLE
 
         getResultRequest()
-
-
     }
+
 
     override fun onDestroyView() {
         fragmentListBinding = null
@@ -115,7 +116,7 @@ class ListFragment : Fragment() {
                 )
             }
 
-           //database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
+            //database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
 
             mProcess.visibility = View.GONE
         }
@@ -127,7 +128,7 @@ class ListFragment : Fragment() {
     })
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.tool_bar_one_icon, menu)
+        inflater.inflate(R.menu.tool_bar_sort_and_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
         if (getSortStatus()) {
             menu.findItem(R.id.sortCountries)
@@ -143,6 +144,15 @@ class ListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.searchCountry -> {
+            activity?.showDialogQuickSearch("Search country", R.string.no,{it ->
+              val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG,"").toString()
+                bundle.putString(COUNTRY_NAME_KEY,s)
+                findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment,
+                  bundle  )
+            },R.string.yes,null,bundle)
+            true
+        }
         R.id.sortCountries -> {
             if (item.isChecked) {
                 mAdapter.sortDescendingAndReplaceItem()
@@ -162,7 +172,7 @@ class ListFragment : Fragment() {
     }
 
 
-    fun saveSortStatus(status: Boolean) {
+    private fun saveSortStatus(status: Boolean) {
         sharedPref.edit()
             .putBoolean(ITEM_SORT_STATUS, status)
             .apply()

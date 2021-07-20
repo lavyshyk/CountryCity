@@ -1,6 +1,5 @@
 package com.lavyshyk.countrycity.util
 
-import com.lavyshyk.countrycity.CountryApp
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
 import com.lavyshyk.countrycity.dto.CountryDto
 import com.lavyshyk.countrycity.dto.LanguageDto
@@ -8,7 +7,6 @@ import com.lavyshyk.countrycity.model.CountryDataDetail
 import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.model.CountryDataInfo.LanguageData
 import com.lavyshyk.countrycity.room.entyties.Country
-import com.lavyshyk.countrycity.room.entyties.Language
 
 
 fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto> {
@@ -47,13 +45,13 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
                     item.area
                 )
             )
-
-            item.languages.let {
-                it.forEach { it ->
-                    CountryApp.database?.languageDao()
-                        ?.saveLanguage(Language(it.name, it.nativeName))
-                }
-            }
+//
+//            item.languages.let {
+//                it.forEach { it ->
+//                    CountryApp.database?.languageDao()
+//                        ?.saveLanguage(Language(it.name, it.nativeName))
+//                }
+//            }
         }
     }
 
@@ -134,9 +132,9 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
                     item.capital ?: "",
                     item.region ?: "",
                     item.population ?: 0L,
-                    mutableListOf<Double>(item?.latlng?.get(0) ?: 0.0, item.latlng?.get(1) ?: 0.0),
+                    mutableListOf<Double>(item.latlng?.get(0) ?: 0.0, item.latlng?.get(1) ?: 0.0),
                     item.area ?: 0.0F,
-                    item?.flag ?: "",
+                    item.flag ?: "",
                     list.apply {
                         item.languages?.forEach { it ->
                             it.transformLanguageToLanguageDto().also { i -> list.add(i) }

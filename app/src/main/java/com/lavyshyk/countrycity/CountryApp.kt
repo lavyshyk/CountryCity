@@ -17,9 +17,9 @@ class CountryApp : Application() {
         private lateinit var logging: HttpLoggingInterceptor
         private lateinit var retrofit: Retrofit
         private lateinit var httpClient: OkHttpClient.Builder
-        const val BASE_URL = "https://restcountries.eu/rest/v2/"
         lateinit var retrofitService: RESTCountryService
         var database: CountryDatabase? = null
+        var INSTANCE: CountryDatabase? = null
     }
 
 
@@ -48,17 +48,19 @@ class CountryApp : Application() {
             .build()
     }
 
-    private fun getInstance(): CountryDatabase? {
-        if (database == null) {
+
+    private fun getInstance(): CountryDatabase {
+        if (INSTANCE == null) {
             synchronized(CountryDatabase::class) {
-                Room.databaseBuilder(
+                INSTANCE = Room.databaseBuilder(
                     applicationContext,
                     CountryDatabase::class.java, "country-database"
-                )
-                    .allowMainThreadQueries()
-                    .build().also { database = it }
+                ).allowMainThreadQueries()
+                    .build()
             }
         }
-        return database!!
+        return INSTANCE!!
     }
+
+
 }

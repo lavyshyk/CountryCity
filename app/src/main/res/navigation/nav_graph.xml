@@ -24,7 +24,12 @@
             app:destination="@id/countryDetailsFragment"
             app:launchSingleTop="false"
             app:popUpToInclusive="false" />
+        <argument
+            android:name="nameCountryNav"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
+
     <fragment
         android:id="@+id/countryDetailsFragment"
         android:name="com.lavyshyk.countrycity.ui.countryDetails.CountryDetailsFragment"

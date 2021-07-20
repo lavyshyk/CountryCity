@@ -10,12 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lavyshyk.countrycity.*
-import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
-import com.lavyshyk.countrycity.dto.CountryDataDto
-import com.lavyshyk.countrycity.util.transformEntitiesToCountry
-import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
+import com.lavyshyk.countrycity.dto.CountryDto
+import com.lavyshyk.countrycity.model.CountryDataInfo
+import com.lavyshyk.countrycity.util.transformToCountryDto
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,12 +24,13 @@ binding fragment by inflater
  */
 class ListFragment : Fragment() {
 
-    var mListCountry: MutableList<CountryDataDto>? = null
+    private lateinit var mListCountry: MutableList<CountryDto>
     private var fragmentListBinding: FragmentListBinding? = null
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mProcess: FrameLayout
+    private var mPressedItem: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,20 +53,39 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val bundle = Bundle()
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
         mAdapter = CountryAdapter()
         mAdapter.setItemClick { item ->
-            val bundle = Bundle()
+
             bundle.putString(COUNTRY_NAME_KEY, item.name)
-            findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment, bundle,)
-        }
-        binding.recView.adapter = mAdapter
-        database?.let {
-            mAdapter.repopulate(
-                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
+            findNavController().navigate(
+                R.id.action_listFragment_to_countryDetailsFragment,
+                bundle
             )
+            sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, item.name).apply()
+
+
         }
+
+        //don't work??????????   
+//        if (mPressedItem != ""){
+//            val nameArg = NavArgument.Builder().setDefaultValue(mPressedItem).build()
+//            val navGraph = findNavController().navInflater.inflate(R.navigation.nav_graph)
+//            navGraph.addArgument("countryName",nameArg)
+//            findNavController().setGraph(navGraph)
+//
+//
+//
+//        }
+
+
+        binding.recView.adapter = mAdapter
+//        database?.let {
+//            mAdapter.repopulate(
+//                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
+//            )
+//        }
         mProcess = binding.mPBarList
         mProcess.visibility = View.VISIBLE
 
@@ -82,25 +101,26 @@ class ListFragment : Fragment() {
 
 
     private fun getResultRequest() = retrofitService.getCountriesInfo().enqueue(object :
-        Callback<MutableList<CountryDataDto>> {
+        Callback<MutableList<CountryDataInfo>> {
         override fun onResponse(
-            call: Call<MutableList<CountryDataDto>>,
-            response: Response<MutableList<CountryDataDto>>
+            call: Call<MutableList<CountryDataInfo>>,
+            response: Response<MutableList<CountryDataInfo>>
         ) {
-            mListCountry = response.body()
-            mListCountry?.let {
-                if (getSortStatus()) mAdapter.repopulateSorted(it) else mAdapter.repopulateDescendingSorted(
+            response.body()?.transformToCountryDto()?.let { mListCountry = it }
+            mListCountry.let {
+
+                if (getSortStatus()) mAdapter.repopulateSorted(it)
+                else mAdapter.repopulateDescendingSorted(
                     it
                 )
             }
-            mListCountry?.let {
-                database?.countryDao()?.saveListCountry(it.transformEntitiesToCountry())
-         }
+
+           //database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
 
             mProcess.visibility = View.GONE
         }
 
-        override fun onFailure(call: Call<MutableList<CountryDataDto>>, t: Throwable) {
+        override fun onFailure(call: Call<MutableList<CountryDataInfo>>, t: Throwable) {
             t.printStackTrace()
             mProcess.visibility = View.GONE
         }
@@ -140,7 +160,6 @@ class ListFragment : Fragment() {
         else ->
             super.onOptionsItemSelected(item)
     }
-
 
 
     fun saveSortStatus(status: Boolean) {

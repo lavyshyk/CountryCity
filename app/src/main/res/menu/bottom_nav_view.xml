@@ -9,6 +9,7 @@
         android:icon="@drawable/ic_action_list"
         android:title="@string/list_frag" />
     <item
+        android:id="@+id/countryDetailsFragment"
         android:actionLayout="@layout/fragment_country_details"
         android:icon="@drawable/ic_action_detail_map"
         android:title="@string/detail" />

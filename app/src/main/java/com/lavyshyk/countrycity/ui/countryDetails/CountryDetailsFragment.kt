@@ -1,5 +1,7 @@
 package com.lavyshyk.countrycity.ui.countryDetails
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +19,15 @@ import com.google.android.gms.maps.CameraUpdateFactory.newLatLng
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.lavyshyk.countrycity.APP_PREFERENCES
+import com.lavyshyk.countrycity.COUNTRY_NAME_FOR_NAV_KEY
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
-import com.lavyshyk.countrycity.ERROR
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
+import com.lavyshyk.countrycity.model.CountryDataDetail
+import com.lavyshyk.countrycity.util.transformToCountryDetailDto
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,21 +35,32 @@ import java.util.*
 
 class CountryDetailsFragment : Fragment() {
 
-    private var mCountryName: String = "Belarus"
+    private lateinit var mCountryName: String
     private lateinit var mSRCountryDetail: SwipeRefreshLayout
     private lateinit var mProcess: FrameLayout
-    private var mCountryListInfo: MutableList<CountryDataDetailDto>? = null
+    private lateinit var mCountryListInfo: MutableList<CountryDataDetailDto>
     private var fragmentCountryDetailsBinding: FragmentCountryDetailsBinding? = null
     private lateinit var binding: FragmentCountryDetailsBinding
     private lateinit var mLanguageAdapter: LanguageAdapter
-    private lateinit var countryDataDetailDto: CountryDataDetailDto
+    private lateinit var countryDataDetail: CountryDataDetailDto
     private lateinit var mMapView: MapView
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mCurrentLatLng: LatLng
+    private lateinit var s: String
+    private lateinit var sharedPref: SharedPreferences
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mCountryName = arguments?.getString(COUNTRY_NAME_KEY) ?: ERROR
+        activity?.let {
+            sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        }
+        mCountryName = arguments?.getString(COUNTRY_NAME_KEY)  ?: sharedPref.getString(
+            COUNTRY_NAME_FOR_NAV_KEY, "Belarus").toString()
+      // s =  findNavController().graph.arguments.keys.toString()
+
+
     }
 
     override fun onCreateView(
@@ -108,25 +124,25 @@ class CountryDetailsFragment : Fragment() {
 
     private fun getRequestAboutCountry(nameCountry: String) =
         retrofitService.getInfoAboutCountry(nameCountry).enqueue(
-            object : Callback<MutableList<CountryDataDetailDto>> {
+            object : Callback<MutableList<CountryDataDetail>> {
                 override fun onResponse(
-                    call: Call<MutableList<CountryDataDetailDto>>,
-                    response: Response<MutableList<CountryDataDetailDto>>
+                    call: Call<MutableList<CountryDataDetail>>,
+                    response: Response<MutableList<CountryDataDetail>>
                 ) {
-                    mCountryListInfo = response.body()
-                    mCountryListInfo?.get(0)?.also { countryDataDetailDto = it }
-                    binding.mTVCountryDescription.text = getDescription(countryDataDetailDto)
-                    countryDataDetailDto.languages.let { mLanguageAdapter.repopulate(it) }
-                    binding.mIVCountryFlag.loadSvgFlag(countryDataDetailDto.flag)
+                    response.body()?.let { mCountryListInfo = it.transformToCountryDetailDto() }
+                    mCountryListInfo.get(0).also { countryDataDetail = it }
+                    binding.mTVCountryDescription.text = getDescription(countryDataDetail)
+                    countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
+                    binding.mIVCountryFlag.loadSvgFlag(countryDataDetail.flag)
 
-                    countryDataDetailDto.latlng?.let { mCurrentLatLng = LatLng(it[0],it[1]) }
+                    countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0],it[1]) }
 
                     getCurrentLocatonOnMap(mCurrentLatLng)
                     mProcess.visibility = View.GONE
                     mSRCountryDetail.isRefreshing = false
                 }
 
-                override fun onFailure(call: Call<MutableList<CountryDataDetailDto>>, t: Throwable) {
+                override fun onFailure(call: Call<MutableList<CountryDataDetail>>, t: Throwable) {
                     t.printStackTrace()
                     mProcess.visibility = View.GONE
                     mSRCountryDetail.isRefreshing = false
@@ -135,19 +151,19 @@ class CountryDetailsFragment : Fragment() {
             }
         )
 
-    private fun getDescription(countryDataDetailDto: CountryDataDetailDto): String =
-        "${countryDataDetailDto.name}. \n ${
+    private fun getDescription(countryDataDetail: CountryDataDetailDto): String =
+        "\t${countryDataDetail.name}. \n${
             resources.getString(
                 R.string.capital_is,
-                countryDataDetailDto.capital
+                countryDataDetail.capital
             )
-        }. \n ${
+        }. \n${
             resources.getString(
                 R.string.description_of_country,
-                countryDataDetailDto.area.toString(),
-                countryDataDetailDto.population.toString()
+                countryDataDetail.area.toString(),
+                countryDataDetail.population.toString()
             )
-        } \n${resources.getString(R.string.region, countryDataDetailDto.name, countryDataDetailDto.region)}"
+        } \n${resources.getString(R.string.region, countryDataDetail.name, countryDataDetail.region)}"
 
 
     fun AppCompatImageView.loadSvgFlag(myUrl: String?) {

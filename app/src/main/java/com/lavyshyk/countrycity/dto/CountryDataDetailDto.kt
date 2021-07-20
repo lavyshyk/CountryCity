@@ -1,28 +1,12 @@
 package com.lavyshyk.countrycity.dto
 
-import com.google.gson.annotations.SerializedName
-
 class CountryDataDetailDto(
-    @SerializedName("name") val name : String,
-    @SerializedName("topLevelDomain") val topLevelDomain : List<String>,
-    @SerializedName("alpha2Code") val alpha2Code : String,
-    @SerializedName("alpha3Code") val alpha3Code : String,
-    @SerializedName("callingCodes") val callingCodes : List<Int>,
-    @SerializedName("capital") val capital : String,
-    @SerializedName("altSpellings") val altSpellings : List<String>,
-    @SerializedName("region") val region : String,
-    @SerializedName("subregion") val subregion : String,
-    @SerializedName("population") val population : Int,
-    @SerializedName("latlng") val latlng : MutableList<Double>?,
-    @SerializedName("demonym") val demonym : String,
-    @SerializedName("area") val area : Int,
-    @SerializedName("flag") val flag : String,
-    @SerializedName("gini") val gini : Double,
-    @SerializedName("timezones") val timezones : List<String>,
-    @SerializedName("borders") val borders : List<String>,
-    @SerializedName("nativeName") val nativeName : String,
-    @SerializedName("numericCode") val numericCode : Int,
-    @SerializedName("languages") val languages : MutableList<LanguageDto>,
-
-    ) {
-}
+    val name: String,
+    val capital: String,
+    val region: String,
+    val population: Long,
+    val latlng: MutableList<Double>,
+    val area: Float,
+    val flag: String,
+    val languages: MutableList<LanguageDto>,
+)

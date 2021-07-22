@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory.newLatLng
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.APP_PREFERENCES
 import com.lavyshyk.countrycity.COUNTRY_NAME_FOR_NAV_KEY
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
@@ -26,11 +27,9 @@ import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
-import com.lavyshyk.countrycity.model.CountryDataDetail
 import com.lavyshyk.countrycity.util.transformToCountryDetailDto
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
 class CountryDetailsFragment : Fragment() {
@@ -48,7 +47,7 @@ class CountryDetailsFragment : Fragment() {
     private lateinit var mCurrentLatLng: LatLng
     private lateinit var s: String
     private lateinit var sharedPref: SharedPreferences
-
+    private lateinit var mSnackbar : Snackbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,9 +55,10 @@ class CountryDetailsFragment : Fragment() {
         activity?.let {
             sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
         }
-        mCountryName = arguments?.getString(COUNTRY_NAME_KEY)  ?: sharedPref.getString(
-            COUNTRY_NAME_FOR_NAV_KEY, "Belarus").toString()
-      // s =  findNavController().graph.arguments.keys.toString()
+        mCountryName = arguments?.getString(COUNTRY_NAME_KEY) ?: sharedPref.getString(
+            COUNTRY_NAME_FOR_NAV_KEY, "Belarus"
+        ).toString()
+        // s =  findNavController().graph.arguments.keys.toString()
 
 
     }
@@ -90,8 +90,10 @@ class CountryDetailsFragment : Fragment() {
 
         mProcess.visibility = View.VISIBLE
 
-        getRequestAboutCountry(mCountryName)
+        Snackbar.make(binding.root,
+            getString(R.string.wrong_county), Snackbar.LENGTH_SHORT).also { mSnackbar = it }
 
+        getRequestAboutCountry(mCountryName)
 
 
     }
@@ -124,33 +126,62 @@ class CountryDetailsFragment : Fragment() {
 
 
     private fun getRequestAboutCountry(nameCountry: String) =
-        retrofitService.getInfoAboutCountry(nameCountry).enqueue(
-            object : Callback<MutableList<CountryDataDetail>> {
-                override fun onResponse(
-                    call: Call<MutableList<CountryDataDetail>>,
-                    response: Response<MutableList<CountryDataDetail>>
-                ) {
-                    response.body()?.let { mCountryListInfo = it.transformToCountryDetailDto() }
-                    mCountryListInfo.get(0).also { countryDataDetail = it }
-                    binding.mTVCountryDescription.text = getDescription(countryDataDetail)
-                    countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
-                    binding.mIVCountryFlag.loadSvgFlag(countryDataDetail.flag)
+        retrofitService.getInfoAboutCountry(nameCountry)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({ response ->
+                response.let { mCountryListInfo = it.transformToCountryDetailDto() }
+                mCountryListInfo.get(0).also { countryDataDetail = it }
+                binding.mTVCountryDescription.text = getDescription(countryDataDetail)
+                countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
+                binding.mIVCountryFlag.loadSvgFlag(countryDataDetail.flag)
 
-                    countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0],it[1]) }
+                countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0], it[1]) }
 
-                    getCurrentLocatonOnMap(mCurrentLatLng)
-                    mProcess.visibility = View.GONE
-                    mSRCountryDetail.isRefreshing = false
-                }
-
-                override fun onFailure(call: Call<MutableList<CountryDataDetail>>, t: Throwable) {
+                getCurrentLocatonOnMap(mCurrentLatLng)
+                mProcess.visibility = View.GONE
+                mSRCountryDetail.isRefreshing = false
+            },
+                { t ->
                     t.printStackTrace()
                     mProcess.visibility = View.GONE
                     mSRCountryDetail.isRefreshing = false
-
+                    mSnackbar.show()
+                    //return to fragment_list in backStack
+                    activity?.supportFragmentManager?.popBackStack()
                 }
-            }
-        )
+            )
+
+
+//  response by callback
+//    private fun getRequestAboutCountry(nameCountry: String) =
+//        retrofitService.getInfoAboutCountry(nameCountry).enqueue(
+//            object : Callback<MutableList<CountryDataDetail>> {
+//                override fun onResponse(
+//                    call: Call<MutableList<CountryDataDetail>>,
+//                    response: Response<MutableList<CountryDataDetail>>
+//                ) {
+//                    response.body()?.let { mCountryListInfo = it.transformToCountryDetailDto() }
+//                    mCountryListInfo.get(0).also { countryDataDetail = it }
+//                    binding.mTVCountryDescription.text = getDescription(countryDataDetail)
+//                    countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
+//                    binding.mIVCountryFlag.loadSvgFlag(countryDataDetail.flag)
+//
+//                    countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0],it[1]) }
+//
+//                    getCurrentLocatonOnMap(mCurrentLatLng)
+//                    mProcess.visibility = View.GONE
+//                    mSRCountryDetail.isRefreshing = false
+//                }
+//
+//                override fun onFailure(call: Call<MutableList<CountryDataDetail>>, t: Throwable) {
+//                    t.printStackTrace()
+//                    mProcess.visibility = View.GONE
+//                    mSRCountryDetail.isRefreshing = false
+//
+//                }
+//            }
+//        )
 
     private fun getDescription(countryDataDetail: CountryDataDetailDto): String =
         "\t${countryDataDetail.name}. \n${
@@ -164,7 +195,13 @@ class CountryDetailsFragment : Fragment() {
                 countryDataDetail.area.toString(),
                 countryDataDetail.population.toString()
             )
-        } \n${resources.getString(R.string.region, countryDataDetail.name, countryDataDetail.region)}"
+        } \n${
+            resources.getString(
+                R.string.region,
+                countryDataDetail.name,
+                countryDataDetail.region
+            )
+        }"
 
 
     fun AppCompatImageView.loadSvgFlag(myUrl: String?) {
@@ -185,9 +222,11 @@ class CountryDetailsFragment : Fragment() {
             }
         }
     }
-    fun  getCurrentLocatonOnMap(latLng: LatLng){
-        mMapView.getMapAsync { mGoogleMap = it
-            mGoogleMap.moveCamera(newLatLng( latLng))
+
+    fun getCurrentLocatonOnMap(latLng: LatLng) {
+        mMapView.getMapAsync {
+            mGoogleMap = it
+            mGoogleMap.moveCamera(newLatLng(latLng))
         }
     }
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.lavyshyk.countrycity.network.RESTCountryService
 import com.lavyshyk.countrycity.room.CountryDatabase
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,6 +45,7 @@ class CountryApp : Application() {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .client(httpClient.build())
             .build()
     }

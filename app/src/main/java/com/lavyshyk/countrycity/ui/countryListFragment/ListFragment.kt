@@ -1,5 +1,6 @@
 package com.lavyshyk.countrycity.ui.countryListFragment
 
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,14 +15,12 @@ import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDto
-import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import com.lavyshyk.countrycity.util.transformToCountryDto
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 /*
 binding fragment by inflater
@@ -34,6 +33,7 @@ class ListFragment : Fragment() {
     private lateinit var mAdapter: CountryAdapter
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mProcess: FrameLayout
+
     //private var mPressedItem: String = ""
     private lateinit var bundle: Bundle
 
@@ -86,6 +86,7 @@ class ListFragment : Fragment() {
 
 
         binding.recView.adapter = mAdapter
+
         database?.let {
             mAdapter.repopulate(
                 (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
@@ -104,13 +105,12 @@ class ListFragment : Fragment() {
     }
 
 
-    private fun getResultRequest() = retrofitService.getCountriesInfo().enqueue(object :
-        Callback<MutableList<CountryDataInfo>> {
-        override fun onResponse(
-            call: Call<MutableList<CountryDataInfo>>,
-            response: Response<MutableList<CountryDataInfo>>
-        ) {
-            response.body()?.transformToCountryDto()?.let { mListCountry = it }
+    private fun getResultRequest() {
+        var subscription = retrofitService.getCountriesInfo()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe({ response ->
+            response?.transformToCountryDto()?.let { mListCountry = it }
             mListCountry.let {
 
                 if (getSortStatus()) mAdapter.repopulateSorted(it)
@@ -118,17 +118,46 @@ class ListFragment : Fragment() {
                     it
                 )
             }
-
             database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
 
             mProcess.visibility = View.GONE
-        }
+        },
+            { throwable ->
+                throwable.printStackTrace()
+                mProcess.visibility = View.GONE
+            }
+        )
+    }
 
-        override fun onFailure(call: Call<MutableList<CountryDataInfo>>, t: Throwable) {
-            t.printStackTrace()
-            mProcess.visibility = View.GONE
-        }
-    })
+/*
+response by callback
+ */
+//        private fun getResultRequest() = retrofitService.getCountriesInfo()
+//        enqueue(object :
+//        Callback<MutableList<CountryDataInfo>> {
+//        override fun onResponse(
+//            call: Call<MutableList<CountryDataInfo>>,
+//            response: Response<MutableList<CountryDataInfo>>
+//        ) {
+//            response.body()?.transformToCountryDto()?.let { mListCountry = it }
+//            mListCountry.let {
+//
+//                if (getSortStatus()) mAdapter.repopulateSorted(it)
+//                else mAdapter.repopulateDescendingSorted(
+//                    it
+//                )
+//            }
+
+//            database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
+//
+//            mProcess.visibility = View.GONE
+//        }
+//
+//        override fun onFailure(call: Call<MutableList<CountryDataInfo>>, t: Throwable) {
+//            t.printStackTrace()
+//            mProcess.visibility = View.GONE
+//        }
+//    })
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_sort_and_search, menu)
@@ -148,13 +177,15 @@ class ListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.searchCountry -> {
-            activity?.showDialogQuickSearch("Search country", R.string.no,{it ->
-              val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG,"").toString()
-                bundle.putString(COUNTRY_NAME_KEY,s)
-                findNavController().navigate(R.id.action_listFragment_to_countryDetailsFragment,
-                  bundle  )
+            activity?.showDialogQuickSearch("Search country", R.string.no, { it ->
+                val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
+                bundle.putString(COUNTRY_NAME_KEY, s)
+                findNavController().navigate(
+                    R.id.action_listFragment_to_countryDetailsFragment,
+                    bundle
+                )
                 sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
-            },R.string.yes,null,bundle)
+            }, R.string.yes, null, bundle)
             true
         }
         R.id.sortCountries -> {

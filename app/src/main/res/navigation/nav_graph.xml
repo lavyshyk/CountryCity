@@ -34,5 +34,8 @@
         android:id="@+id/countryDetailsFragment"
         android:name="com.lavyshyk.countrycity.ui.countryDetails.CountryDetailsFragment"
         android:label="CountryDetailsFragment" >
+        <action
+            android:id="@+id/action_countryDetailsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
     </fragment>
 </navigation>

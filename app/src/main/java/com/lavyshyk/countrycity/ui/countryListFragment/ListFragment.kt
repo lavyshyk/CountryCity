@@ -87,6 +87,7 @@ class ListFragment : Fragment() {
 
         binding.recView.adapter = mAdapter
 
+
         database?.let {
             mAdapter.repopulate(
                 (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
@@ -180,7 +181,7 @@ response by callback
             activity?.showDialogQuickSearch("Search country", R.string.no, { it ->
                 val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
                 bundle.putString(COUNTRY_NAME_KEY, s)
-                findNavController().navigate(
+                 findNavController().navigate(
                     R.id.action_listFragment_to_countryDetailsFragment,
                     bundle
                 )

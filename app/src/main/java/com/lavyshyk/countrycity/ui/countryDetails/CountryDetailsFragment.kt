@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import coil.ImageLoader
@@ -148,7 +149,7 @@ class CountryDetailsFragment : Fragment() {
                     mSRCountryDetail.isRefreshing = false
                     mSnackbar.show()
                     //return to fragment_list in backStack
-                    activity?.supportFragmentManager?.popBackStack()
+                    findNavController().navigate(R.id.action_countryDetailsFragment_to_listFragment)
                 }
             )
 

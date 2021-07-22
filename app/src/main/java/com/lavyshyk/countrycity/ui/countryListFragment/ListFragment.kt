@@ -20,6 +20,7 @@ import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import com.lavyshyk.countrycity.util.transformToCountryDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 /*
@@ -33,6 +34,7 @@ class ListFragment : Fragment() {
     private lateinit var mAdapter: CountryAdapter
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mProcess: FrameLayout
+    private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     //private var mPressedItem: String = ""
     private lateinit var bundle: Bundle
@@ -60,17 +62,16 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         bundle = Bundle()
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
-        mAdapter = CountryAdapter()
-        mAdapter.setItemClick { item ->
 
+        mAdapter = CountryAdapter()
+
+        mAdapter.setItemClick { item ->
             bundle.putString(COUNTRY_NAME_KEY, item.name)
             findNavController().navigate(
                 R.id.action_listFragment_to_countryDetailsFragment,
                 bundle
             )
             sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, item.name).apply()
-
-
         }
 
         //don't work??????????   
@@ -102,6 +103,8 @@ class ListFragment : Fragment() {
 
     override fun onDestroyView() {
         fragmentListBinding = null
+        mCompositeDisposable.clear()
+
         super.onDestroyView()
     }
 
@@ -128,7 +131,9 @@ class ListFragment : Fragment() {
                 mProcess.visibility = View.GONE
             }
         )
+        mCompositeDisposable.add(subscription)
     }
+
 
 /*
 response by callback
@@ -159,6 +164,7 @@ response by callback
 //            mProcess.visibility = View.GONE
 //        }
 //    })
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_sort_and_search, menu)

@@ -30,6 +30,7 @@ import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
 import com.lavyshyk.countrycity.util.transformToCountryDetailDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 
@@ -48,7 +49,8 @@ class CountryDetailsFragment : Fragment() {
     private lateinit var mCurrentLatLng: LatLng
     private lateinit var s: String
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var mSnackbar : Snackbar
+    private lateinit var mSnackbar: Snackbar
+    private var mCompositeDisposable = CompositeDisposable()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,8 +93,10 @@ class CountryDetailsFragment : Fragment() {
 
         mProcess.visibility = View.VISIBLE
 
-        Snackbar.make(binding.root,
-            getString(R.string.wrong_county), Snackbar.LENGTH_SHORT).also { mSnackbar = it }
+        Snackbar.make(
+            binding.root,
+            getString(R.string.wrong_county), Snackbar.LENGTH_SHORT
+        ).also { mSnackbar = it }
 
         getRequestAboutCountry(mCountryName)
 
@@ -111,6 +115,8 @@ class CountryDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        mCompositeDisposable.clear()
+
         fragmentCountryDetailsBinding = null
         super.onDestroyView()
     }
@@ -126,8 +132,10 @@ class CountryDetailsFragment : Fragment() {
     }
 
 
-    private fun getRequestAboutCountry(nameCountry: String) =
-        retrofitService.getInfoAboutCountry(nameCountry)
+    private fun getRequestAboutCountry(nameCountry: String) {
+
+
+        val sub = retrofitService.getInfoAboutCountry(nameCountry)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe({ response ->
@@ -152,7 +160,8 @@ class CountryDetailsFragment : Fragment() {
                     findNavController().navigate(R.id.action_countryDetailsFragment_to_listFragment)
                 }
             )
-
+        mCompositeDisposable.add(sub)
+    }
 
 //  response by callback
 //    private fun getRequestAboutCountry(nameCountry: String) =

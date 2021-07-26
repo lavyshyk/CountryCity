@@ -11,6 +11,7 @@ import com.lavyshyk.countrycity.dto.CountryDto
 
 class CountryAdapter : BaseAdapter<CountryDto>() {
 
+
     class CountryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val tvCountry: AppCompatTextView = view.findViewById(R.id.textViewCountry)
@@ -31,8 +32,13 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
+
         }
     }
+
+
+
+
 
     fun repopulateSorted(list: MutableList<CountryDto>) {
         list.sortBy { it.area }

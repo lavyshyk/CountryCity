@@ -12,3 +12,8 @@ for bottom navigation
  */
 const val COUNTRY_NAME_FOR_NAV_KEY =  "key_country_name"
 const val COUNTRY_NAME_KEY_FOR_DIALOG = "key_dialog"
+
+/*
+for saveStateInstance
+ */
+const val CURRENT_POSITION_ADAPTER_RV = "current_position_adapter"

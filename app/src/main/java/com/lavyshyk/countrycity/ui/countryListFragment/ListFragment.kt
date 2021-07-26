@@ -4,12 +4,14 @@ package com.lavyshyk.countrycity.ui.countryListFragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
@@ -35,9 +37,11 @@ class ListFragment : Fragment() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mProcess: FrameLayout
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
+    private lateinit var mStateRecycler: Parcelable
 
-    //private var mPressedItem: String = ""
-    private lateinit var bundle: Bundle
+
+    private var bundle = Bundle()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +64,6 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bundle = Bundle()
-        binding.recView.layoutManager = LinearLayoutManager(this.activity)
 
         mAdapter = CountryAdapter()
 
@@ -74,34 +76,41 @@ class ListFragment : Fragment() {
             sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, item.name).apply()
         }
 
-        //don't work??????????   
-//        if (mPressedItem != ""){
-//            val nameArg = NavArgument.Builder().setDefaultValue(mPressedItem).build()
-//            val navGraph = findNavController().navInflater.inflate(R.navigation.nav_graph)
-//            navGraph.addArgument("countryName",nameArg)
-//            findNavController().setGraph(navGraph)
-//
-//
-//
-//        }
-
 
         binding.recView.adapter = mAdapter
 
 
-        database?.let {
-            mAdapter.repopulate(
-                (it.countryDao().getListCountry()).transformEntitiesToCountryDto()
-            )
+        val list = database?.countryDao()?.getListCountry()
+        if (list?.count() != 0) {
+            list?.let { mAdapter.repopulate(it.transformEntitiesToCountryDto()) }
         }
+
+
         mProcess = binding.mPBarList
         mProcess.visibility = View.VISIBLE
 
         getResultRequest()
+        binding.recView.layoutManager = LinearLayoutManager(this.activity)
+
+
     }
 
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+
+        savedInstanceState?.let {
+            binding.recView.layoutManager?.onRestoreInstanceState(
+                it.getParcelable(
+                    CURRENT_POSITION_ADAPTER_RV
+                )
+            )
+        }
+
+        super.onViewStateRestored(savedInstanceState)
+    }
+
     override fun onDestroyView() {
+
         fragmentListBinding = null
         mCompositeDisposable.clear()
 
@@ -111,26 +120,27 @@ class ListFragment : Fragment() {
 
     private fun getResultRequest() {
         var subscription = retrofitService.getCountriesInfo()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
-        .subscribe({ response ->
-            response?.transformToCountryDto()?.let { mListCountry = it }
-            mListCountry.let {
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({ response ->
+                response?.transformToCountryDto()?.let { mListCountry = it }
+                mListCountry.let {
 
-                if (getSortStatus()) mAdapter.repopulateSorted(it)
-                else mAdapter.repopulateDescendingSorted(
-                    it
-                )
-            }
-            database?.countryDao()?.saveListCountry(mListCountry.transformEntitiesToCountry())
+                    if (getSortStatus()) mAdapter.repopulateSorted(it)
+                    else mAdapter.repopulateDescendingSorted(
+                        it
+                    )
+                }
+                database?.countryDao()
+                    ?.saveListCountry(mListCountry.transformEntitiesToCountry())
 
-            mProcess.visibility = View.GONE
-        },
-            { throwable ->
-                throwable.printStackTrace()
                 mProcess.visibility = View.GONE
-            }
-        )
+            },
+                { throwable ->
+                    throwable.printStackTrace()
+                    mProcess.visibility = View.GONE
+                }
+            )
         mCompositeDisposable.add(subscription)
     }
 
@@ -187,7 +197,7 @@ response by callback
             activity?.showDialogQuickSearch("Search country", R.string.no, { it ->
                 val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
                 bundle.putString(COUNTRY_NAME_KEY, s)
-                 findNavController().navigate(
+                findNavController().navigate(
                     R.id.action_listFragment_to_countryDetailsFragment,
                     bundle
                 )
@@ -226,6 +236,10 @@ response by callback
         Log.d("STS", "load status")
         return sharedPref.getBoolean(ITEM_SORT_STATUS, false)
     }
+
+}
+
+private fun RecyclerView.scrollState(int: Int) {
 
 }
 

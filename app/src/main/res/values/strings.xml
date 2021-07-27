@@ -20,4 +20,7 @@
     <string name="yes">YES</string>
     <string name="hi_app">Hi, glad to see you, I hope you like my application.</string>
     <string name="wrong_county">Wrong name of country!</string>
+    <string name="map">map</string>
+    <string name="mapCountry">Map</string>
+    <string name="some_wrong">some wromg!</string>
 </resources>

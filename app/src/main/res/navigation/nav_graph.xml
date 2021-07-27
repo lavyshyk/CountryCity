@@ -28,6 +28,9 @@
             android:name="nameCountryNav"
             app:argType="string"
             app:nullable="true"/>
+        <action
+            android:id="@+id/action_listFragment_to_mapCountiesFragment"
+            app:destination="@id/mapCountiesFragment" />
     </fragment>
 
     <fragment
@@ -36,6 +39,14 @@
         android:label="CountryDetailsFragment" >
         <action
             android:id="@+id/action_countryDetailsFragment_to_listFragment"
+            app:destination="@id/listFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapCountiesFragment"
+        android:name="com.lavyshyk.countrycity.ui.mapCountry.MapCountryFragment"
+        android:label="MapCountriesFragment">
+        <action
+            android:id="@+id/action_mapCountiesFragment_to_listFragment"
             app:destination="@id/listFragment" />
     </fragment>
 </navigation>

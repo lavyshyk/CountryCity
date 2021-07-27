@@ -43,6 +43,19 @@ abstract class BaseMvpPresenter<View : IBaseMvpView> {
             .observeOn(Schedulers.io())
     }
 
+    fun <Data> handleProgress(flowable: Flowable<Data>): Flowable<Data> {
+        return flowable
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                    getView()?.showProgress()
+                }
+            .doOnNext {
+                getView()?.hideProgress()
+            }
+            .observeOn(Schedulers.io())
+    }
+
+
     //    inline fun <reified ReifiedType : ViewType> instantiateDummyView(): ReifiedType {
 //        return ReifiedType::class.java.getConstructor().newInstance()
 //    }

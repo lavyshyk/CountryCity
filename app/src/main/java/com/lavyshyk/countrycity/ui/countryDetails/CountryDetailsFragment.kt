@@ -54,14 +54,14 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         ).toString()
 
 
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentCountryDetailsBinding = FragmentCountryDetailsBinding.inflate(inflater, container, false)
+        fragmentCountryDetailsBinding =
+            FragmentCountryDetailsBinding.inflate(inflater, container, false)
         binding = fragmentCountryDetailsBinding as @NonNull FragmentCountryDetailsBinding
         return binding.root
     }
@@ -79,8 +79,9 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         mSRCountryDetail = binding.srCountryDetails
         mMapView = binding.mMapCountry
 
-        mMapView.onCreate(savedInstanceState)
 
+        mMapView.onCreate(savedInstanceState)
+        mMapView.getMapAsync(this)
 //        mSRCountryDetail.setOnRefreshListener {
 //            getRequestAboutCountry(mCountryName)
 //        }
@@ -105,6 +106,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     override fun onResume() {
         mMapView.onResume()
         super.onResume()
+
     }
 
 
@@ -114,7 +116,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     }
 
     override fun onDestroyView() {
-       fragmentCountryDetailsBinding = null
+        fragmentCountryDetailsBinding = null
         super.onDestroyView()
     }
 
@@ -210,14 +212,13 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 //        }
 //    }
 
-    private fun getCurrentLocationOnMap(latLng: LatLng) {
-        mMapView.getMapAsync {
-            mGoogleMap = it
-            mGoogleMap.moveCamera(newLatLng(latLng))
-            mGoogleMap.addMarker(
-                MarkerOptions().position(latLng)
-            )
-        }
+    private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String) {
+        mGoogleMap.moveCamera(newLatLng(latLng))
+        mGoogleMap.addMarker(
+            MarkerOptions()
+                .position(latLng)
+                .title(countryName)
+        )
     }
 
 
@@ -228,7 +229,8 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     override fun getPresenter(): CountryDetailPresenter = mPresenter
 
     override fun onMapReady(map: GoogleMap) {
-        TODO("Not yet implemented")
+        mGoogleMap = map
+
     }
 
     override fun showCountryDetail(country: CountryDataDetailDto) {
@@ -245,7 +247,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
         country.latlng.let { mCurrentLatLng = LatLng(it[0], it[1]) }
 
-        getCurrentLocationOnMap(mCurrentLatLng)
+        getCurrentLocationOnMap(mCurrentLatLng, country.name)
 
 
     }

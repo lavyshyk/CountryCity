@@ -11,7 +11,6 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
@@ -205,6 +204,10 @@ response by callback
             }, R.string.yes, null, bundle)
             true
         }
+        R.id.goToMap -> {
+            findNavController().navigate(R.id.action_listFragment_to_mapCountiesFragment)
+            true
+        }
         R.id.sortCountries -> {
             if (item.isChecked) {
                 mAdapter.sortDescendingAndReplaceItem()
@@ -239,9 +242,7 @@ response by callback
 
 }
 
-private fun RecyclerView.scrollState(int: Int) {
 
-}
 
 
 

@@ -4,10 +4,12 @@ import android.content.Context
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
 import com.lavyshyk.countrycity.dto.CountryDto
+import com.lavyshyk.countrycity.dto.CountryInfoMapDto
 import com.lavyshyk.countrycity.dto.LanguageDto
 import com.lavyshyk.countrycity.model.CountryDataDetail
 import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.model.CountryDataInfo.LanguageData
+import com.lavyshyk.countrycity.model.CountryInfoForMap
 import com.lavyshyk.countrycity.room.entyties.Country
 
 
@@ -134,7 +136,11 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
                     item.capital ?: "",
                     item.region ?: "",
                     item.population ?: 0L,
-                    mutableListOf<Double>(item.latlng?.get(0) ?: 0.0, item.latlng?.get(1) ?: 0.0),
+                    if (item.latlng.isNullOrEmpty()){
+                        mutableListOf<Double>(0.0,0.0)
+                    }else{
+                        mutableListOf(item.latlng[0], item.latlng[1])
+                    },
                     item.area ?: 0.0F,
                     item.flag ?: "",
                     list.apply {
@@ -153,9 +159,9 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
 fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): String {
 
     return "\t${countryDataDetail.name}. \n${
-         context.getString(
-                R.string.capital_is,
-        countryDataDetail.capital
+        context.getString(
+            R.string.capital_is,
+            countryDataDetail.capital
         )
     }. \n${
         context.getString(
@@ -170,6 +176,27 @@ fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): S
             countryDataDetail.region
         )
     }"
+}
+
+
+fun MutableList<CountryInfoForMap>.transformToCountryInfoMapDto(): MutableList<CountryInfoMapDto> {
+    val list: MutableList<CountryInfoMapDto> = mutableListOf()
+    this.let {
+        it.forEach { item ->
+            list.add(
+                CountryInfoMapDto(
+                    item.name ?: "",
+                    item.capital ?: "",
+                    if (item.latlng.isNullOrEmpty()){
+                        mutableListOf<Double>(0.0,0.0)
+                    }else{
+                        mutableListOf(item.latlng[0], item.latlng[1])
+                    }
+                )
+            )
+        }
+    }
+    return list
 }
 
 

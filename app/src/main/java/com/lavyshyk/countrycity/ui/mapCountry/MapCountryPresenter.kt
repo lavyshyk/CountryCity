@@ -9,7 +9,8 @@ class MapCountryPresenter : BaseMvpPresenter<IMapCountryView>() {
     fun getAllCountryData() {
         addDisposable(
             inBackground(
-                retrofitService.getInfoAboutAllCountryForMap()
+                handleProgress(retrofitService.getInfoAboutAllCountryForMap())
+
             ).subscribe({
                 getView()?.showCountryOnMap( it.transformToCountryInfoMapDto() )
             }, {

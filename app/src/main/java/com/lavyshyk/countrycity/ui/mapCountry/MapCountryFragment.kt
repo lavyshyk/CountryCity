@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -36,6 +37,7 @@ class MapCountryFragment : BaseMpvFragment<IMapCountryView, MapCountryPresenter>
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mProgress = view.findViewById(R.id.mPBarMap)
 
 
 
@@ -90,16 +92,18 @@ class MapCountryFragment : BaseMpvFragment<IMapCountryView, MapCountryPresenter>
         }
         throwable.printStackTrace()
         //???
-       // findNavController().navigate(R.id.action_mapCountiesFragment_to_listFragment)
+        findNavController().navigate(R.id.action_mapCountiesFragment_to_listFragment)
     }
 
     override fun showProgress() {
 
+        mProgress.visibility =View.VISIBLE
 
     }
 
     override fun hideProgress() {
 
+        mProgress.visibility = View.GONE
 
     }
 }

@@ -15,13 +15,22 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
+import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.util.transformToCountryDetailDto
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 val DIALOG_WIDTH_DELTA_7: Float = 0.7F
+lateinit var dis: CompositeDisposable
 
-fun Activity.showAlertDialog(){
+fun Activity.showAlertDialog() {
     val alertDialog = MaterialAlertDialogBuilder(this)
         .setTitle(getString(R.string.hi_app))
         .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
@@ -104,25 +113,57 @@ fun Activity.showDialogQuickSearch(
     btnLeft.setOnClickListener {
         dialog.dismiss()
         leftClickListener?.onClick(it)
+        dis.clear()
 
     }
     val btnRight: Button = contentView.findViewById(R.id.mButtonYes)
     btnRight.setText(rightButtonTextId)
     val mEditText: AppCompatEditText = contentView.findViewById(R.id.mETNameCountry)
-    if (mEditText.text.toString() != ""){
-        btnRight.isClickable = true
+    var tt = ""
+    mEditText.addTextChangedListener {
+            mEditText.doAfterTextChanged {
+                val text = it.toString()
+                if (text.length > 2) {
+                    btnRight.isEnabled = true
+                    it?.insert(0, query(text))
+                    tt = it.toString()
+                }
+            }
+
     }
+
+
+
+
+    btnRight.isEnabled = false
     btnRight.setOnClickListener {
-        bundle.putString(COUNTRY_NAME_KEY_FOR_DIALOG,mEditText.text.toString())
+        bundle.putString(COUNTRY_NAME_KEY_FOR_DIALOG, tt)
         dialog.dismiss()
         leftClickListener?.onClick(it)
+        dis.clear()
     }
 
     setContentView(dialog, contentView)
     if (!this.isFinishing) {
         dialog.show()
+        dis = CompositeDisposable()
     }
     return dialog
 }
 
-
+fun query(t: String): String {
+    var result = ""
+    dis.add(
+        retrofitService.getInfoAboutCountry(t)
+            .debounce(10000, TimeUnit.MILLISECONDS)
+            .map { it.transformToCountryDetailDto()[0] }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                result = it.name
+            }, {
+                it.printStackTrace()
+            })
+    )
+    return result
+}

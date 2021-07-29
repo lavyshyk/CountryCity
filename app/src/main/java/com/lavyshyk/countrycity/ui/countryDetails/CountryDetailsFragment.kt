@@ -11,7 +11,7 @@ import androidx.annotation.NonNull
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.maps.CameraUpdateFactory.newLatLng
+import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -42,6 +42,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     private lateinit var mCurrentLatLng: LatLng
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mSnackbar: Snackbar
+    private  var mAreaCounty: Float = 0.0F
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,21 +83,11 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
         mMapView.onCreate(savedInstanceState)
         mMapView.getMapAsync(this)
-//        mSRCountryDetail.setOnRefreshListener {
-//            getRequestAboutCountry(mCountryName)
-//        }
+
         mSRCountryDetail.setOnRefreshListener {
             getPresenter().getCountryByName(mCountryName, true)
         }
 
-//        mProcess.visibility = View.VISIBLE
-//
-//        Snackbar.make(
-//            binding.root,
-//            getString(R.string.wrong_county), Snackbar.LENGTH_SHORT
-//        ).also { mSnackbar = it }
-
-        //getRequestAboutCountry(mCountryName)
 
         getPresenter().getCountryByName(mCountryName, false)
 
@@ -117,6 +108,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
     override fun onDestroyView() {
         fragmentCountryDetailsBinding = null
+        getPresenter().onDestroyView()
         super.onDestroyView()
     }
 
@@ -131,89 +123,9 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     }
 
 
-//    private fun getRequestAboutCountry(nameCountry: String) {
-//
-//
-//        val sub = retrofitService.getInfoAboutCountry(nameCountry)
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({ response ->
-//                response.let { mCountryListInfo = it.transformToCountryDetailDto() }
-//                mCountryListInfo.get(0).also { countryDataDetail = it }
-//                binding.mTVCountryDescription.text = getDescription(countryDataDetail)
-//                countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
-//                binding.mIVCountryFlag.showSvgFlag(countryDataDetail.flag)
-//
-//                countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0], it[1]) }
-//
-//                getCurrentLocationOnMap(mCurrentLatLng)
-//                mProcess.visibility = View.GONE
-//                mSRCountryDetail.isRefreshing = false
-//            },
-//                { t ->
-//                    t.printStackTrace()
-//                    mProcess.visibility = View.GONE
-//                    mSRCountryDetail.isRefreshing = false
-//                    mSnackbar.show()
-//                    //return to fragment_list in backStack
-//                    findNavController().navigate(R.id.action_countryDetailsFragment_to_listFragment)
-//                }
-//            )
-//        mCompositeDisposable.add(sub)
-//    }
-
-//  response by callback
-//    private fun getRequestAboutCountry(nameCountry: String) =
-//        retrofitService.getInfoAboutCountry(nameCountry).enqueue(
-//            object : Callback<MutableList<CountryDataDetail>> {
-//                override fun onResponse(
-//                    call: Call<MutableList<CountryDataDetail>>,
-//                    response: Response<MutableList<CountryDataDetail>>
-//                ) {
-//                    response.body()?.let { mCountryListInfo = it.transformToCountryDetailDto() }
-//                    mCountryListInfo.get(0).also { countryDataDetail = it }
-//                    binding.mTVCountryDescription.text = getDescription(countryDataDetail)
-//                    countryDataDetail.languages.let { mLanguageAdapter.repopulate(it) }
-//                    binding.mIVCountryFlag.showSvgFlag(countryDataDetail.flag)
-//
-//                    countryDataDetail.latlng.let { mCurrentLatLng = LatLng(it[0],it[1]) }
-//
-//                    getCurrentLocationOnMap(mCurrentLatLng)
-//                    mProcess.visibility = View.GONE
-//                    mSRCountryDetail.isRefreshing = false
-//                }
-//
-//                override fun onFailure(call: Call<MutableList<CountryDataDetail>>, t: Throwable) {
-//                    t.printStackTrace()
-//                    mProcess.visibility = View.GONE
-//                    mSRCountryDetail.isRefreshing = false
-//
-//                }
-//            }
-//        )
-
-
-//    fun AppCompatImageView.showSvgFlag(myUrl: String?) {
-//        myUrl?.let {
-//            if (it.lowercase(Locale.ENGLISH).endsWith("svg")) {
-//                val imageLoader = ImageLoader.Builder(this.context)
-//                    .componentRegistry {
-//                        add(SvgDecoder(this@showSvgFlag.context))
-//                    }
-//                    .build()
-//                val request = LoadRequest.Builder(this.context)
-//                    .data(it)
-//                    .target(this)
-//                    .build()
-//                imageLoader.execute(request)
-//            } else {
-//                this.load(myUrl)
-//            }
-//        }
-//    }
-
     private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String) {
-        mGoogleMap.moveCamera(newLatLng(latLng))
+        val zoom : Float = mAreaCounty/1.7124442E7F
+        mGoogleMap.moveCamera(newLatLngZoom(latLng,zoom))
         mGoogleMap.addMarker(
             MarkerOptions()
                 .position(latLng)
@@ -236,6 +148,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     override fun showCountryDetail(country: CountryDataDetailDto) {
         binding.srCountryDetails.isRefreshing = false
         binding.mTvCountryName.text = country.name
+        mAreaCounty = country.area
         binding.mTVCountryDescription.text = activity?.applicationContext?.let {
             getDescription(
                 country,
@@ -260,7 +173,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         Snackbar.make(
             binding.root,
             getString(R.string.wrong_county), Snackbar.LENGTH_SHORT
-        ).also { mSnackbar = it }.show()
+        ).show()
         //???
         findNavController().navigate(R.id.action_countryDetailsFragment_to_listFragment)
     }

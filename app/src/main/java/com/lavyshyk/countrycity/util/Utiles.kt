@@ -49,7 +49,7 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
                     item.area
                 )
             )
-//
+//            println("DATA  save Language in dataBase" + Thread.currentThread().name)
 //            item.languages.let {
 //                it.forEach { it ->
 //                    CountryApp.database?.languageDao()

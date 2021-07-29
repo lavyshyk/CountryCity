@@ -56,6 +56,7 @@ abstract class BaseMvpPresenter<View : IBaseMvpView> {
     }
 
 
+
     //    inline fun <reified ReifiedType : ViewType> instantiateDummyView(): ReifiedType {
 //        return ReifiedType::class.java.getConstructor().newInstance()
 //    }

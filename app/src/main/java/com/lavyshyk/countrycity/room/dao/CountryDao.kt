@@ -2,6 +2,7 @@ package com.lavyshyk.countrycity.room.dao
 
 import androidx.room.*
 import com.lavyshyk.countrycity.room.entyties.Country
+import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface CountryDao {
@@ -12,7 +13,7 @@ interface CountryDao {
     fun saveListCountry(list: MutableList<Country>)
 
     @Query("SELECT * FROM countries_table")
-    fun getListCountry(): MutableList<Country>
+    fun getListCountry(): Flowable<MutableList<Country>>?
 
 
     @Update

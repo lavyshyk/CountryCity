@@ -108,8 +108,6 @@ fun Activity.showDialogQuickSearch(
 
     val btnLeft: Button = contentView.findViewById(R.id.mButtonNo)
     btnLeft.setText(leftButtonTextId)
-
-
     btnLeft.setOnClickListener {
         dialog.dismiss()
         leftClickListener?.onClick(it)
@@ -125,7 +123,7 @@ fun Activity.showDialogQuickSearch(
                 val text = it.toString()
                 if (text.length > 2) {
                     btnRight.isEnabled = true
-                    it?.insert(0, query(text))
+                   // it?.insert(0, query(text))
                     tt = it.toString()
                 }
             }
@@ -138,8 +136,9 @@ fun Activity.showDialogQuickSearch(
     btnRight.isEnabled = false
     btnRight.setOnClickListener {
         bundle.putString(COUNTRY_NAME_KEY_FOR_DIALOG, tt)
+
+        rightClickListener?.onClick(it)
         dialog.dismiss()
-        leftClickListener?.onClick(it)
         dis.clear()
     }
 

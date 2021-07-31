@@ -18,13 +18,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
-import com.lavyshyk.countrycity.APP_PREFERENCES
-import com.lavyshyk.countrycity.COUNTRY_NAME_FOR_NAV_KEY
-import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
-import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mpv.BaseMpvFragment
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
+import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.getDescription
 import com.lavyshyk.countrycity.util.loadSvgFlag
 
@@ -41,8 +39,9 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mCurrentLatLng: LatLng
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var mSnackbar: Snackbar
-    private  var mAreaCounty: Float = 0.0F
+    private var mAreaCounty: Float = 0.0F
+    private var bundle = Bundle()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +69,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getPresenter().attachView(this)
+        getPresenter().setArgumentFromView(mCountryName)
 
         binding.mRecyclerCountryDescription.layoutManager = LinearLayoutManager(activity)
 
@@ -85,13 +85,9 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         mMapView.getMapAsync(this)
 
         mSRCountryDetail.setOnRefreshListener {
-            getPresenter().getCountryByName(mCountryName, true)
+            getPresenter().getCountryByName(true)
         }
-
-
-        getPresenter().getCountryByName(mCountryName, false)
-
-
+        getPresenter().getCountryByName(false)
     }
 
     override fun onResume() {
@@ -124,8 +120,8 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
 
     private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String) {
-        val zoom : Float = mAreaCounty/1.7124442E7F
-        mGoogleMap.moveCamera(newLatLngZoom(latLng,zoom))
+        val zoom: Float = mAreaCounty / 1.7124442E7F
+        mGoogleMap.moveCamera(newLatLngZoom(latLng, zoom))
         mGoogleMap.addMarker(
             MarkerOptions()
                 .position(latLng)
@@ -170,12 +166,26 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     }
 
     override fun showError(error: String, throwable: Throwable) {
-        Snackbar.make(
+
+        val sn = Snackbar.make(
             binding.root,
-            getString(R.string.wrong_county), Snackbar.LENGTH_SHORT
-        ).show()
-        //???
-        findNavController().navigate(R.id.action_countryDetailsFragment_to_listFragment)
+            getString(R.string.wrong_county ), Snackbar.LENGTH_INDEFINITE
+        ).setAction(
+            getString(R.string.try_again), { v ->
+                activity?.showDialogQuickSearch(
+                    "Search country",
+                    R.string.no,
+                    { findNavController().navigate(R.id.listFragment)},
+                    R.string.yes,
+                    {
+                        val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
+                        getPresenter().setArgumentFromView(s)
+                        getPresenter().getCountryByName(false)
+                        sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
+                    },
+                    bundle
+                )
+            }).show()
     }
 
     override fun showProgress() {

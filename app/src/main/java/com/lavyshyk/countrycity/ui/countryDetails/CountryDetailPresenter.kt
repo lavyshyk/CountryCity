@@ -5,9 +5,13 @@ import com.lavyshyk.countrycity.base.mpv.BaseMvpPresenter
 import com.lavyshyk.countrycity.util.transformToCountryDetailDto
 
 class CountryDetailPresenter : BaseMvpPresenter<ICountryDetailsView>() {
+    lateinit var nameCountry: String
 
+    fun setArgumentFromView(argyment : String){
+        nameCountry = argyment
+    }
 
-    fun getCountryByName(nameCountry: String, isRefresh: Boolean) {
+    fun getCountryByName(isRefresh: Boolean) {
         addDisposable(
             inBackground(
                 handleProgress(
@@ -18,7 +22,8 @@ class CountryDetailPresenter : BaseMvpPresenter<ICountryDetailsView>() {
                     it.transformToCountryDetailDto()[0]
                 )
             }, {
-                it.message?.let { i -> getView()?.showError(i,it)
+                it.message?.let { i ->
+                    getView()?.showError(i, it)
                 }
             })
         )

@@ -36,7 +36,6 @@ class ListFragment : BaseMpvFragment<ICountryListView, CountryListPresenter>(),
 
     private var bundle = Bundle()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -71,12 +70,8 @@ class ListFragment : BaseMpvFragment<ICountryListView, CountryListPresenter>(),
             sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, item.name).apply()
         }
 
-
-
         binding.recView.adapter = mAdapter
-
         mProgress = binding.mPBarList
-
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
 
         getPresenter().getCountryDataFromDataBase()
@@ -84,12 +79,10 @@ class ListFragment : BaseMpvFragment<ICountryListView, CountryListPresenter>(),
 
     }
 
-
     override fun onDestroyView() {
 
         fragmentListBinding = null
         getPresenter().onDestroyView()
-
         super.onDestroyView()
     }
 
@@ -112,15 +105,19 @@ class ListFragment : BaseMpvFragment<ICountryListView, CountryListPresenter>(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.searchCountry -> {
-            activity?.showDialogQuickSearch("Search country", R.string.no, { it ->
-                val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
-                bundle.putString(COUNTRY_NAME_KEY, s)
-                findNavController().navigate(
-                    R.id.action_listFragment_to_countryDetailsFragment,
-                    bundle
-                )
-                sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
-            }, R.string.yes, null, bundle)
+            var s = ""
+            activity?.showDialogQuickSearch("Search country", R.string.no, null,
+                R.string.yes, { it ->
+                    s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
+                    bundle.putString(COUNTRY_NAME_KEY, s)
+                    findNavController().navigate(
+                        R.id.action_listFragment_to_countryDetailsFragment,
+                        bundle
+                    )
+                    sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
+                }, bundle
+            )
+
             true
         }
         R.id.goToMap -> {
@@ -169,12 +166,11 @@ class ListFragment : BaseMpvFragment<ICountryListView, CountryListPresenter>(),
 
 
         countries.let {
-
-
-            if (getSortStatus()) mAdapter.repopulateSorted(it)
-            else mAdapter.repopulateDescendingSorted(
-                it
-            )
+            if (getSortStatus()) {
+                mAdapter.repopulateSorted(it)
+            } else {
+                mAdapter.repopulateDescendingSorted(it)
+            }
         }
     }
 

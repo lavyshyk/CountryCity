@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.databinding.FragmentStartBinding
+import com.lavyshyk.countrycity.ui.ext.showAlertDialog
 
 /*
 binding fragment by constructor
@@ -13,8 +14,13 @@ class StartFragment : Fragment(R.layout.fragment_start) {
     private var fragmentStartBinding: FragmentStartBinding? = null
 
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        activity?.showAlertDialog()
+
+
         val binding = FragmentStartBinding.bind(view)
         fragmentStartBinding = binding
         binding.tViewStart.text = resources.getString(R.string.hello_blank_fragment)

@@ -4,11 +4,20 @@
     <dimen name="zero_dp">0dp</dimen>
     <dimen name="line_view">2dp</dimen>
     <dimen name="text_3alpha">48sp</dimen>
-    <dimen name="text_view">32sp</dimen>
+    <dimen name="text_view_18sp">18sp</dimen>
     <dimen name="text_view_small">12dp</dimen>
     <dimen name="text_view_from_small">46dp</dimen>
     <dimen name="text_view_to_line">66dp</dimen>
     <dimen name="elev_tool_bar">4dp</dimen>
     <dimen name="text_view_capit">24sp</dimen>
     <dimen name="marg_item">8dp</dimen>
+    <dimen name="mSizeMapView">100dp</dimen>
+    <dimen name="description_text">18sp</dimen>
+    <dimen name="map_view_height">200dp</dimen>
+    <dimen name="padding12">12dp</dimen>
+    <dimen name="padding26">26dp</dimen>
+    <dimen name="text_size_24">24sp</dimen>
+    <dimen name="text_view_32">32sp</dimen>
+    <dimen name="dp48">48dp</dimen>
+    <dimen name="padding8">8dp</dimen>
 </resources>

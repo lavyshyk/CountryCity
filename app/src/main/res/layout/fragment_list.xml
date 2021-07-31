@@ -5,9 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/list_fragment"
+    android:id="@+id/fragment_list"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.countryListFragment.ListFragment">
+
+    <FrameLayout
+        android:id="@+id/mPBar_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="@dimen/dp48"
+            android:layout_height="@dimen/dp48"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView

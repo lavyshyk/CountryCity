@@ -7,9 +7,10 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
-import com.lavyshyk.countrycity.dto.CountryDataDto
+import com.lavyshyk.countrycity.dto.CountryDto
 
-class CountryAdapter : BaseAdapter<CountryDataDto>() {
+class CountryAdapter : BaseAdapter<CountryDto>() {
+
 
     class CountryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -31,15 +32,20 @@ class CountryAdapter : BaseAdapter<CountryDataDto>() {
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
+
         }
     }
 
-    fun repopulateSorted(list: MutableList<CountryDataDto>) {
+
+
+
+
+    fun repopulateSorted(list: MutableList<CountryDto>) {
         list.sortBy { it.area }
         repopulate(list)
     }
 
-    fun repopulateDescendingSorted(list: MutableList<CountryDataDto>) {
+    fun repopulateDescendingSorted(list: MutableList<CountryDto>) {
         list.sortByDescending { it.area }
         repopulate(list)
     }

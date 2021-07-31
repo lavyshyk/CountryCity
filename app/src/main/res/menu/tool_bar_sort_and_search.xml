@@ -2,8 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/searchCountry"
+        android:title="@string/quick_search"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_search"
+        />
+
+    <item
         android:id="@+id/sortCountries"
         android:icon="@drawable/ic_action_list_sort_to_small"
         android:title="@string/sort_countries"
         app:showAsAction="ifRoom"/>
+
 </menu>

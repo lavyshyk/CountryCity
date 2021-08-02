@@ -154,7 +154,7 @@ fun query(t: String): String {
     var result = ""
     dis.add(
         retrofitService.getInfoAboutCountry(t)
-            .debounce(10000, TimeUnit.MILLISECONDS)
+            .debounce(300, TimeUnit.MILLISECONDS)
             .map { it.transformToCountryDetailDto()[0] }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())

@@ -17,3 +17,8 @@ const val COUNTRY_NAME_KEY_FOR_DIALOG = "key_dialog"
 for saveStateInstance
  */
 const val CURRENT_POSITION_ADAPTER_RV = "current_position_adapter"
+
+/*
+Permissions
+ */
+const val PERMISSION_ACCESS_LOCATION_REQUEST_STORAGE = 1001

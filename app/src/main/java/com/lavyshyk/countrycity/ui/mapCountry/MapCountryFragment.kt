@@ -41,6 +41,7 @@ class MapCountryFragment : BaseMpvFragment<IMapCountryView, MapCountryPresenter>
 
 
 
+
         mapFragment?.getMapAsync(this)
         getPresenter().getAllCountryData()
 
@@ -78,8 +79,7 @@ class MapCountryFragment : BaseMpvFragment<IMapCountryView, MapCountryPresenter>
                 )
 
             }
-
-
+       
     }
 
     override fun showError(error: String, throwable: Throwable) {
@@ -106,4 +106,6 @@ class MapCountryFragment : BaseMpvFragment<IMapCountryView, MapCountryPresenter>
         mProgress.visibility = View.GONE
 
     }
+
+
 }

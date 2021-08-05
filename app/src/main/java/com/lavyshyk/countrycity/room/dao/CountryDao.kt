@@ -1,5 +1,6 @@
 package com.lavyshyk.countrycity.room.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.lavyshyk.countrycity.room.entyties.Country
 import io.reactivex.rxjava3.core.Flowable
@@ -14,6 +15,12 @@ interface CountryDao {
 
     @Query("SELECT * FROM countries_table")
     fun getListCountry(): Flowable<MutableList<Country>>?
+
+    @Query("SELECT * FROM countries_table")
+    fun getListCountryObserve(): MutableList<Country>
+
+    @Query("SELECT * FROM countries_table")
+    fun getListCountryLiveData(): LiveData<MutableList<Country>>
 
 
     @Update

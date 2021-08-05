@@ -25,6 +25,7 @@ fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto
                     item.capital,
                     item.region,
                     item.population,
+                    mutableListOf(item.lat, item.lng),
                     item.area,
                     mutableListOf()
                 )
@@ -46,6 +47,8 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
                     item.capital,
                     item.region,
                     item.population,
+                    item.latlng[0],
+                    item.latlng[1],
                     item.area
                 )
             )
@@ -85,6 +88,12 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                     item.capital ?: "",
                     item.region ?: "",
                     item.population ?: 0L,
+
+                    if (item.latlng.isNullOrEmpty()) {
+                        mutableListOf<Double>(0.0, 0.0)
+                    } else {
+                        mutableListOf(item.latlng[0], item.latlng[1])
+                    },
                     item.area ?: 0.0F,
                     list.apply {
                         item.languages?.forEach { it ->
@@ -111,6 +120,7 @@ fun MutableList<CountryDto>.transformToCountry(): MutableList<CountryDataInfo> {
                     item.capital,
                     item.region,
                     item.population,
+                    mutableListOf(item.latlng[0], item.latlng[1]),
                     item.area,
                     list.apply {
                         item.languages.forEach { it ->
@@ -136,9 +146,9 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
                     item.capital ?: "",
                     item.region ?: "",
                     item.population ?: 0L,
-                    if (item.latlng.isNullOrEmpty()){
-                        mutableListOf<Double>(0.0,0.0)
-                    }else{
+                    if (item.latlng.isNullOrEmpty()) {
+                        mutableListOf<Double>(0.0, 0.0)
+                    } else {
                         mutableListOf(item.latlng[0], item.latlng[1])
                     },
                     item.area ?: 0.0F,
@@ -187,9 +197,9 @@ fun MutableList<CountryInfoForMap>.transformToCountryInfoMapDto(): MutableList<C
                 CountryInfoMapDto(
                     item.name ?: "",
                     item.capital ?: "",
-                    if (item.latlng.isNullOrEmpty()){
-                        mutableListOf<Double>(0.0,0.0)
-                    }else{
+                    if (item.latlng.isNullOrEmpty()) {
+                        mutableListOf<Double>(0.0, 0.0)
+                    } else {
                         mutableListOf(item.latlng[0], item.latlng[1])
                     }
                 )

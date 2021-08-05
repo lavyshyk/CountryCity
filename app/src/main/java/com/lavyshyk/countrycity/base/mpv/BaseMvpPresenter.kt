@@ -8,11 +8,15 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 
 abstract class BaseMvpPresenter<View : IBaseMvpView> {
 
-    private lateinit var mView: View
+    private var mView: View? = null
     private val mCompositeDisposable = CompositeDisposable()
 
     fun attachView(view: View) {
         mView = view
+    }
+
+    fun detachView() {
+        mView = null
     }
 
     protected open fun getView(): View? = mView
@@ -47,14 +51,13 @@ abstract class BaseMvpPresenter<View : IBaseMvpView> {
         return flowable
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                    getView()?.showProgress()
-                }
+                getView()?.showProgress()
+            }
             .doOnNext {
                 getView()?.hideProgress()
             }
             .observeOn(Schedulers.io())
     }
-
 
 
     //    inline fun <reified ReifiedType : ViewType> instantiateDummyView(): ReifiedType {

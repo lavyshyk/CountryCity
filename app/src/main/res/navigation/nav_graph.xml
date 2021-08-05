@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.lavyshyk.countrycity.ui.countryListFragment.ListFragment"
+        android:name="com.lavyshyk.countrycity.ui.countryListFragment.CountriesListFragment"
         android:label="List of Country"
         tools:layout="@layout/fragment_list" >
         <action

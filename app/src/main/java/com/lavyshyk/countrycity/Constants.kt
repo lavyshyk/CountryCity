@@ -22,3 +22,20 @@ const val CURRENT_POSITION_ADAPTER_RV = "current_position_adapter"
 Permissions
  */
 const val PERMISSION_ACCESS_LOCATION_REQUEST_STORAGE = 1001
+
+/*
+BottomSheet
+ */
+
+const val PEEK_HEIGHT = 120
+
+
+/*
+LiveData keys
+ */
+
+const val MY_FILTER_LIVE_DATA_KEY = "myFilterLiveDataKey"
+const val COUNTRY_DTO = "countryDto"
+const val SORTED_COUNTRY_DTO = "sortedCountryDto"
+const val SEARCHED_LIST_COUNTRIES = "searchListCountries"
+const val MY_CURRENT_LOCATION = "myCurrentLocation"

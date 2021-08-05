@@ -4,17 +4,24 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import com.lavyshyk.countrycity.PERMISSION_ACCESS_LOCATION_REQUEST_STORAGE
 
 
-fun Context.checkLocationPermission() =
-    this.let {
-        ContextCompat.checkSelfPermission(
-            it,
-            Manifest.permission.ACCESS_FINE_LOCATION
+fun Context.checkLocationPermission(): Boolean =
+    if (ActivityCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        true
+    } else {
+        val list = ArrayList<String>()
+        list.add(Manifest.permission.ACCESS_FINE_LOCATION)
+        ActivityCompat.requestPermissions(
+            this as Activity, list.toTypedArray(),
+            PERMISSION_ACCESS_LOCATION_REQUEST_STORAGE
         )
-    } == PackageManager.PERMISSION_GRANTED
+        true
+    }
 
-fun Activity.askLocationPermission(locationPermissionCode: Int) {
-    requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
-}
+

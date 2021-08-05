@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-        <array name="initial_slider_values">
+        <array name="initial_slider_values_area">
             <item>0.0</item>
-            <item>100.0</item>
+            <item>17124442.0</item>
         </array>
 
+    <array name="initial_slider_values_population">
+        <item>0.0</item>
+        <item>1377422166.0</item>
+    </array>
 </resources>

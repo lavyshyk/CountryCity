@@ -56,15 +56,15 @@ dependencies {
     implementation "io.coil-kt:coil:0.11.0"
     implementation "io.coil-kt:coil-svg:0.11.0"
 
-    //implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
-    //implementation 'com.caverock:androidsvg:1.2.1'
-    //kapt 'com.github.bumptech.glide:compiler:4.11.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
     implementation "androidx.room:room-rxjava3:$room_version"
 
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"

@@ -27,6 +27,7 @@ fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto
                     item.population,
                     mutableListOf(item.lat, item.lng),
                     item.area,
+                    item.nativeName,
                     mutableListOf()
                 )
             )
@@ -49,7 +50,8 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
                     item.population,
                     item.latlng[0],
                     item.latlng[1],
-                    item.area
+                    item.area,
+                    item.nativeName,
                 )
             )
 //            println("DATA  save Language in dataBase" + Thread.currentThread().name)
@@ -95,7 +97,8 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                         mutableListOf(item.latlng[0], item.latlng[1])
                     },
                     item.area ?: 0.0F,
-                    list.apply {
+                    item.nativeName ?: "",
+                    list . apply {
                         item.languages?.forEach { it ->
                             it.transformLanguageToLanguageDto().also { i -> list.add(i) }
                         }
@@ -122,6 +125,7 @@ fun MutableList<CountryDto>.transformToCountry(): MutableList<CountryDataInfo> {
                     item.population,
                     mutableListOf(item.latlng[0], item.latlng[1]),
                     item.area,
+                    item.nativeName,
                     list.apply {
                         item.languages.forEach { it ->
                             it.transformDtoToLanguage().also { i -> list.add(i) }

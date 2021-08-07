@@ -10,7 +10,6 @@ import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
 import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.base.mvvm.executeJob
 import com.lavyshyk.countrycity.dto.CountryDto
-import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import com.lavyshyk.countrycity.util.transformToCountryDto
 import io.reactivex.rxjava3.core.Flowable
 
@@ -25,7 +24,7 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
         savedStateHandle.getLiveData<Outcome<MutableList<CountryDto>>?>(SORTED_COUNTRY_DTO)
     val mCurrentLocation = savedStateHandle.getLiveData<Location>(MY_CURRENT_LOCATION)
 
-    val m = savedStateHandle.getLiveData<MutableList<CountryDto>>("rere")
+    val mDataBase = database?.countryDao()?.getListCountryLiveData()
 
 
 
@@ -43,9 +42,6 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
         mMyFilter.value = myFilter
     }
 
-    fun putlistCountry() {
-
-    }
 
     fun getSortedListCountry(myFilter: MyFilter) {
         mCompositeDisposable.add(
@@ -61,16 +57,16 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
                                 countryDto2.population.toFloat() in myFilter.lPopulation..myFilter.rPopulation
                             }
                             .filter { countryDto3 ->
-                                var location = Location(LocationManager.GPS_PROVIDER)
+                                val location = Location(LocationManager.GPS_PROVIDER)
                                 location.apply {
-                                    location?.latitude = countryDto3.latlng[0]
-                                    location?.longitude = countryDto3.latlng[1]
+                                    location.latitude = countryDto3.latlng[0]
+                                    location.longitude = countryDto3.latlng[1]
                                 }
                                 if (myFilter.distance == 0) {
                                     myFilter.distance = Int.MAX_VALUE
                                 }
 
-                                getDistanceBettwenLocations(location!!) < myFilter.distance
+                                getDistanceBettwenLocations(location) < myFilter.distance
                             }
 
                     }.toList().toFlowable(), mSortedCountryList
@@ -88,19 +84,13 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
         )
     }
 
-    fun getLDB() {
-        m.value = database?.countryDao()?.getListCountryObserve()?.transformEntitiesToCountryDto()
-    }
 
-
-    fun getCountriesInfoDataBase() {
-        mCompositeDisposable.add(database?.countryDao()?.getListCountry()?.let {
+    fun getCountryListSearchByName(name: String){
+        mCompositeDisposable.add(
             executeJob(
-                it.map { i -> i.transformEntitiesToCountryDto() }, mCountyLiveData
+                retrofitService.geCountryListByName(name)
+                    .map { it.transformToCountryDto() }, mSortedCountryList
             )
-        }
         )
     }
-
-
 }

@@ -34,7 +34,6 @@ import com.lavyshyk.countrycity.util.checkLocationPermission
 import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 
 /*
@@ -60,8 +59,6 @@ class CountriesListFragment : Fragment()
     private var rightArea: Float = 0.0f
     private var radiusDistance: Int = 0
     private val mViewModel = CountryListViewModel(SavedStateHandle())
-    private val mSearchList = BehaviorSubject.create<MyFilter>()
-    private var mLocation: Location? = null
 
 
     private lateinit var headerPeek: AppCompatImageView
@@ -97,18 +94,10 @@ class CountriesListFragment : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mViewModel.getCountriesInfoApi()
-/*
-diff ways get data from BD
- */
-        //mViewModel.getCountriesInfoDataBase()
-//        mViewModel.getLDB()
-//        mViewModel.m.observe(viewLifecycleOwner,{
-//            showCountryData(it)
-//        })
 
-        database?.countryDao()?.getListCountryLiveData()?.observe(viewLifecycleOwner, {
-            showCountryData(it.transformEntitiesToCountryDto())
-        })
+        mViewModel.mDataBase?.observe(
+            viewLifecycleOwner,
+            { it -> showCountryData(it.transformEntitiesToCountryDto()) })
 
         mProgress = binding.mPBarList
 
@@ -158,8 +147,18 @@ diff ways get data from BD
                     mProgress.visibility = View.VISIBLE
                 }
                 is Outcome.Next -> {
-                    showCountryData(it.data)
-                    database?.countryDao()?.saveListCountry(it.data.transformEntitiesToCountry())
+                    val unit = database?.countryDao()?.getListCountryName()?.count()
+                    if (unit != null && unit > 0) {
+                        database?.countryDao()
+                            ?.updateListCountry(it.data.transformEntitiesToCountry())
+                    } else {
+                        database?.countryDao()
+                            ?.saveListCountry(it.data.transformEntitiesToCountry())
+                    }
+
+
+
+
                     mProgress.visibility = View.GONE
                 }
                 is Outcome.Failure -> {
@@ -220,7 +219,9 @@ diff ways get data from BD
                                     rArea = if (rightArea != 0f) rightArea else 17_124_442F,
                                     leftPopulation,
                                     rPopulation = if (rightPopulation != 0f) rightPopulation else 1_377_422_166F,
-                                    distance = if (mEditText.text.toString().isNullOrEmpty()) {
+                                    distance = if (mEditText.text.toString()
+                                            .isNullOrEmpty()
+                                    ) {
                                         0
                                     } else {
                                         mEditText.text.toString().toInt()
@@ -284,14 +285,15 @@ diff ways get data from BD
             var s = ""
             activity?.showDialogQuickSearch(
                 "Search country", R.string.no, null,
-                R.string.yes, { it ->
-                    s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
-                    bundle.putString(COUNTRY_NAME_KEY, s)
-                    findNavController().navigate(
-                        R.id.action_listFragment_to_countryDetailsFragment,
-                        bundle
-                    )
-                    sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
+                R.string.yes, {
+                    s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
+                    mViewModel.getCountryListSearchByName(s)
+//                    bundle.putString(COUNTRY_NAME_KEY, s)
+//                    findNavController().navigate(
+//                        R.id.action_listFragment_to_countryDetailsFragment,
+//                        bundle
+//                    )
+//                    sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
                 }, bundle
             )
 

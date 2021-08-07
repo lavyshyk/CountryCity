@@ -13,4 +13,5 @@ data class Country(
     val lat : Double,
     val lng : Double,
     val area: Float,
+    val nativeName: String,
 )

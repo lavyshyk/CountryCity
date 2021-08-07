@@ -9,6 +9,7 @@ class CountryDataInfo(
     @SerializedName("population") val population: Long?,
     @SerializedName("latlng") val latlng : MutableList<Double>?,
     @SerializedName("area") val area: Float?,
+    @SerializedName("nativeName") val nativeName: String?,
     @SerializedName("languages") val languages: MutableList<LanguageData>?
 
 ) {

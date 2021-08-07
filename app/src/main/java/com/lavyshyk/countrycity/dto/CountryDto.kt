@@ -7,5 +7,6 @@ data class CountryDto(
     var population: Long,
     val latlng : MutableList<Double>,
     var area: Float,
+    val nativeName: String,
     var languages: MutableList<LanguageDto>,
 )

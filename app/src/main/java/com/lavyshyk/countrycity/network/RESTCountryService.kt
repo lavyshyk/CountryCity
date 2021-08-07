@@ -13,6 +13,9 @@ interface RESTCountryService {
     @GET("name/{name}")
     fun getInfoAboutCountry(@Path("name") nameCountry: String): Flowable<MutableList<CountryDataDetail>>
 
+    @GET("name/{name}")
+    fun geCountryListByName(@Path("name") nameCountry: String): Flowable<MutableList<CountryDataInfo>>
+
     @GET("all")
     fun getCountriesInfo(): Flowable<MutableList<CountryDataInfo>>
 

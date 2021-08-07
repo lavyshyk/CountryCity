@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewNativName"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100dp"
+        android:autoSizeTextType="uniform"
+        android:textColor="@color/NN"
+        android:layout_gravity="bottom"
+        android:textStyle="bold"
+        android:gravity="left|bottom"
+        tools:text="nativename"
+        tools:textSize="@dimen/_48sp"/>
+<androidx.appcompat.widget.LinearLayoutCompat
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_item"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/marg_item">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewCountry"
+        tools:text="Country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_24"
+        android:gravity="end"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewCapital"
+        tools:text="capital"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_view_18sp"
+        android:gravity="end"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewPopulation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_10sp"
+        android:gravity="end"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textViewArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/_10sp"
+        android:gravity="end"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_view"
+        android:foreground="@color/black"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>

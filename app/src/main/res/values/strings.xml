@@ -8,8 +8,10 @@
     <string name="item_text">TextView</string>
     <string name="item_sort_to_small">Big -> small (by area)</string>
     <string name="item_sort_to_big">Small -> big (by area)</string>
-    <string name="capital_is">Capital is %1$s</string>
-    <string name="languages">languages : %1$s</string>
+    <string name="capital_is">capital is %1$s</string>
+    <string name="population_is">population is %1$d people</string>
+    <string name="area_is">area is %1$s square km</string>
+    <string name="languages">languages : %1$s </string>
     <string name="sort_countries">sort countries</string>
     <string name="detail">Detail</string>
     <string name="description_of_country">The area of the country is %1$s  square kilometers and the population is %2$s people. </string>

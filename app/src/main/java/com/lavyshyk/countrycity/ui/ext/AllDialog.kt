@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -15,17 +17,10 @@ import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
-import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.util.transformToCountryDetailDto
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 val DIALOG_WIDTH_DELTA_7: Float = 0.7F
 lateinit var dis: CompositeDisposable
@@ -118,21 +113,17 @@ fun Activity.showDialogQuickSearch(
     btnRight.setText(rightButtonTextId)
     val mEditText: AppCompatEditText = contentView.findViewById(R.id.mETNameCountry)
     var tt = ""
-    mEditText.addTextChangedListener {
-            mEditText.doAfterTextChanged {
-                val text = it.toString()
-                if (text.length > 2) {
-                    btnRight.isEnabled = true
-                   // it?.insert(0, query(text))
-                    tt = it.toString()
-                }
+    mEditText.addTextChangedListener(object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        override fun afterTextChanged(s: Editable?) {
+            val text = s.toString()
+            if (text.length > 2) {
+                btnRight.isEnabled = true
             }
-
-    }
-
-
-
-
+            tt = text
+        }
+    })
     btnRight.isEnabled = false
     btnRight.setOnClickListener {
         bundle.putString(COUNTRY_NAME_KEY_FOR_DIALOG, tt)
@@ -150,19 +141,19 @@ fun Activity.showDialogQuickSearch(
     return dialog
 }
 
-fun query(t: String): String {
-    var result = ""
-    dis.add(
-        retrofitService.getInfoAboutCountry(t)
-            .debounce(300, TimeUnit.MILLISECONDS)
-            .map { it.transformToCountryDetailDto()[0] }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                result = it.name
-            }, {
-                it.printStackTrace()
-            })
-    )
-    return result
-}
+//fun query(t: String): MutableList<CountryDataDetailDto> {
+//    var result = mutableListOf<CountryDataDetailDto>()
+//    dis.add(
+//        retrofitService.getInfoAboutCountry(t)
+////            .debounce(300, TimeUnit.MILLISECONDS)
+//            .map { it.transformToCountryDetailDto() }
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribeOn(Schedulers.io())
+//            .subscribe({
+//                result = it
+//            }, {
+//                it.printStackTrace()
+//            })
+//    )
+//    return result
+//}

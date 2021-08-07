@@ -22,7 +22,6 @@ interface CountryDao {
     @Query("SELECT * FROM countries_table")
     fun getListCountryLiveData(): LiveData<MutableList<Country>>
 
-
     @Update
     fun updateCountry(country: Country)
 
@@ -31,5 +30,10 @@ interface CountryDao {
 
     @Delete
     fun deleteListCountry(list: List<Country>)
+
+
+// quick query for check BD on contain
+    @Query("SELECT nameCountry FROM countries_table")
+    fun getListCountryName(): MutableList<String>
 
 }

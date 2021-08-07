@@ -155,10 +155,6 @@ class CountriesListFragment : Fragment()
                         database?.countryDao()
                             ?.saveListCountry(it.data.transformEntitiesToCountry())
                     }
-
-
-
-
                     mProgress.visibility = View.GONE
                 }
                 is Outcome.Failure -> {
@@ -188,9 +184,9 @@ class CountriesListFragment : Fragment()
         headerPeek = bottomSheetFragmentBinding.peekIcon
         headerPeek.setOnClickListener {
             if (sheetBehavior.state == STATE_EXPANDED) {
-
-                //   imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
                 sheetBehavior.state = STATE_COLLAPSED
+                imm.hideSoftInputFromWindow(headerPeek.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
             } else {
                 sheetBehavior.state = STATE_EXPANDED
 
@@ -219,21 +215,15 @@ class CountriesListFragment : Fragment()
                                     rArea = if (rightArea != 0f) rightArea else 17_124_442F,
                                     leftPopulation,
                                     rPopulation = if (rightPopulation != 0f) rightPopulation else 1_377_422_166F,
-                                    distance = if (mEditText.text.toString()
-                                            .isNullOrEmpty()
+                                    distance = if (mEditText.text.toString() == ""
                                     ) {
                                         0
                                     } else {
                                         mEditText.text.toString().toInt()
                                     }
-
                                 )
                             )
-//                        if (imm != null){
-//                            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0) }
-
                             sheetBehavior.peekHeight = PEEK_HEIGHT
-
                         }
                     }
                 }

@@ -27,11 +27,13 @@
         android:id="@+id/rec_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_anchor="@+id/mPBarList"
+        app:layout_anchorGravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
     <include layout="@layout/bottom_sheet_fragment"
+
      />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

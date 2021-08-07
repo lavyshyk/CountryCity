@@ -12,6 +12,7 @@ import com.lavyshyk.countrycity.base.mvvm.executeJob
 import com.lavyshyk.countrycity.dto.CountryDto
 import com.lavyshyk.countrycity.util.transformToCountryDto
 import io.reactivex.rxjava3.core.Flowable
+import kotlin.math.pow
 
 class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(savedStateHandle) {
 
@@ -27,10 +28,8 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
     val mDataBase = database?.countryDao()?.getListCountryLiveData()
 
 
-
-
-    private fun getDistanceBettwenLocations(location: Location): Int {
-        return (location.distanceTo(mCurrentLocation.value) / 1000).toInt()
+    private fun getDistanceBettwenLocations(location: Location): Float {
+        return (location.distanceTo(mCurrentLocation.value) / 1000)
 
     }
 
@@ -50,24 +49,29 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
                     .map { counties -> counties.transformToCountryDto() }
                     .flatMap { list ->
                         Flowable.fromIterable(list)
-                            .filter { countryDto ->
-                                countryDto.area in myFilter.lArea..myFilter.rArea
-                            }
-                            .filter { countryDto2 ->
-                                countryDto2.population.toFloat() in myFilter.lPopulation..myFilter.rPopulation
-                            }
                             .filter { countryDto3 ->
                                 val location = Location(LocationManager.GPS_PROVIDER)
                                 location.apply {
                                     location.latitude = countryDto3.latlng[0]
                                     location.longitude = countryDto3.latlng[1]
                                 }
-                                if (myFilter.distance == 0) {
-                                    myFilter.distance = Int.MAX_VALUE
-                                }
-
                                 getDistanceBettwenLocations(location) < myFilter.distance
                             }
+                            .filter { countryDto ->
+                                val mArea = countryDto.area.toString()
+                                if (mArea.contains("E")){
+                                    val (a,b) = mArea.split("E")
+                                   val country = a.toFloat() * 10F.pow(b.toInt())
+                                    country in myFilter.lArea..myFilter.rArea
+                                }else{
+                                    countryDto.area in myFilter.lArea..myFilter.rArea
+                                }
+
+                            }
+                            .filter { countryDto2 ->
+                                countryDto2.population.toFloat() in myFilter.lPopulation..myFilter.rPopulation
+                            }
+
 
                     }.toList().toFlowable(), mSortedCountryList
             )
@@ -85,7 +89,7 @@ class CountryListViewModel(savedStateHandle: SavedStateHandle) : BaseViewModel(s
     }
 
 
-    fun getCountryListSearchByName(name: String){
+    fun getCountryListSearchByName(name: String) {
         mCompositeDisposable.add(
             executeJob(
                 retrofitService.geCountryListByName(name)

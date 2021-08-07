@@ -4,5 +4,5 @@ open class MyFilter(var lArea: Float,
                     var rArea: Float,
                     var lPopulation: Float,
                     var rPopulation: Float,
-                    var distance: Int,
+                    var distance: Float,
 )

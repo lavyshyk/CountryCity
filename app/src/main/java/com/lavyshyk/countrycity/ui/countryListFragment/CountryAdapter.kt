@@ -31,13 +31,13 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             val item = mDataList[position]
             holder.tvCountry.text = item.name
             val mCapital = holder.itemView.context.getString(R.string.capital_is, item.capital)
-            holder.tvCapital.text = if(mCapital.isEmpty()) "" else mCapital
+            holder.tvCapital.text = if(item.capital.isEmpty()) "" else mCapital
             val mNativeName = item.nativeName
-            holder.tvNativeName.text = if(mNativeName.isEmpty()) "" else mNativeName
+            holder.tvNativeName.text = if(item.nativeName.isEmpty()) "" else mNativeName
             val mPopulation = holder.itemView.context.getString(R.string.population_is, item.population)
-            holder.tvPopulation.text = if(mPopulation.isEmpty()) "" else mPopulation
+            holder.tvPopulation.text = if(item.population == 0L) "" else mPopulation
             val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
-            holder.tvArea.text = if(mArea.isEmpty()) "" else mArea
+            holder.tvArea.text = if(item.area.toString().isEmpty()) "" else mArea
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)

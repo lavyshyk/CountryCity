@@ -215,11 +215,11 @@ class CountriesListFragment : Fragment()
                                     rArea = if (rightArea != 0f) rightArea else 17_124_442F,
                                     leftPopulation,
                                     rPopulation = if (rightPopulation != 0f) rightPopulation else 1_377_422_166F,
-                                    distance = if (mEditText.text.toString() == ""
+                                    distance = if (mEditText.text.isNullOrEmpty()
                                     ) {
-                                        0
+                                        Float.MAX_VALUE
                                     } else {
-                                        mEditText.text.toString().toInt()
+                                        mEditText.text.toString().toFloat()
                                     }
                                 )
                             )

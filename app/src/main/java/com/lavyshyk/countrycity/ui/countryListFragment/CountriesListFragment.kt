@@ -52,7 +52,7 @@ class CountriesListFragment : Fragment()
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var sheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var bottomSheetFragmentBinding: BottomSheetFragmentBinding
+    private  var bottomSheetFragmentBinding: BottomSheetFragmentBinding? = null
     private var leftPopulation: Float = 0.0f
     private var rightPopulation: Float = 0.0f
     private var leftArea: Float = 0.0f
@@ -93,11 +93,18 @@ class CountriesListFragment : Fragment()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         mViewModel.getCountriesInfoApi()
 
         mViewModel.mDataBase?.observe(
             viewLifecycleOwner,
-            { it -> showCountryData(it.transformEntitiesToCountryDto()) })
+            { it ->
+                if (it.isNullOrEmpty()) {
+                    showCountryData(mutableListOf<CountryDto>())
+                } else {
+                    showCountryData(it.transformEntitiesToCountryDto())
+                }
+            })
 
         mProgress = binding.mPBarList
 
@@ -181,30 +188,32 @@ class CountriesListFragment : Fragment()
                 InputMethodManager
 
         sheetBehavior.peekHeight = PEEK_HEIGHT
-        headerPeek = bottomSheetFragmentBinding.peekIcon
+        headerPeek = bottomSheetFragmentBinding?.peekIcon!!
         headerPeek.setOnClickListener {
             if (sheetBehavior.state == STATE_EXPANDED) {
                 sheetBehavior.state = STATE_COLLAPSED
-                imm.hideSoftInputFromWindow(headerPeek.getWindowToken(),
-                    InputMethodManager.HIDE_NOT_ALWAYS);
+                imm.hideSoftInputFromWindow(
+                    headerPeek.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                );
             } else {
                 sheetBehavior.state = STATE_EXPANDED
 
             }
         }
 
-        val mEditText = bottomSheetFragmentBinding.mEIDistance
+        val mEditText = bottomSheetFragmentBinding?.mEIDistance
 
-        val mRSliderArea: RangeSlider = bottomSheetFragmentBinding.rangeSliderArea
-        val mRSliderPopulation = bottomSheetFragmentBinding.rangeSliderPopulation
+        val mRSliderArea = bottomSheetFragmentBinding?.rangeSliderArea
+        val mRSliderPopulation = bottomSheetFragmentBinding?.rangeSliderPopulation
         sheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
                         STATE_EXPANDED -> {
-                            mRSliderArea.setValues(0f, 17_124_442F)
-                            mRSliderPopulation.setValues(0f, 1_377_422_166F)
-                            mEditText.setText("")
+                            mRSliderArea?.setValues(0f, 17_124_442F)
+                            mRSliderPopulation?.setValues(0f, 1_377_422_166F)
+                            mEditText?.setText("")
 
 
                         }
@@ -215,11 +224,11 @@ class CountriesListFragment : Fragment()
                                     rArea = if (rightArea != 0f) rightArea else 17_124_442F,
                                     leftPopulation,
                                     rPopulation = if (rightPopulation != 0f) rightPopulation else 1_377_422_166F,
-                                    distance = if (mEditText.text.isNullOrEmpty()
+                                    distance = if (mEditText?.text.isNullOrEmpty()
                                     ) {
                                         Float.MAX_VALUE
                                     } else {
-                                        mEditText.text.toString().toFloat()
+                                        mEditText?.text.toString().toFloat()
                                     }
                                 )
                             )
@@ -227,28 +236,25 @@ class CountriesListFragment : Fragment()
                         }
                     }
                 }
-
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
-        mRSliderArea.addOnChangeListener(
+        mRSliderArea?.addOnChangeListener(
             RangeSlider.OnChangeListener
             { slider, value, fromUser ->
                 leftArea = slider.values[0]
                 rightArea = slider.values[1]
             })
-        mRSliderPopulation.addOnChangeListener(
+        mRSliderPopulation?.addOnChangeListener(
             RangeSlider.OnChangeListener
             { slider, value, fromUser ->
                 leftPopulation = slider.values[0]
                 rightPopulation = slider.values[1]
             })
-
-
     }
 
     override fun onDestroyView() {
-
+        bottomSheetFragmentBinding= null
         fragmentListBinding = null
         super.onDestroyView()
     }
@@ -286,7 +292,6 @@ class CountriesListFragment : Fragment()
 //                    sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
                 }, bundle
             )
-
             true
         }
         R.id.goToMap -> {

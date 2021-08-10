@@ -25,6 +25,7 @@ import com.lavyshyk.countrycity.dto.CountryDataDetailDto
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.getDescription
 import com.lavyshyk.countrycity.util.loadSvgFlag
+import org.koin.android.ext.android.inject
 
 class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetailPresenter>(),
     OnMapReadyCallback, ICountryDetailsView {
@@ -41,6 +42,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     private lateinit var sharedPref: SharedPreferences
     private var mAreaCounty: Float = 0.0F
     private var bundle = Bundle()
+     val mCountryDetailPresenter:CountryDetailPresenter by inject<CountryDetailPresenter>()
 
 
 
@@ -68,8 +70,10 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getPresenter().attachView(this)
-        getPresenter().setArgumentFromView(mCountryName)
+       // getPresenter().attachView(this)
+       // getPresenter().setArgumentFromView(mCountryName)
+        mCountryDetailPresenter.setArgumentFromView(mCountryName)
+        mCountryDetailPresenter.attachView(this)
 
         binding.mRecyclerCountryDescription.layoutManager = LinearLayoutManager(activity)
 
@@ -85,9 +89,11 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         mMapView.getMapAsync(this)
 
         mSRCountryDetail.setOnRefreshListener {
-            getPresenter().getCountryByName(true)
+            //getPresenter().getCountryByName(true)
+            mCountryDetailPresenter.getCountryByName(true)
         }
-        getPresenter().getCountryByName(false)
+        //getPresenter().getCountryByName(false)
+        mCountryDetailPresenter.getCountryByName(false)
     }
 
     override fun onResume() {
@@ -104,7 +110,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
     override fun onDestroyView() {
         fragmentCountryDetailsBinding = null
-        getPresenter().onDestroyView()
+        //getPresenter().onDestroyView()
         super.onDestroyView()
     }
 
@@ -130,11 +136,11 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     }
 
 
-    override fun createPresenter() {
-        mPresenter = CountryDetailPresenter()
-    }
-
-    override fun getPresenter(): CountryDetailPresenter = mPresenter
+//    override fun createPresenter() {
+//        mPresenter = CountryDetailPresenter()
+//    }
+//
+//    override fun getPresenter(): CountryDetailPresenter = mPresenter
 
     override fun onMapReady(map: GoogleMap) {
         mGoogleMap = map
@@ -179,8 +185,10 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
                     R.string.yes,
                     {
                         val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
-                        getPresenter().setArgumentFromView(s)
-                        getPresenter().getCountryByName(false)
+                        //getPresenter().setArgumentFromView(s)
+                        //getPresenter().getCountryByName(false)
+                        mCountryDetailPresenter.setArgumentFromView(s)
+                        mCountryDetailPresenter.getCountryByName(false)
                         sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
                     },
                     bundle

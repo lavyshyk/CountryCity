@@ -11,6 +11,7 @@ import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.model.CountryDataInfo.LanguageData
 import com.lavyshyk.countrycity.model.CountryInfoForMap
 import com.lavyshyk.countrycity.room.entyties.Country
+import com.lavyshyk.countrycity.room.entyties.Language
 
 
 fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto> {
@@ -71,11 +72,17 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
 a few functions to transform repo entities to Dto and vice-versa
  */
 
-fun LanguageDto.transformDtoToLanguage(): LanguageData =
+fun LanguageDto.transformDtoToLanguageData(): LanguageData =
     LanguageData(this.name, this.nativeName)
 
-fun LanguageData?.transformLanguageToLanguageDto(): LanguageDto {
+fun LanguageData?.transformLanguageDataToLanguageDto(): LanguageDto {
     return LanguageDto(this?.name.orEmpty(), this?.nativeName.orEmpty())
+}
+fun LanguageDto.transformDtoToLanguage(): Language =
+    Language(this.name, this.nativeName)
+
+fun Language?.transformLanguageToLanguageDto(): LanguageDto {
+    return LanguageDto(this?.languageName.orEmpty(), this?.nativeName.orEmpty())
 }
 
 fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto> {
@@ -100,7 +107,7 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                     item.nativeName ?: "",
                     list . apply {
                         item.languages?.forEach { it ->
-                            it.transformLanguageToLanguageDto().also { i -> list.add(i) }
+                            it.transformLanguageDataToLanguageDto().also { i -> list.add(i) }
                         }
                     }
                 )
@@ -128,7 +135,7 @@ fun MutableList<CountryDto>.transformToCountry(): MutableList<CountryDataInfo> {
                     item.nativeName,
                     list.apply {
                         item.languages.forEach { it ->
-                            it.transformDtoToLanguage().also { i -> list.add(i) }
+                            it.transformDtoToLanguageData().also { i -> list.add(i) }
                         }
                     }
                 )
@@ -159,7 +166,7 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
                     item.flag ?: "",
                     list.apply {
                         item.languages?.forEach { it ->
-                            it.transformLanguageToLanguageDto().also { i -> list.add(i) }
+                            it.transformLanguageDataToLanguageDto().also { i -> list.add(i) }
                         }
                     }
                 )

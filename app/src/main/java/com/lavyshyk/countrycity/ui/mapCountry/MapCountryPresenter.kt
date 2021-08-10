@@ -1,18 +1,17 @@
 package com.lavyshyk.countrycity.ui.mapCountry
 
-import com.lavyshyk.countrycity.CountryApp.Companion.retrofitService
 import com.lavyshyk.countrycity.base.mpv.BaseMvpPresenter
-import com.lavyshyk.countrycity.util.transformToCountryInfoMapDto
+import com.lavyshyk.countrycity.repository.networkRepository.NetworkRepository
 
-class MapCountryPresenter : BaseMvpPresenter<IMapCountryView>() {
+class MapCountryPresenter(private val mNetworkRepository: NetworkRepository) : BaseMvpPresenter<IMapCountryView>() {
 
     fun getAllCountryData() {
         addDisposable(
             inBackground(
-                handleProgress(retrofitService.getInfoAboutAllCountryForMap())
+                handleProgress(mNetworkRepository.getInfoAboutAllCountryForMap())
 
             ).subscribe({
-                getView()?.showCountryOnMap( it.transformToCountryInfoMapDto() )
+                getView()?.showCountryOnMap( it )
             }, {
                 it.message?.let { i ->
                     getView()?.showError(i, it)

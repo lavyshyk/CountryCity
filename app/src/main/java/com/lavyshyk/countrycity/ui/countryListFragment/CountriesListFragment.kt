@@ -11,8 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationCallback
@@ -29,17 +27,24 @@ import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.dto.CountryDto
+import com.lavyshyk.countrycity.repository.database.DataBaseRepository
+import com.lavyshyk.countrycity.repository.filter.CountryFilter
+import com.lavyshyk.countrycity.repository.filter.FilterRepository
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.checkLocationPermission
 import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import org.koin.android.ext.android.inject
+import org.koin.androidx.scope.ScopeFragment
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 
 /*
 binding fragment by inflater
  */
-class CountriesListFragment : Fragment()
+class CountriesListFragment : ScopeFragment()
 //   : BaseMpvFragment<ICountryListView, CountryListPresenter>(), ICountryListView
 {
 
@@ -52,15 +57,15 @@ class CountriesListFragment : Fragment()
     private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var sheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private  var bottomSheetFragmentBinding: BottomSheetFragmentBinding? = null
+    private var bottomSheetFragmentBinding: BottomSheetFragmentBinding? = null
     private var leftPopulation: Float = 0.0f
     private var rightPopulation: Float = 0.0f
     private var leftArea: Float = 0.0f
     private var rightArea: Float = 0.0f
-    private var radiusDistance: Int = 0
-    private val mViewModel = CountryListViewModel(SavedStateHandle())
-
-
+    private val mViewModel: CountryListViewModel by stateViewModel()
+    private val mFilterRepository: FilterRepository by inject()
+    private val mDataBaseRepository: DataBaseRepository by inject()
+    private lateinit var behaviorSubject: BehaviorSubject<CountryFilter>
     private lateinit var headerPeek: AppCompatImageView
 
 
@@ -70,7 +75,6 @@ class CountriesListFragment : Fragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
 
         activity?.let {
             sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
@@ -96,7 +100,9 @@ class CountriesListFragment : Fragment()
 
         mViewModel.getCountriesInfoApi()
 
-        mViewModel.mDataBase?.observe(
+        behaviorSubject = mFilterRepository.getFilterSubject()
+
+        mViewModel.mDataBase.observe(
             viewLifecycleOwner,
             { it ->
                 if (it.isNullOrEmpty()) {
@@ -121,7 +127,22 @@ class CountriesListFragment : Fragment()
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
 
         mViewModel.mMyFilter.observe(viewLifecycleOwner, {
-            mViewModel.getSortedListCountry(it)
+            when (it) {
+                is Outcome.Progress -> {
+                }
+                is Outcome.Next -> {
+                    mViewModel.getSortedListCountry(it.data)
+                }
+                is Outcome.Failure -> {
+                    Snackbar.make(
+                        binding.root, getString(R.string.some_wrong), Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+                is Outcome.Success -> {
+
+                }
+            }
+
         })
 
         mViewModel.mSortedCountryList.observe(viewLifecycleOwner, {
@@ -156,11 +177,13 @@ class CountriesListFragment : Fragment()
                 is Outcome.Next -> {
                     val unit = database?.countryDao()?.getListCountryName()?.count()
                     if (unit != null && unit > 0) {
-                        database?.countryDao()
-                            ?.updateListCountry(it.data.transformEntitiesToCountry())
+                        mDataBaseRepository.updateListCountry(it.data)
+//                        database?.countryDao()
+//                            ?.updateListCountry(it.data.transformEntitiesToCountry())
                     } else {
-                        database?.countryDao()
-                            ?.saveListCountry(it.data.transformEntitiesToCountry())
+                        mDataBaseRepository.saveListCountry(it.data)
+//                        database?.countryDao()
+//                            ?.saveListCountry(it.data.transformEntitiesToCountry())
                     }
                     mProgress.visibility = View.GONE
                 }
@@ -214,28 +237,20 @@ class CountriesListFragment : Fragment()
                             mRSliderArea?.setValues(0f, 17_124_442F)
                             mRSliderPopulation?.setValues(0f, 1_377_422_166F)
                             mEditText?.setText("")
-
-
                         }
                         STATE_COLLAPSED -> {
-                            mViewModel.putMyFilterLiveData(
-                                MyFilter(
-                                    leftArea,
-                                    rArea = if (rightArea != 0f) rightArea else 17_124_442F,
-                                    leftPopulation,
-                                    rPopulation = if (rightPopulation != 0f) rightPopulation else 1_377_422_166F,
-                                    distance = if (mEditText?.text.isNullOrEmpty()
-                                    ) {
-                                        Float.MAX_VALUE
-                                    } else {
-                                        mEditText?.text.toString().toFloat()
-                                    }
-                                )
-                            )
+                            if (mEditText?.text.isNullOrEmpty()){
+                                mFilterRepository.processNewDistance(Float.MAX_VALUE)
+                            }else{
+                                mFilterRepository.processNewDistance(mEditText?.text.toString().toFloat())
+                            }
+
+                            mViewModel.getCountryFilter(behaviorSubject)
                             sheetBehavior.peekHeight = PEEK_HEIGHT
                         }
                     }
                 }
+
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
@@ -244,17 +259,19 @@ class CountriesListFragment : Fragment()
             { slider, value, fromUser ->
                 leftArea = slider.values[0]
                 rightArea = slider.values[1]
+                mFilterRepository.processNewArea(leftArea,rightArea)
             })
         mRSliderPopulation?.addOnChangeListener(
             RangeSlider.OnChangeListener
             { slider, value, fromUser ->
                 leftPopulation = slider.values[0]
                 rightPopulation = slider.values[1]
+                mFilterRepository.processNewPopulation(leftPopulation, rightPopulation)
             })
     }
 
     override fun onDestroyView() {
-        bottomSheetFragmentBinding= null
+        bottomSheetFragmentBinding = null
         fragmentListBinding = null
         super.onDestroyView()
     }
@@ -283,7 +300,9 @@ class CountriesListFragment : Fragment()
                 "Search country", R.string.no, null,
                 R.string.yes, {
                     s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
-                    mViewModel.getCountryListSearchByName(s)
+                    //mViewModel.getCountryListSearchByName(s)
+                    mFilterRepository.processNewQuery(s)
+                    mViewModel.getCountryFilter(behaviorSubject)
 //                    bundle.putString(COUNTRY_NAME_KEY, s)
 //                    findNavController().navigate(
 //                        R.id.action_listFragment_to_countryDetailsFragment,

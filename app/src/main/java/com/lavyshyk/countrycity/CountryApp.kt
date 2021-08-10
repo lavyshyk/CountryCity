@@ -1,12 +1,19 @@
 package com.lavyshyk.countrycity
 
 import android.app.Application
-import androidx.room.Room
+import com.lavyshyk.countrycity.di.appModule
+import com.lavyshyk.countrycity.di.countryDetailModule
+import com.lavyshyk.countrycity.di.countryListModule
+import com.lavyshyk.countrycity.di.countryMapModel
 import com.lavyshyk.countrycity.network.RESTCountryService
 import com.lavyshyk.countrycity.room.CountryDatabase
+import com.lavyshyk.countrycity.room.CountryDatabase.Companion.getInstance
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -20,7 +27,7 @@ class CountryApp : Application() {
         private lateinit var httpClient: OkHttpClient.Builder
         lateinit var retrofitService: RESTCountryService
         var database: CountryDatabase? = null
-        var INSTANCE: CountryDatabase? = null
+
     }
 
 
@@ -28,8 +35,22 @@ class CountryApp : Application() {
         super.onCreate()
         retrofit = getRetrofit()
         retrofitService = retrofit.create(RESTCountryService::class.java)
-        database = getInstance()
+        database = getInstance(this)
+
+        startKoin {
+            androidLogger()
+            androidContext(this@CountryApp)
+            modules(
+                appModule,
+                countryListModule,
+                countryDetailModule,
+                countryMapModel
+            )
+        }
     }
+
+
+
 
     private fun getRetrofit(): Retrofit {
         logging = HttpLoggingInterceptor().setLevel(
@@ -49,20 +70,4 @@ class CountryApp : Application() {
             .client(httpClient.build())
             .build()
     }
-
-
-    private fun getInstance(): CountryDatabase {
-        if (INSTANCE == null) {
-            synchronized(CountryDatabase::class) {
-                INSTANCE = Room.databaseBuilder(
-                    applicationContext,
-                    CountryDatabase::class.java, "country-database"
-                ).allowMainThreadQueries()
-                    .build()
-            }
-        }
-        return INSTANCE!!
-    }
-
-
 }

@@ -33,5 +33,5 @@ object Retrofit {
             .build()
     }
 
-    fun createService() = getRetrofit().create(RESTCountryService::class.java)
+    fun createService(): RESTCountryService = getRetrofit().create(RESTCountryService::class.java)
 }

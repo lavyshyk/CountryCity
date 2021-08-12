@@ -1,6 +1,7 @@
 package com.lavyshyk.countrycity.ui.countryListFragment
 
 
+//import com.lavyshyk.countrycity.CountryApp.Companion.database
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
@@ -22,7 +23,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.*
-import com.lavyshyk.countrycity.CountryApp.Companion.database
 import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
@@ -32,7 +32,6 @@ import com.lavyshyk.countrycity.repository.filter.CountryFilter
 import com.lavyshyk.countrycity.repository.filter.FilterRepository
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.checkLocationPermission
-import com.lavyshyk.countrycity.util.transformEntitiesToCountry
 import com.lavyshyk.countrycity.util.transformEntitiesToCountryDto
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.subjects.BehaviorSubject
@@ -48,13 +47,10 @@ class CountriesListFragment : ScopeFragment()
 //   : BaseMpvFragment<ICountryListView, CountryListPresenter>(), ICountryListView
 {
 
-    private lateinit var mListCountry: MutableList<CountryDto>
     private var fragmentListBinding: FragmentListBinding? = null
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
-    private lateinit var sharedPref: SharedPreferences
     private lateinit var mProgress: FrameLayout
-    private var mCompositeDisposable: CompositeDisposable = CompositeDisposable()
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var sheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var bottomSheetFragmentBinding: BottomSheetFragmentBinding? = null
@@ -67,8 +63,6 @@ class CountriesListFragment : ScopeFragment()
     private val mDataBaseRepository: DataBaseRepository by inject()
     private lateinit var behaviorSubject: BehaviorSubject<CountryFilter>
     private lateinit var headerPeek: AppCompatImageView
-
-
     private var bundle = Bundle()
 
 
@@ -76,14 +70,10 @@ class CountriesListFragment : ScopeFragment()
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        activity?.let {
-            sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        }
         if (context?.checkLocationPermission() == true) {
             LocationServices.getFusedLocationProviderClient(this.requireActivity())
                 .requestLocationUpdates(mLocationRequest, mLocationCallback, null);
         }
-
 
     }
 
@@ -121,8 +111,7 @@ class CountriesListFragment : ScopeFragment()
                 R.id.action_listFragment_to_countryDetailsFragment,
                 bundle
             )
-            sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, item.name).apply()
-        }
+            mViewModel.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, item.name)        }
         binding.recView.adapter = mAdapter
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
 
@@ -131,7 +120,12 @@ class CountriesListFragment : ScopeFragment()
                 is Outcome.Progress -> {
                 }
                 is Outcome.Next -> {
-                    mViewModel.getSortedListCountry(it.data)
+                    if (it.data.name == ""){
+                        mViewModel.getSortedListCountry(it.data)
+                    }else{
+                        mViewModel.getCountryListSearchByName(it.data.name)
+                    }
+
                 }
                 is Outcome.Failure -> {
                     Snackbar.make(
@@ -164,8 +158,6 @@ class CountriesListFragment : ScopeFragment()
                     mProgress.visibility = View.GONE
 
                 }
-
-
             }
         })
 
@@ -175,8 +167,8 @@ class CountriesListFragment : ScopeFragment()
                     mProgress.visibility = View.VISIBLE
                 }
                 is Outcome.Next -> {
-                    val unit = database?.countryDao()?.getListCountryName()?.count()
-                    if (unit != null && unit > 0) {
+                    val unit = mDataBaseRepository.getListCountryName().count()
+                    if (unit > 0) {
                         mDataBaseRepository.updateListCountry(it.data)
 //                        database?.countryDao()
 //                            ?.updateListCountry(it.data.transformEntitiesToCountry())
@@ -229,6 +221,7 @@ class CountriesListFragment : ScopeFragment()
 
         val mRSliderArea = bottomSheetFragmentBinding?.rangeSliderArea
         val mRSliderPopulation = bottomSheetFragmentBinding?.rangeSliderPopulation
+
         sheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -250,7 +243,6 @@ class CountriesListFragment : ScopeFragment()
                         }
                     }
                 }
-
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
@@ -300,15 +292,9 @@ class CountriesListFragment : ScopeFragment()
                 "Search country", R.string.no, null,
                 R.string.yes, {
                     s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
-                    //mViewModel.getCountryListSearchByName(s)
+
                     mFilterRepository.processNewQuery(s)
                     mViewModel.getCountryFilter(behaviorSubject)
-//                    bundle.putString(COUNTRY_NAME_KEY, s)
-//                    findNavController().navigate(
-//                        R.id.action_listFragment_to_countryDetailsFragment,
-//                        bundle
-//                    )
-//                    sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
                 }, bundle
             )
             true
@@ -337,17 +323,10 @@ class CountriesListFragment : ScopeFragment()
 
 
     private fun saveSortStatus(status: Boolean) {
-        sharedPref.edit()
-            .putBoolean(ITEM_SORT_STATUS, status)
-            .apply()
-        Log.d("STS", "save status")
-
+        mViewModel.putSharedPrefBoolean(ITEM_SORT_STATUS, status)
     }
 
-    private fun getSortStatus(): Boolean {
-        Log.d("STS", "load status")
-        return sharedPref.getBoolean(ITEM_SORT_STATUS, false)
-    }
+    private fun getSortStatus(): Boolean = mViewModel.getSharedPrefBoolean(ITEM_SORT_STATUS)
 
 
     private fun showCountryData(countries: MutableList<CountryDto>) {

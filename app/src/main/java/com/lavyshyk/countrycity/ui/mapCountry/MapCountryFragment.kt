@@ -37,12 +37,8 @@ class MapCountryFragment: BaseMpvFragment<IMapCountryView, MapCountryPresenter>(
         super.onViewCreated(view, savedInstanceState)
         //getPresenter().attachView(this)
 
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mProgress = view.findViewById(R.id.mPBarMap)
-
-
-
 
         mapFragment?.getMapAsync(this)
         //getPresenter().getAllCountryData()
@@ -95,7 +91,7 @@ class MapCountryFragment: BaseMpvFragment<IMapCountryView, MapCountryPresenter>(
             ).also { mSnackbar = it }.show()
         }
         throwable.printStackTrace()
-        //???
+
         findNavController().navigate(R.id.action_mapCountiesFragment_to_listFragment)
     }
 

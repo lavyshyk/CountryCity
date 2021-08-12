@@ -9,7 +9,7 @@ import org.koin.dsl.module
 val countryListModule = module {
     scope<CountriesListFragment> {
 
-        viewModel { (handle: SavedStateHandle) -> CountryListViewModel(handle, get(), get(), get(),get()) }
+        viewModel { (handle: SavedStateHandle) -> CountryListViewModel(handle, get(), get(), get(),get(), get()) }
 
     }
 }

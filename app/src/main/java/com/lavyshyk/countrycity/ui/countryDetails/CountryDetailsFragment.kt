@@ -1,7 +1,5 @@
 package com.lavyshyk.countrycity.ui.countryDetails
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +16,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
-import com.lavyshyk.countrycity.*
+import com.lavyshyk.countrycity.COUNTRY_NAME_FOR_NAV_KEY
+import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
+import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
+import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.mpv.BaseMpvFragment
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
@@ -39,23 +40,17 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     private lateinit var mMapView: MapView
     private lateinit var mGoogleMap: GoogleMap
     private lateinit var mCurrentLatLng: LatLng
-    private lateinit var sharedPref: SharedPreferences
     private var mAreaCounty: Float = 0.0F
     private var bundle = Bundle()
-     val mCountryDetailPresenter:CountryDetailPresenter by inject<CountryDetailPresenter>()
-
+    private val mCountryDetailPresenter: CountryDetailPresenter by inject<CountryDetailPresenter>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.let {
-            sharedPref = it.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
-        }
-        mCountryName = arguments?.getString(COUNTRY_NAME_KEY) ?: sharedPref.getString(
-            COUNTRY_NAME_FOR_NAV_KEY, "Belarus"
-        ).toString()
-
-
+        mCountryName =
+            arguments?.getString(COUNTRY_NAME_KEY) ?: mCountryDetailPresenter.getSharedPrefString(
+                COUNTRY_NAME_FOR_NAV_KEY
+            )
     }
 
     override fun onCreateView(
@@ -70,8 +65,8 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // getPresenter().attachView(this)
-       // getPresenter().setArgumentFromView(mCountryName)
+        // getPresenter().attachView(this)
+        // getPresenter().setArgumentFromView(mCountryName)
         mCountryDetailPresenter.setArgumentFromView(mCountryName)
         mCountryDetailPresenter.attachView(this)
 
@@ -163,8 +158,6 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         country.latlng.let { mCurrentLatLng = LatLng(it[0], it[1]) }
 
         getCurrentLocationOnMap(mCurrentLatLng, country.name)
-
-
     }
 
     override fun showSvgFlag(url: String) {
@@ -175,25 +168,26 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
 
         val sn = Snackbar.make(
             binding.root,
-            getString(R.string.wrong_county ), Snackbar.LENGTH_INDEFINITE
+            getString(R.string.wrong_county), Snackbar.LENGTH_INDEFINITE
         ).setAction(
-            getString(R.string.try_again), { v ->
-                activity?.showDialogQuickSearch(
-                    "Search country",
-                    R.string.no,
-                    { findNavController().navigate(R.id.listFragment)},
-                    R.string.yes,
-                    {
-                        val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
-                        //getPresenter().setArgumentFromView(s)
-                        //getPresenter().getCountryByName(false)
-                        mCountryDetailPresenter.setArgumentFromView(s)
-                        mCountryDetailPresenter.getCountryByName(false)
-                        sharedPref.edit().putString(COUNTRY_NAME_FOR_NAV_KEY, s).apply()
-                    },
-                    bundle
-                )
-            }).show()
+            getString(R.string.try_again)
+        ) {
+            activity?.showDialogQuickSearch(
+                "Search country",
+                R.string.no,
+                { findNavController().navigate(R.id.listFragment) },
+                R.string.yes,
+                {
+                    val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
+                    //getPresenter().setArgumentFromView(s)
+                    //getPresenter().getCountryByName(false)
+                    mCountryDetailPresenter.setArgumentFromView(s)
+                    mCountryDetailPresenter.getCountryByName(false)
+                    mCountryDetailPresenter.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, s)
+                },
+                bundle
+            )
+        }.show()
     }
 
     override fun showProgress() {

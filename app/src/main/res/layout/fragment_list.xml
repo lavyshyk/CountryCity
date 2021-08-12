@@ -10,11 +10,12 @@
     tools:context=".ui.countryListFragment.ListFragment">
 
     <FrameLayout
-        android:id="@+id/mPBar_list"
+        android:id="@+id/mPBarList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <ProgressBar
             android:layout_width="@dimen/dp48"

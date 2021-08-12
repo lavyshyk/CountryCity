@@ -13,5 +13,10 @@
         android:actionLayout="@layout/fragment_country_details"
         android:icon="@drawable/ic_action_detail_map"
         android:title="@string/detail" />
+    <item
+        android:id="@+id/mapCountiesFragment"
+        android:icon="@drawable/ic_world"
+        android:title="@string/mapCountry"
+        android:actionLayout="@layout/fragment_map_of_countries"/>
 
 </menu>

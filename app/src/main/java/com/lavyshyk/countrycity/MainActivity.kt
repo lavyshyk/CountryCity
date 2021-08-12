@@ -19,13 +19,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         view = binding.root
 
-
-
         setContentView(view)
 
-        //val navHostFragment = binding.fragmentContainerView.let { supportFragmentManager } as NavHostFragment
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
 
         val navController = navHostFragment.navController
         val toolBar = binding.toolBar
@@ -37,16 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNav: BottomNavigationView = binding.bottomNavView
         bottomNav.setupWithNavController(navController)
-//        bottomNav.setOnNavigationItemSelectedListener{
-//            when (it.itemId) {
-//                R.id.start_fragment_Bmenu -> R.id.startFragment
-//                R.id.list_fragment_Bmenu -> R.id.listFragment
-//                R.id.detail_fragment_Bmenu -> {
-//                    R.id.listFragment
-//                }
-//            }
-//            return@setOnNavigationItemSelectedListener true
-//        }
     }
 
 }

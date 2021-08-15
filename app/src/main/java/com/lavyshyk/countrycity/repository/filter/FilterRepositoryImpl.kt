@@ -26,9 +26,18 @@ class FilterRepositoryImpl : FilterRepository {
         mFilterSubject.onNext(mFilterSubject.value)
     }
 
-
     override fun processNewDistance(distance: Float) {
         mFilterSubject.value.distance = distance
+        mFilterSubject.onNext(mFilterSubject.value)
+    }
+
+    override fun cleanFilterSubject() {
+        mFilterSubject.value.name = ""
+        mFilterSubject.value.minArea = 0F
+        mFilterSubject.value.maxArea = 0F
+        mFilterSubject.value.minPopulation = 0F
+        mFilterSubject.value.maxPopulation = 0F
+        mFilterSubject.value.distance = 0F
         mFilterSubject.onNext(mFilterSubject.value)
     }
 }

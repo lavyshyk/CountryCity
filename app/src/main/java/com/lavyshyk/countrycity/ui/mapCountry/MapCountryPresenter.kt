@@ -1,6 +1,6 @@
 package com.lavyshyk.countrycity.ui.mapCountry
 
-import com.lavyshyk.countrycity.base.mpv.BaseMvpPresenter
+import com.lavyshyk.countrycity.base.mvp.BaseMvpPresenter
 import com.lavyshyk.countrycity.repository.networkRepository.NetworkRepository
 
 class MapCountryPresenter(private val mNetworkRepository: NetworkRepository) : BaseMvpPresenter<IMapCountryView>() {

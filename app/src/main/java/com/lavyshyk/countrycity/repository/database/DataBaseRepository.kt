@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.lavyshyk.countrycity.dto.CountryDto
 import com.lavyshyk.countrycity.dto.LanguageDto
 import com.lavyshyk.countrycity.room.entyties.Country
+import com.lavyshyk.countrycity.room.entyties.Language
 import io.reactivex.rxjava3.core.Flowable
 
 interface DataBaseRepository {
@@ -19,7 +20,7 @@ interface DataBaseRepository {
 
     fun getListCountryLiveData(): LiveData<MutableList<Country>>
 
-    fun getListCountrySimple(): MutableList<CountryDto>
+   // fun getListCountrySimple(): MutableList<CountryDto>
 
     fun updateCountry(country: Country)
 
@@ -28,13 +29,17 @@ interface DataBaseRepository {
     fun deleteListCountry(list: List<Country>)
 
     // quick query for check BD on contain
-    fun getListCountryName(): MutableList<String>
+    fun getListCountryName(): Flowable<MutableList<String>>
 
     /**
      * Language
       */
-    fun saveLanguage(language: LanguageDto)
+    fun saveLanguages(countryName:String,languages: MutableList<LanguageDto>)
+
+    fun updateLanguages(countryName:String,languages: MutableList<LanguageDto>)
 
     fun getLanguageByCountry(name: String): Flowable<MutableList<String>>
+
+    fun getListLanguageByCountry(name: String): Flowable<MutableList<Language>>
 
 }

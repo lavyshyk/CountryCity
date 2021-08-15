@@ -28,6 +28,10 @@ BottomSheet
  */
 
 const val PEEK_HEIGHT = 120
+const val MAX_AREA = 17_124_442F
+const val MIN_AREA = 0F
+const val MAX_POPULATION = 1_377_422_166F
+const val MIN_POPULATION = 0F
 
 
 /*
@@ -39,3 +43,9 @@ const val COUNTRY_DTO = "countryDto"
 const val SORTED_COUNTRY_DTO = "sortedCountryDto"
 const val SEARCHED_LIST_COUNTRIES = "searchListCountries"
 const val MY_CURRENT_LOCATION = "myCurrentLocation"
+
+/*
+TimeUnits
+ */
+
+const val TIME_PAUSE_500 = 500L

@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 class Language(
     @PrimaryKey
     val languageName: String,
-    val nativeName: String
+    val nativeName: String,
+    val countryName: String,
 )

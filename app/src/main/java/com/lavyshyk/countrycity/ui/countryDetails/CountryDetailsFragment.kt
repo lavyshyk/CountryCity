@@ -20,7 +20,7 @@ import com.lavyshyk.countrycity.COUNTRY_NAME_FOR_NAV_KEY
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.base.mpv.BaseMpvFragment
+import com.lavyshyk.countrycity.base.mvp.BaseMvpKoinFragment
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.dto.CountryDataDetailDto
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
@@ -28,7 +28,7 @@ import com.lavyshyk.countrycity.util.getDescription
 import com.lavyshyk.countrycity.util.loadSvgFlag
 import org.koin.android.ext.android.inject
 
-class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetailPresenter>(),
+class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryDetailPresenter>(),
     OnMapReadyCallback, ICountryDetailsView {
 
     private lateinit var mCountryName: String
@@ -42,7 +42,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     private lateinit var mCurrentLatLng: LatLng
     private var mAreaCounty: Float = 0.0F
     private var bundle = Bundle()
-    private val mCountryDetailPresenter: CountryDetailPresenter by inject<CountryDetailPresenter>()
+    private val mCountryDetailPresenter: CountryDetailPresenter by inject()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,29 +84,18 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         mMapView.getMapAsync(this)
 
         mSRCountryDetail.setOnRefreshListener {
-            //getPresenter().getCountryByName(true)
             mCountryDetailPresenter.getCountryByName(true)
         }
-        //getPresenter().getCountryByName(false)
         mCountryDetailPresenter.getCountryByName(false)
     }
 
     override fun onResume() {
         mMapView.onResume()
         super.onResume()
-
     }
-
-
     override fun onPause() {
         super.onPause()
         mMapView.onPause()
-    }
-
-    override fun onDestroyView() {
-        fragmentCountryDetailsBinding = null
-        //getPresenter().onDestroyView()
-        super.onDestroyView()
     }
 
     override fun onDestroy() {
@@ -114,14 +103,17 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         mMapView.onDestroy()
     }
 
+    override fun onDestroyView() {
+        fragmentCountryDetailsBinding = null
+        mCountryDetailPresenter.detachView()
+        super.onDestroyView()
+    }
+
     override fun onLowMemory() {
         super.onLowMemory()
         mMapView.onLowMemory()
     }
-
-
-    private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String) {
-        val zoom: Float = mAreaCounty / 1.7124442E7F
+    private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String, zoom: Float) {
         mGoogleMap.moveCamera(newLatLngZoom(latLng, zoom))
         mGoogleMap.addMarker(
             MarkerOptions()
@@ -130,34 +122,21 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
         )
     }
 
-
-//    override fun createPresenter() {
-//        mPresenter = CountryDetailPresenter()
-//    }
-//
-//    override fun getPresenter(): CountryDetailPresenter = mPresenter
-
     override fun onMapReady(map: GoogleMap) {
         mGoogleMap = map
-
     }
 
-    override fun showCountryDetail(country: CountryDataDetailDto) {
+    override fun showCountryDetail(country: CountryDataDetailDto,zoom: Float) {
         binding.srCountryDetails.isRefreshing = false
         binding.mTvCountryName.text = country.name
         mAreaCounty = country.area
         binding.mTVCountryDescription.text = activity?.applicationContext?.let {
-            getDescription(
-                country,
-                it
-            )
+            getDescription(country, it)
         }
         country.languages.let { mLanguageAdapter.repopulate(it) }
         showSvgFlag(country.flag)
-
         country.latlng.let { mCurrentLatLng = LatLng(it[0], it[1]) }
-
-        getCurrentLocationOnMap(mCurrentLatLng, country.name)
+        getCurrentLocationOnMap(mCurrentLatLng, country.name, zoom)
     }
 
     override fun showSvgFlag(url: String) {
@@ -165,10 +144,9 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     }
 
     override fun showError(error: String, throwable: Throwable) {
-
-        val sn = Snackbar.make(
+        Snackbar.make(
             binding.root,
-            getString(R.string.wrong_county), Snackbar.LENGTH_INDEFINITE
+            error, Snackbar.LENGTH_INDEFINITE
         ).setAction(
             getString(R.string.try_again)
         ) {
@@ -178,12 +156,10 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
                 { findNavController().navigate(R.id.listFragment) },
                 R.string.yes,
                 {
-                    val s = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
-                    //getPresenter().setArgumentFromView(s)
-                    //getPresenter().getCountryByName(false)
-                    mCountryDetailPresenter.setArgumentFromView(s)
+                    val nameCountry = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
+                    mCountryDetailPresenter.setArgumentFromView(nameCountry)
                     mCountryDetailPresenter.getCountryByName(false)
-                    mCountryDetailPresenter.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, s)
+                    mCountryDetailPresenter.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, nameCountry)
                 },
                 bundle
             )
@@ -197,6 +173,7 @@ class CountryDetailsFragment : BaseMpvFragment<ICountryDetailsView, CountryDetai
     override fun hideProgress() {
         mProcess.visibility = View.GONE
     }
+
 }
 
 

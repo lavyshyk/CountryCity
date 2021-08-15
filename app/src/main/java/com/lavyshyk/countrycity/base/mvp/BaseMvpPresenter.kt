@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.base.mpv
+package com.lavyshyk.countrycity.base.mvp
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Flowable
@@ -58,10 +58,9 @@ abstract class BaseMvpPresenter<View : IBaseMvpView> {
             }
             .observeOn(Schedulers.io())
     }
-
+}
 
     //    inline fun <reified ReifiedType : ViewType> instantiateDummyView(): ReifiedType {
 //        return ReifiedType::class.java.getConstructor().newInstance()
 //    }
 
-}

@@ -14,6 +14,8 @@ interface FilterRepository {
 
     fun processNewDistance(distance: Float)
 
+    fun cleanFilterSubject()
+
 
 
 }

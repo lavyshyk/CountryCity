@@ -10,5 +10,8 @@ data class Country(
     val capital: String,
     val region: String,
     val population: Long,
+    val lat : Double,
+    val lng : Double,
     val area: Float,
+    val nativeName: String,
 )

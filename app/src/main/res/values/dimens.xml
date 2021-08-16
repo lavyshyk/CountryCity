@@ -20,4 +20,12 @@
     <dimen name="text_view_32">32sp</dimen>
     <dimen name="dp48">48dp</dimen>
     <dimen name="padding8">8dp</dimen>
+    <dimen name="_46">46dp</dimen>
+    <dimen name="_16">16dp</dimen>
+    <dimen name="_24pd">24dp</dimen>
+    <dimen name="_32">32dp</dimen>
+    <dimen name="_60">60sp</dimen>
+    <dimen name="_48sp">48sp</dimen>
+    <dimen name="_10sp">10sp</dimen>
+    <dimen name="_100dp">100dp</dimen>
 </resources>

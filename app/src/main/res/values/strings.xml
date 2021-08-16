@@ -8,8 +8,10 @@
     <string name="item_text">TextView</string>
     <string name="item_sort_to_small">Big -> small (by area)</string>
     <string name="item_sort_to_big">Small -> big (by area)</string>
-    <string name="capital_is">Capital is %1$s</string>
-    <string name="languages">languages : %1$s</string>
+    <string name="capital_is">capital is %1$s</string>
+    <string name="population_is">population is %1$d people</string>
+    <string name="area_is">area is %1$s square km</string>
+    <string name="languages">languages : %1$s </string>
     <string name="sort_countries">sort countries</string>
     <string name="detail">Detail</string>
     <string name="description_of_country">The area of the country is %1$s  square kilometers and the population is %2$s people. </string>
@@ -24,4 +26,20 @@
     <string name="some_wrong">some wromg!</string>
     <string name="try_again">TRY AGAIN</string>
     <string name="no">NO</string>
+    <string name="ok">ok</string>
+    <!-- Permissions -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+    <string name="area_of_country">Area of country</string>
+    <string name="_100">100</string>
+    <string name="population_of_country">Population of country</string>
+    <string name="parameters_of_list">Parameters of list</string>
+    <string name="_0">0</string>
+    <string name="distance">Distance :</string>
+    <string name="enter_distance">Enter distance</string>
+    <string name="min">min</string>
+    <string name="max">max</string>
+    <string name="_17124442">17124442</string>
+    <string name="_1377422166">1377422166</string>
 </resources>

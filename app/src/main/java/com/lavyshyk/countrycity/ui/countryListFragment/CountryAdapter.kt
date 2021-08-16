@@ -16,7 +16,9 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
 
         val tvCountry: AppCompatTextView = view.findViewById(R.id.textViewCountry)
         val tvCapital: AppCompatTextView = view.findViewById(R.id.textViewCapital)
-        val tvLanguages: AppCompatTextView = view.findViewById(R.id.textViewLang)
+        val tvPopulation: AppCompatTextView = view.findViewById(R.id.textViewPopulation)
+        val tvArea: AppCompatTextView = view.findViewById(R.id.textViewArea)
+        val tvNativeName: AppCompatTextView = view.findViewById(R.id.textViewNativName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
@@ -28,7 +30,14 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
         if (holder is CountryViewHolder) {
             val item = mDataList[position]
             holder.tvCountry.text = item.name
-            holder.tvCapital.text = holder.itemView.context.getString(R.string.capital_is, item.capital)
+            val mCapital = holder.itemView.context.getString(R.string.capital_is, item.capital)
+            holder.tvCapital.text = if(item.capital.isEmpty()) "" else mCapital
+            val mNativeName = item.nativeName
+            holder.tvNativeName.text = if(item.nativeName.isEmpty()) "" else mNativeName
+            val mPopulation = holder.itemView.context.getString(R.string.population_is, item.population)
+            holder.tvPopulation.text = if(item.population == 0L) "" else mPopulation
+            val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
+            holder.tvArea.text = if(item.area.toString().isEmpty()) "" else mArea
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)

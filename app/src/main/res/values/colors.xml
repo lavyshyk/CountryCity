@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gradient">#8A8888</color>
+    <color name="text_native_name">#99B9B7B7</color>
+    <color name="NN">#2F888888</color>
 </resources>

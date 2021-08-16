@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mBottomSheetFilter"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:elevation="@dimen/_32"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_16" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/peek_icon"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_32"
+        android:src="@drawable/ic_filter_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title_filter_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16"
+        android:gravity="center"
+        android:text="@string/parameters_of_list"
+        android:textSize="@dimen/text_view_18sp"
+        app:layout_constraintBottom_toTopOf="@id/text_area_county"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/peek_icon" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_area_county"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16"
+        android:gravity="center"
+        android:text="@string/area_of_country"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_filter_sheet"
+        tools:text="@string/area_of_country" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_start_range_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/min"
+        app:layout_constraintStart_toStartOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/text_area_county"
+        tools:text="@string/min" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/range_slider_area"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="wrap_content"
+        android:valueFrom="0.0"
+        android:valueTo="@string/_17124442"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/text_start_range_area"
+        app:thumbColor="@color/white"
+        app:trackColorActive="@color/teal_200"
+        app:trackColorInactive="@color/teal_700"
+        app:values="@array/initial_slider_values_area" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_end_range_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/max"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_start_range_area"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/text_start_range_area"
+        app:layout_constraintTop_toBottomOf="@id/text_area_county"
+        tools:text="@string/max" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_population_county"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16"
+        android:gravity="center"
+        android:text="@string/population_of_country"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/range_slider_area"
+        tools:text="@string/population_of_country" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_start_range_population"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/min"
+        app:layout_constraintStart_toStartOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/text_population_county"
+        tools:text="@string/min" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:id="@+id/range_slider_population"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="wrap_content"
+        android:valueFrom="0.0"
+        android:valueTo="@string/_1377422166"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/text_start_range_population"
+        app:trackColorActive="@color/teal_200"
+        app:thumbColor="@color/white"
+        app:trackColorInactive="@color/teal_700"
+        app:values="@array/initial_slider_values_population" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_end_range_population"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/max"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_start_range_population"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/text_start_range_population"
+        app:layout_constraintTop_toBottomOf="@id/text_population_county"
+        tools:text="@string/max" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_24pd"
+        android:layout_marginBottom="@dimen/dp48"
+        android:text="@string/distance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/range_slider_population"
+        tools:text="@string/distance" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/mEIDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_distance"
+        android:textSize="@dimen/text_view_small"
+        app:layout_constraintBaseline_toBaselineOf="@id/text_distance"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/text_distance"
+        app:layout_constraintTop_toBottomOf="@id/range_slider_population" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

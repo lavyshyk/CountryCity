@@ -39,5 +39,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fragmentContainerView"
-        app:menu="@menu/bottom_nav_view" />
+        app:menu="@menu/bottom_nav_view"/>
+<!--        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"/>-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

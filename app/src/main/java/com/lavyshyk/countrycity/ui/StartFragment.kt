@@ -13,18 +13,13 @@ binding fragment by constructor
 class StartFragment : Fragment(R.layout.fragment_start) {
     private var fragmentStartBinding: FragmentStartBinding? = null
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        activity?.showAlertDialog()
-
 
         val binding = FragmentStartBinding.bind(view)
         fragmentStartBinding = binding
         binding.tViewStart.text = resources.getString(R.string.hello_blank_fragment)
-
+        activity?.showAlertDialog()
     }
 
     override fun onDestroyView() {

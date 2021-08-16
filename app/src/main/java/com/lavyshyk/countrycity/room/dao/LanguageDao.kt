@@ -2,16 +2,24 @@ package com.lavyshyk.countrycity.room.dao
 
 import androidx.room.*
 import com.lavyshyk.countrycity.room.entyties.Language
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Flowable
 
 @Dao
 interface LanguageDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun saveLanguage(language: Language)
+    fun saveLanguage(languages: MutableList<Language>)
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    fun updateLanguage(languages: MutableList<Language>)
 
     @Transaction
     @Query("SELECT languageName FROM languages_database WHERE languageName = :name")
-    fun getLanguageByCountry(name: String): Flowable<MutableList<String>>
+    fun getLanguageByCountry(@NonNull name: String): Flowable<MutableList<String>>
+
+    @Transaction
+    @Query("SELECT * FROM languages_database WHERE countryName = :name")
+    fun getListLanguageByCountry(@NonNull name: String): Flowable<MutableList<Language>>
 
 }

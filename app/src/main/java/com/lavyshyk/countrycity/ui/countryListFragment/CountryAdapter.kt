@@ -41,13 +41,8 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
-
         }
     }
-
-
-
-
 
     fun repopulateSorted(list: MutableList<CountryDto>) {
         list.sortBy { it.area }
@@ -68,5 +63,7 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
         mDataList.sortByDescending { it.area }
         notifyDataSetChanged()
     }
+
+    fun getCurrentListCountries() = mDataList
 
 }

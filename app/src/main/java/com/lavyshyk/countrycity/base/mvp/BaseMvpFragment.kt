@@ -1,9 +1,9 @@
-package com.lavyshyk.countrycity.base.mpv
+package com.lavyshyk.countrycity.base.mvp
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 
-abstract class BaseMpvFragment<View: IBaseMvpView, PresenterType: BaseMvpPresenter<View>> : Fragment() {
+abstract class BaseMvpFragment<View: IBaseMvpView, PresenterType: BaseMvpPresenter<View>> : Fragment() {
 
     protected lateinit var mPresenter: PresenterType
 
@@ -13,6 +13,6 @@ abstract class BaseMpvFragment<View: IBaseMvpView, PresenterType: BaseMvpPresent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        createPresenter()
+        //createPresenter()
     }
 }

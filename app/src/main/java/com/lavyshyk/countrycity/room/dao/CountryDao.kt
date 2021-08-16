@@ -16,8 +16,8 @@ interface CountryDao {
     @Query("SELECT * FROM countries_table")
     fun getListCountry(): Flowable<MutableList<Country>>?
 
-    @Query("SELECT * FROM countries_table")
-    fun getListCountryObserve(): MutableList<Country>
+//    @Query("SELECT * FROM countries_table")
+//    fun getListCountrySimple(): MutableList<Country>
 
     @Query("SELECT * FROM countries_table")
     fun getListCountryLiveData(): LiveData<MutableList<Country>>
@@ -34,6 +34,6 @@ interface CountryDao {
 
 // quick query for check BD on contain
     @Query("SELECT nameCountry FROM countries_table")
-    fun getListCountryName(): MutableList<String>
+    fun getListCountryName(): Flowable<MutableList<String>>
 
 }

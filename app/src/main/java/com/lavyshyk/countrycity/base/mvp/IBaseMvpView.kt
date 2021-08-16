@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.base.mpv
+package com.lavyshyk.countrycity.base.mvp
 
 interface IBaseMvpView {
 

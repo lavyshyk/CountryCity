@@ -11,14 +11,13 @@ import com.lavyshyk.countrycity.model.CountryDataInfo
 import com.lavyshyk.countrycity.model.CountryDataInfo.LanguageData
 import com.lavyshyk.countrycity.model.CountryInfoForMap
 import com.lavyshyk.countrycity.room.entyties.Country
+import com.lavyshyk.countrycity.room.entyties.Language
 
 
-fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto> {
+fun  MutableList<Country>.transformDbEntitiesToCountryDto(): MutableList<CountryDto> {
     val list: MutableList<CountryDto> = mutableListOf()
-    val listOfLanguage: MutableList<LanguageDto> = mutableListOf()
-    this.let {
+    this.let { it ->
         it.forEach { item ->
-            //val languageList = CountryApp.database?.languageDao()?.saveLanguage()
             list.add(
                 CountryDto(
                     item.nameCountry,
@@ -33,8 +32,28 @@ fun MutableList<Country>.transformEntitiesToCountryDto(): MutableList<CountryDto
             )
         }
     }
-
     return list
+}
+
+fun Pair<Country, MutableList<Language>>.transformDbEntityToCountryDto(): CountryDto {
+    val listOfLanguage: MutableList<LanguageDto> = mutableListOf()
+    val country = this.first
+    val list = this.second
+    return CountryDto(
+        country.nameCountry,
+        country.capital,
+        country.region,
+        country.population,
+        mutableListOf(country.lat, country.lng),
+        country.area,
+        country.nativeName,
+        listOfLanguage.apply {
+            list.forEach { language ->
+                this.add(language.transformLanguageToLanguageDto())
+            }
+        }
+    )
+
 }
 
 fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
@@ -54,43 +73,66 @@ fun MutableList<CountryDto>.transformEntitiesToCountry(): MutableList<Country> {
                     item.nativeName,
                 )
             )
-//            println("DATA  save Language in dataBase" + Thread.currentThread().name)
-//            item.languages.let {
-//                it.forEach { it ->
-//                    CountryApp.database?.languageDao()
-//                        ?.saveLanguage(Language(it.name, it.nativeName))
-//                }
-//            }
         }
     }
-
     return list
+}
+
+fun MutableList<CountryDto>.transformEntitiesDtoToCountryDbAndLanguageDb(): Pair<MutableList<Country>, MutableList<Language>> {
+    val listCountry: MutableList<Country> = mutableListOf()
+    val listLanguage: MutableList<Language> = mutableListOf()
+    this.let { it ->
+        it.forEach { item ->
+            listCountry.add(
+                Country(
+                    item.name,
+                    item.capital,
+                    item.region,
+                    item.population,
+                    item.latlng[0],
+                    item.latlng[1],
+                    item.area,
+                    item.nativeName
+                )
+            )
+            item.languages.let {
+                it.forEach { language -> listLanguage.add(language.transformDtoToLanguage(item.name)) }
+            }
+        }
+    }
+    return Pair(listCountry, listLanguage)
 }
 
 /*
 a few functions to transform repo entities to Dto and vice-versa
  */
 
-fun LanguageDto.transformDtoToLanguage(): LanguageData =
+fun LanguageDto.transformDtoToLanguageData(): LanguageData =
     LanguageData(this.name, this.nativeName)
 
-fun LanguageData?.transformLanguageToLanguageDto(): LanguageDto {
+fun LanguageData?.transformLanguageDataToLanguageDto(): LanguageDto {
     return LanguageDto(this?.name.orEmpty(), this?.nativeName.orEmpty())
 }
 
+fun LanguageDto.transformDtoToLanguage(countryName: String): Language =
+    Language(this.name, this.nativeName, countryName)
+
+fun Language?.transformLanguageToLanguageDto(): LanguageDto {
+    return LanguageDto(this?.languageName.orEmpty(), this?.nativeName.orEmpty())
+}
+
 fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto> {
-    val list: MutableList<LanguageDto> = mutableListOf()
-    val countriesDtoList: MutableList<CountryDto> = mutableListOf()
+    val listOfLanguageDto: MutableList<LanguageDto> = mutableListOf()
+    val listOfCountryDto: MutableList<CountryDto> = mutableListOf()
 
     this.let {
         it.forEach { item ->
-            countriesDtoList.add(
+            listOfCountryDto.add(
                 CountryDto(
                     item.name ?: "",
                     item.capital ?: "",
                     item.region ?: "",
                     item.population ?: 0L,
-
                     if (item.latlng.isNullOrEmpty()) {
                         mutableListOf<Double>(0.0, 0.0)
                     } else {
@@ -98,26 +140,26 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                     },
                     item.area ?: 0.0F,
                     item.nativeName ?: "",
-                    list . apply {
+                    listOfLanguageDto.apply {
                         item.languages?.forEach { it ->
-                            it.transformLanguageToLanguageDto().also { i -> list.add(i) }
+                            it.transformLanguageDataToLanguageDto()
+                                .also { i -> listOfLanguageDto.add(i) }
                         }
                     }
                 )
             )
-
         }
     }
-    return countriesDtoList
+    return listOfCountryDto
 }
 
 fun MutableList<CountryDto>.transformToCountry(): MutableList<CountryDataInfo> {
-    val list: MutableList<LanguageData> = mutableListOf()
-    val countriesList: MutableList<CountryDataInfo> = mutableListOf()
+    val listOfLanguageData: MutableList<LanguageData> = mutableListOf()
+    val listOfCountryData: MutableList<CountryDataInfo> = mutableListOf()
 
     this.let {
         it.forEach { item ->
-            countriesList.add(
+            listOfCountryData.add(
                 CountryDataInfo(
                     item.name,
                     item.capital,
@@ -126,16 +168,16 @@ fun MutableList<CountryDto>.transformToCountry(): MutableList<CountryDataInfo> {
                     mutableListOf(item.latlng[0], item.latlng[1]),
                     item.area,
                     item.nativeName,
-                    list.apply {
+                    listOfLanguageData.apply {
                         item.languages.forEach { it ->
-                            it.transformDtoToLanguage().also { i -> list.add(i) }
+                            it.transformDtoToLanguageData().also { i -> listOfLanguageData.add(i) }
                         }
                     }
                 )
             )
         }
     }
-    return countriesList
+    return listOfCountryData
 
 }
 
@@ -159,12 +201,11 @@ fun MutableList<CountryDataDetail>.transformToCountryDetailDto(): MutableList<Co
                     item.flag ?: "",
                     list.apply {
                         item.languages?.forEach { it ->
-                            it.transformLanguageToLanguageDto().also { i -> list.add(i) }
+                            it.transformLanguageDataToLanguageDto().also { i -> list.add(i) }
                         }
                     }
                 )
             )
-
         }
     }
     return countriesDtoList
@@ -194,10 +235,10 @@ fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): S
 
 
 fun MutableList<CountryInfoForMap>.transformToCountryInfoMapDto(): MutableList<CountryInfoMapDto> {
-    val list: MutableList<CountryInfoMapDto> = mutableListOf()
+    val listCountryInfoMapDto: MutableList<CountryInfoMapDto> = mutableListOf()
     this.let {
         it.forEach { item ->
-            list.add(
+            listCountryInfoMapDto.add(
                 CountryInfoMapDto(
                     item.name ?: "",
                     item.capital ?: "",
@@ -210,7 +251,7 @@ fun MutableList<CountryInfoForMap>.transformToCountryInfoMapDto(): MutableList<C
             )
         }
     }
-    return list
+    return listCountryInfoMapDto
 }
 
 

@@ -59,24 +59,24 @@ class CountryListViewModel(
     fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
         mCompositeDisposable.add(
             mDataBaseRepository.getListCountryName()
-                .map { it.count() }
+               // .map { it.count() }
                 .flatMap {
-                    if (it > 0) {
+                    if (it.count() > 0) {
                         Flowable.just(mDataBaseRepository.saveListCountry(data))
-//                        Flowable.just(mDataBaseRepository.updateListCountry(data))
+                            //  Flowable.just(mDataBaseRepository.updateListCountry(data))
 // работае как то странно - произвольно DB апдейтится ежеминутно - итересно твое мнение
                             // заменил на saveList что бы обсудить этот момент
-                            .map { action -> Pair<Int, Unit>(it, action) }
+                            .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                     } else {
                         Flowable.just(mDataBaseRepository.saveListCountry(data))
-                            .map { action -> Pair<Int, Unit>(it, action) }
+                            .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                     }
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {
-                        if (it.first > 0) {
+                        if (it.first.count() > 0) {
                             Log.i("SUCCESS", "DataBase was updated")
                         } else {
                             Log.i("SUCCESS", "DataBase was  saved")
@@ -102,9 +102,9 @@ class CountryListViewModel(
         mCompositeDisposable.add(
             executeJob(
                 mFilterSubject
+                    .toFlowable(BackpressureStrategy.LATEST)
                     .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
                     .distinctUntilChanged()
-                    .toFlowable(BackpressureStrategy.LATEST)
                     .flatMap { countryFilter ->
                         mNetworkRepository.getCountriesInfo().map { list ->
                             list.filter { countryDto3 ->

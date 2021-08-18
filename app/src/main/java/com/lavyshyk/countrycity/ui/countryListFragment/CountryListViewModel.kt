@@ -100,7 +100,7 @@ class CountryListViewModel(
     }
 
     fun putCurrentLocation(location: Location) {
-        location?.let { mCurrentLocation.value = it }
+        location.let { mCurrentLocation.value = it }
     }
 
     fun getSortedListCountry() {
@@ -142,30 +142,6 @@ class CountryListViewModel(
             )
         )
     }
-
-    /**
-     * очень длолго ((
-     */
-//    fun getCountriesFromApi() {
-//        mCompositeDisposable.add(
-//            executeJob(
-//                mGetAllCountiesFromApiUseCase.execute()
-//                    .flatMap { listCountry ->
-//                        mGetCountryNamesFromDataBaseUseCase.execute()
-//                            .map { Pair(listCountry, it) }
-//                    }
-//                    .flatMap {
-//                        if (it.second.count() > 0) {
-//                            mUpdateCountriesInDataBaseUseCase.setParams(it.first).execute()
-//                        } else {
-//                            mSaveCountiesInDatBaseUseCase.setParams(it.first).execute()
-//                        }
-////                        return@flatMap (it.first)
-//                        Flowable.just(it.first)
-//                    }, mCountyLiveData
-//            )
-//        )
-//    }
 
     fun getCountriesFromApi() {
         mCompositeDisposable.add(

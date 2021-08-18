@@ -2,7 +2,6 @@ package com.lavyshyk.countrycity.ui.countryListFragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -27,7 +26,6 @@ import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.checkLocationPermission
-
 import com.lavyshyk.domain.dto.CountryDto
 import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
@@ -62,13 +60,6 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     private lateinit var mTextMinPopulation: AppCompatTextView
 
 
-    private val mLocationRequest: LocationRequest = LocationRequest.create()
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-           locationResult?.let {  val location = it.lastLocation }
-            mViewModel.putCurrentLocation(location)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -298,7 +289,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     }
 
     override fun showError(error: String, throwable: Throwable) {
-        Log.e("EEEEEEEEEEEEEE",error)
+
         Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -308,6 +299,22 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     override fun hideProgress() {
         mProgress.visibility = View.GONE
+    }
+
+    val mLocationRequest: LocationRequest = LocationRequest.create().apply {
+        this.interval = 60000
+        this.fastestInterval = 5000
+        this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+    val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                if (location != null) {
+                    mViewModel.putCurrentLocation(location)
+                }
+            }
+        }
     }
 }
 

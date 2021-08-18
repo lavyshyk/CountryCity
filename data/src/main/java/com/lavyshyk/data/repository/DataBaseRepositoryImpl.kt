@@ -30,33 +30,17 @@ class DataBaseRepositoryImpl(private val dataBase: CountryDatabase) :
         return dataBase.countryDao().getListCountry().map { it.transformDbEntitiesToCountryDto() }
     }
 
-
-//    override fun getListCountryLiveData(): LiveData<MutableList<Country>> =
-//        dataBase.countryDao().getListCountryLiveData()
-
-//    override fun getListCountrySimple(): MutableList<CountryDto> {
-//        TODO("Not yet implemented")
-//    }
-
     override fun updateCountry(countryDto: CountryDto) {
         val country: Country = countryDto.transformCountryDtoToDbEntities()
         dataBase.countryDao().updateCountry(country)
     }
 
     override fun updateListCountry(list: MutableList<CountryDto>): Flowable<Unit> {
-        TODO("Not yet implemented")
+        val pair = list.transformEntitiesDtoToCountryDbAndLanguageDb()
+        dataBase.countryDao().saveListCountry(pair.first)
+        dataBase.languageDao().saveLanguage(pair.second)
+        return Flowable.just(Unit)
     }
-//
-//    override fun updateListCountry(list: MutableList<CountryDto>): Flowable<Unit> {
-//        val pair = list.transformEntitiesDtoToCountryDbAndLanguageDb()
-////        Flowable.create({list ->
-////
-////                        onNext()
-//        },BackpressureStrategy.LATEST)
-//        dataBase.countryDao().updateListCountry(pair.first)
-//        dataBase.languageDao().updateLanguage(pair.second)
-//        return Flowable.just(Unit)
-//    }
 
     override fun deleteListCountry(listDto: MutableList<CountryDto>) {
         val list = listDto.transformEntitiesToCountry()

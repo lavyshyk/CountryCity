@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.mvp.BaseMvpKoinFragment
-import com.lavyshyk.countrycity.dto.CountryInfoMapDto
+import com.lavyshyk.domain.dto.CountryInfoMapDto
 import org.koin.android.ext.android.inject
 
 class MapCountryFragment : BaseMvpKoinFragment<IMapCountryView, MapCountryPresenter>(),

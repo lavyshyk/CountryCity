@@ -1,12 +1,12 @@
 package com.lavyshyk.countrycity.ui.countryDetails
 
 import com.lavyshyk.countrycity.base.mvp.BaseMvpPresenter
-import com.lavyshyk.countrycity.dto.CountryDataDetailDto
-import com.lavyshyk.countrycity.repository.networkRepository.NetworkRepository
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
+import com.lavyshyk.domain.dto.CountryDataDetailDto
+import com.lavyshyk.domain.useCase.implementetion.netCase.GetCountyDetailInfoFromApiUseCase
 
 class CountryDetailPresenter(
-    private val mNetworkRepository: NetworkRepository,
+    private val mGetCountyDetailInfoFromApiUseCase: GetCountyDetailInfoFromApiUseCase,
     private val mSharedPrefRepository: SharedPrefRepository
 ) : BaseMvpPresenter<ICountryDetailsView>() {
 
@@ -28,7 +28,7 @@ class CountryDetailPresenter(
         addDisposable(
             inBackground(
                 handleProgress(
-                    mNetworkRepository.getInfoAboutCountry(nameCountry), isRefresh
+                   mGetCountyDetailInfoFromApiUseCase.setParams(nameCountry).execute(), isRefresh
                 )
             ).subscribe({
                 val zoom = getCurrentZoomFofMap(it[0])

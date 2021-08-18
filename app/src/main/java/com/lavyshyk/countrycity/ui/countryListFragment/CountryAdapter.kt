@@ -7,7 +7,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
-import com.lavyshyk.countrycity.dto.CountryDto
+import com.lavyshyk.domain.dto.CountryDto
 
 class CountryAdapter : BaseAdapter<CountryDto>() {
 

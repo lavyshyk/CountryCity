@@ -22,10 +22,10 @@ import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.mvp.BaseMvpKoinFragment
 import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
-import com.lavyshyk.countrycity.dto.CountryDataDetailDto
+import com.lavyshyk.countrycity.ui.ext.getDescription
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
-import com.lavyshyk.countrycity.util.getDescription
 import com.lavyshyk.countrycity.util.loadSvgFlag
+import com.lavyshyk.domain.dto.CountryDataDetailDto
 import org.koin.android.ext.android.inject
 
 class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryDetailPresenter>(),

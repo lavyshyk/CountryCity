@@ -4,7 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.lavyshyk.countrycity.APP_PREFERENCES
 
-class SharedPrefRepositoryImpl(private val context: Context): SharedPrefRepository {
+class SharedPrefRepositoryImpl(private val context: Context):
+    SharedPrefRepository {
 
     private val mSharedPrefSubject: SharedPreferences = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
 

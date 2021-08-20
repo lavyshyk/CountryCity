@@ -12,6 +12,7 @@ import com.lavyshyk.data.repository.NetworkRepositoryImpl
 import com.lavyshyk.domain.repository.DataBaseRepository
 import com.lavyshyk.domain.repository.FilterRepository
 import com.lavyshyk.domain.repository.NetworkRepository
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val appModule = module {
@@ -19,6 +20,7 @@ val appModule = module {
     //Model level
     single { CountryDatabase.getInstance( get() ) }
     single { MyRetrofit.createService() }
+    single(named("coroutine")) {MyRetrofit.createServiceCoroutine()  }
     //Data level
     single { NetworkRepositoryImpl(get()) as NetworkRepository }
     single { DataBaseRepositoryImpl(get()) as DataBaseRepository }

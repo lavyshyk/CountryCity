@@ -1,5 +1,6 @@
 package com.lavyshyk.data.network
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.lavyshyk.data.BASE_URL
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
@@ -35,5 +36,27 @@ object MyRetrofit {
             .build()
     }
 
+    private fun getRetrofitCoroutine(): Retrofit {
+        logging = HttpLoggingInterceptor().setLevel(
+            HttpLoggingInterceptor.Level.BASIC
+        )
+
+       httpClient = OkHttpClient()
+            .newBuilder()
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(logging)
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory.invoke())
+            .client(httpClient.build())
+            .build()
+    }
+
     fun createService(): RESTCountryService = getRetrofit().create(RESTCountryService::class.java)
+
+    fun createServiceCoroutine(): CountryServiceCoroutine = getRetrofitCoroutine().create(
+        CountryServiceCoroutine ::class.java)
 }

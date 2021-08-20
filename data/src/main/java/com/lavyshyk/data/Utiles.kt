@@ -2,13 +2,18 @@ package com.lavyshyk.data
 
 import com.lavyshyk.data.database.room.entyties.Country
 import com.lavyshyk.data.database.room.entyties.Language
+import com.lavyshyk.data.model.Capital
 import com.lavyshyk.data.model.CountryDataDetail
 import com.lavyshyk.data.model.CountryDataInfo
 import com.lavyshyk.data.model.CountryInfoForMap
-import com.lavyshyk.domain.dto.CountryDataDetailDto
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.CountryInfoMapDto
-import com.lavyshyk.domain.dto.LanguageDto
+import com.lavyshyk.domain.dto.*
+
+
+fun MutableList<Capital>.transformToListCapitalDto(): MutableList<CapitalDto> {
+    val list = mutableListOf<CapitalDto>()
+    this.forEach { list.add(CapitalDto(it.capital?:"")) }
+    return list
+}
 
 
 fun MutableList<Country?>.transformDbEntitiesToCountryDto(): MutableList<CountryDto> {

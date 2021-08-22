@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
-import com.lavyshyk.countrycity.base.mvvm.Outcome
+import com.lavyshyk.countrycity.base.mvvm.OutcomeCoroutine
 import com.lavyshyk.countrycity.databinding.FragmentListCapitalsBinding
 import com.lavyshyk.domain.dto.CapitalDto
 import org.koin.androidx.scope.ScopeFragment
@@ -44,30 +44,51 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         mCapitalAdapter = CapitalsAdapter()
         binding.recViewCapital.adapter = mCapitalAdapter
         binding.mPBarListCapitals.let { mProgress = it }
-        mViewModel.getListOfCapitals()
-        mViewModel.mCapitalList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Outcome.Progress -> {
-                    if (it.loading) {
-                        showProgress()
-                    } else {
-                        hideProgress()
+//        mViewModel.getListOfCapitals()
+//        mViewModel.mCapitalList.observe(viewLifecycleOwner) {
+//            when (it) {
+//                is Outcome.Progress -> {
+//                    if (it.loading) {
+//                        showProgress()
+//                    } else {
+//                        hideProgress()
+//                    }
+//                }
+//                is Outcome.Next -> {
+//                    //mCapitalAdapter.addList(it.data)
+//                     hideProgress()
+//                    showCountryData(it.data)
+//                }
+//                is Outcome.Failure -> {
+//                    hideProgress()
+//                    showError(it.t.message.toString(), it.t)
+//                }
+//                is Outcome.Success -> {
+//                     hideProgress()
+//                }
+//            }
+//        }
+        mViewModel.getListOfCapital()
+        mViewModel.mCapitalList.observe(viewLifecycleOwner,
+            {
+                when (it) {
+                    is OutcomeCoroutine.Running -> {
+                        if (it.loading){
+                            showProgress()
+                        } else {
+                            hideProgress()
+                        }
                     }
+                    is OutcomeCoroutine.Result -> {
+                        showCountryData(it.data)
+                    }
+                    is OutcomeCoroutine.Cancel -> {
+                        showError(it.c.message.toString(), it.c)
+                    }
+                    is OutcomeCoroutine.FailureCor -> {
+                        showError(it.t.message.toString(), it.t)                    }
                 }
-                is Outcome.Next -> {
-                    //mCapitalAdapter.addList(it.data)
-                     hideProgress()
-                    showCountryData(it.data)
-                }
-                is Outcome.Failure -> {
-                    hideProgress()
-                    showError(it.t.message.toString(), it.t)
-                }
-                is Outcome.Success -> {
-                     hideProgress()
-                }
-            }
-        }
+            })
 
 
     }

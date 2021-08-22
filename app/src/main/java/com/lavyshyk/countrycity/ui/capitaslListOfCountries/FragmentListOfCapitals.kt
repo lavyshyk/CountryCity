@@ -44,30 +44,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         mCapitalAdapter = CapitalsAdapter()
         binding.recViewCapital.adapter = mCapitalAdapter
         binding.mPBarListCapitals.let { mProgress = it }
-//        mViewModel.getListOfCapitals()
-//        mViewModel.mCapitalList.observe(viewLifecycleOwner) {
-//            when (it) {
-//                is Outcome.Progress -> {
-//                    if (it.loading) {
-//                        showProgress()
-//                    } else {
-//                        hideProgress()
-//                    }
-//                }
-//                is Outcome.Next -> {
-//                    //mCapitalAdapter.addList(it.data)
-//                     hideProgress()
-//                    showCountryData(it.data)
-//                }
-//                is Outcome.Failure -> {
-//                    hideProgress()
-//                    showError(it.t.message.toString(), it.t)
-//                }
-//                is Outcome.Success -> {
-//                     hideProgress()
-//                }
-//            }
-//        }
         mViewModel.getListOfCapital()
         mViewModel.mCapitalList.observe(viewLifecycleOwner,
             {

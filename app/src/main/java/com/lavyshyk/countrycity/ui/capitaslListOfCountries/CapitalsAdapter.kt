@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
-import com.lavyshyk.countrycity.ui.countryDetails.LanguageAdapter
 import com.lavyshyk.domain.dto.CapitalDto
 
 class CapitalsAdapter: BaseAdapter<CapitalDto>() {
@@ -18,13 +17,17 @@ class CapitalsAdapter: BaseAdapter<CapitalDto>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_item_capital,parent,false)
-        return LanguageAdapter.LanguageViewHolder(view)
+        return CapitalViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is CapitalsAdapter.CapitalViewHolder){
+        if (holder is CapitalViewHolder){
             val item = mDataList[position]
-            holder.mTVCapital.text = item.capital
+            if (item.capital != ""){
+                holder.mTVCapital.text = item.capital
+            }else {
+                holder.mTVCapital.visibility =View.GONE
+            }
         }
     }
 

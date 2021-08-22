@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
@@ -18,10 +18,10 @@ import org.koin.core.scope.Scope
 class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
     private var fragmentListCapitalsBinding: FragmentListCapitalsBinding? = null
     private lateinit var binding: FragmentListCapitalsBinding
-private lateinit var mCapitalAdapter: CapitalsAdapter
-private val mViewModel: CapitalListViewModel by stateViewModel()
-    override val scope: Scope
-        get() = super.scope
+    private lateinit var mCapitalAdapter: CapitalsAdapter
+    private lateinit var mProgress: FrameLayout
+    private val mViewModel: CapitalListViewModel by stateViewModel()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,31 +29,42 @@ private val mViewModel: CapitalListViewModel by stateViewModel()
         savedInstanceState: Bundle?
     ): View? {
 
-        fragmentListCapitalsBinding =  FragmentListCapitalsBinding.inflate(inflater,container,false)
-        binding = fragmentListCapitalsBinding as @NonNull FragmentListCapitalsBinding
+        // fragmentListCapitalsBinding =
+        binding = FragmentListCapitalsBinding.inflate(inflater, container, false)
+        // binding = fragmentListCapitalsBinding as @NonNull FragmentListCapitalsBinding
         return binding.root
     }
 
+    override val scope: Scope
+        get() = super.scope
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recViewCapital.layoutManager = LinearLayoutManager(activity)
+        binding.recViewCapital.layoutManager = LinearLayoutManager(this.activity)
         mCapitalAdapter = CapitalsAdapter()
+        binding.recViewCapital.adapter = mCapitalAdapter
+        binding.mPBarListCapitals.let { mProgress = it }
         mViewModel.getListOfCapitals()
-        mViewModel.mCapitalList.observe(viewLifecycleOwner){
+        mViewModel.mCapitalList.observe(viewLifecycleOwner) {
             when (it) {
                 is Outcome.Progress -> {
-                   if (it.loading){ showProgress()} else {hideProgress()}
+                    if (it.loading) {
+                        showProgress()
+                    } else {
+                        hideProgress()
+                    }
                 }
                 is Outcome.Next -> {
-
-                    //showCountryData(it.data)
+                    //mCapitalAdapter.addList(it.data)
+                     hideProgress()
+                    showCountryData(it.data)
                 }
                 is Outcome.Failure -> {
                     hideProgress()
-                    showError( it.t.message.toString(),it.t)
+                    showError(it.t.message.toString(), it.t)
                 }
                 is Outcome.Success -> {
-                    hideProgress()
+                     hideProgress()
                 }
             }
         }
@@ -65,13 +76,14 @@ private val mViewModel: CapitalListViewModel by stateViewModel()
         fragmentListCapitalsBinding = null
         super.onDestroyView()
     }
+
+
     private fun showCountryData(capitals: MutableList<CapitalDto>) {
         capitals.let {
 
-               mCapitalAdapter.addList(capitals)
-            }
+            mCapitalAdapter.repopulate(capitals)
         }
-
+    }
 
 
     override fun showError(error: String, throwable: Throwable) {
@@ -79,10 +91,10 @@ private val mViewModel: CapitalListViewModel by stateViewModel()
     }
 
     override fun showProgress() {
-      //  mProgress.visibility = View.VISIBLE
+        mProgress.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        //mProgress.visibility = View.GONE
+        mProgress.visibility = View.GONE
     }
 }

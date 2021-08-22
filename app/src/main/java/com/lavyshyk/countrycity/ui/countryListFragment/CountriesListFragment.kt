@@ -31,6 +31,7 @@ import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
+import org.koin.core.scope.Scope
 
 
 class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
@@ -58,7 +59,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     private lateinit var mTextMinArea: AppCompatTextView
     private lateinit var mTextMaxPopulation: AppCompatTextView
     private lateinit var mTextMinPopulation: AppCompatTextView
-
+    override val scope: Scope
+        get() = super.scope
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

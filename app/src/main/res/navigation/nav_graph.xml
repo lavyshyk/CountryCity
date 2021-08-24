@@ -31,22 +31,23 @@
         <action
             android:id="@+id/action_listFragment_to_mapCountiesFragment"
             app:destination="@id/mapCountiesFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_capitalsList"
+            app:destination="@id/capitalsList" />
     </fragment>
 
     <fragment
         android:id="@+id/countryDetailsFragment"
         android:name="com.lavyshyk.countrycity.ui.countryDetails.CountryDetailsFragment"
-        android:label="CountryDetailsFragment" >
-        <action
-            android:id="@+id/action_countryDetailsFragment_to_listFragment"
-            app:destination="@id/listFragment" />
-    </fragment>
+        android:label="CountryDetailsFragment" />
     <fragment
         android:id="@+id/mapCountiesFragment"
         android:name="com.lavyshyk.countrycity.ui.mapCountry.MapCountryFragment"
-        android:label="MapCountriesFragment">
-        <action
-            android:id="@+id/action_mapCountiesFragment_to_listFragment"
-            app:destination="@id/listFragment" />
+        android:label="MapCountriesFragment"/>
+    <fragment
+        android:id="@+id/capitalsList"
+        android:name="com.lavyshyk.countrycity.ui.capitaslListOfCountries.FragmentListOfCapitals"
+        android:label="CapitalsListFragment">
+
     </fragment>
 </navigation>

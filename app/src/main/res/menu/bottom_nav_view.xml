@@ -18,5 +18,10 @@
         android:icon="@drawable/ic_world"
         android:title="@string/mapCountry"
         android:actionLayout="@layout/fragment_map_of_countries"/>
+    <item
+        android:id="@+id/capitalsList"
+        android:icon="@drawable/ic_capital_list"
+        android:title="@string/capitals"
+        android:actionLayout="@layout/fragment_list_capitals"/>
 
 </menu>

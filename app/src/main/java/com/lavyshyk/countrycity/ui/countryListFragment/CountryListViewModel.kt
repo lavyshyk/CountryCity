@@ -10,6 +10,7 @@ import com.lavyshyk.countrycity.SORTED_COUNTRY_DTO
 import com.lavyshyk.countrycity.TIME_PAUSE_500
 import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
 import com.lavyshyk.countrycity.base.mvvm.Outcome
+import com.lavyshyk.countrycity.base.mvvm.addToComposite
 import com.lavyshyk.countrycity.base.mvvm.executeJob
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
 import com.lavyshyk.domain.dto.CountryDto
@@ -61,7 +62,7 @@ class CountryListViewModel(
 
 
     private fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
-        mCompositeDisposable.add(
+       (
             mGetCountryNamesFromDataBaseUseCase.execute()
                 .flatMap { it ->
                     if (it.count() > 0) {
@@ -86,7 +87,7 @@ class CountryListViewModel(
                         Log.e(" ERROR", "error save or update DB")
                     },
                 )
-        )
+        ).addToComposite(mCompositeDisposable)
     }
 
     fun getCountryListFromDB() {
@@ -104,7 +105,7 @@ class CountryListViewModel(
     }
 
     fun getSortedListCountry() {
-        mCompositeDisposable.add(
+       (
             executeJob(
                 mFilterSubject
                     .toFlowable(BackpressureStrategy.LATEST)
@@ -140,16 +141,16 @@ class CountryListViewModel(
                         }
                     }, mSortedCountryList
             )
-        )
+        ).addToComposite( mCompositeDisposable)
     }
 
     fun getCountriesFromApi() {
-        mCompositeDisposable.add(
+        (
             executeJob(
                 mGetAllCountiesFromApiUseCase.execute()
                     .doOnNext { saveDataFromApiToDB(it) }, mCountyLiveData
             )
-        )
+        ).addToComposite(mCompositeDisposable)
     }
 
 }

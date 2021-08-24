@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.base.mvvm
+ package com.lavyshyk.countrycity.base.mvvm
 
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.rxjava3.core.Completable

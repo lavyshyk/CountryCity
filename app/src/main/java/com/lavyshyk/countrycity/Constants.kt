@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity
 object Constants {
 
 }
-const val BASE_URL = "https://restcountries.eu/rest/v2/"
+
 const val APP_PREFERENCES: String = "my_preferences_file"
 const val SORT_TO_BIG: Boolean = false
 const val SORT_TO_SMALL: Boolean = true

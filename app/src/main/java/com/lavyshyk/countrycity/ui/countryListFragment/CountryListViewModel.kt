@@ -11,22 +11,27 @@ import com.lavyshyk.countrycity.TIME_PAUSE_500
 import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
 import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.base.mvvm.executeJob
-import com.lavyshyk.countrycity.dto.CountryDto
-import com.lavyshyk.countrycity.repository.database.DataBaseRepository
-import com.lavyshyk.countrycity.repository.filter.FilterRepository
-import com.lavyshyk.countrycity.repository.networkRepository.NetworkRepository
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
+import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.repository.FilterRepository
+import com.lavyshyk.domain.useCase.implementetion.databaseCase.GetCountiesFromDataBaseUseCase
+import com.lavyshyk.domain.useCase.implementetion.databaseCase.GetCountryNamesFromDataBaseUseCase
+import com.lavyshyk.domain.useCase.implementetion.databaseCase.SaveCountiesInDatBaseUseCase
+import com.lavyshyk.domain.useCase.implementetion.databaseCase.UpdateCountriesInDataBaseUseCase
+import com.lavyshyk.domain.useCase.implementetion.netCase.GetAllCountiesFromApiUseCase
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
 class CountryListViewModel(
     savedStateHandle: SavedStateHandle,
-    private val mNetworkRepository: NetworkRepository,
-    private val mDataBaseRepository: DataBaseRepository,
+    private val mGetAllCountiesFromApiUseCase: GetAllCountiesFromApiUseCase,
+    private val mGetCountiesFromDataBaseUseCase: GetCountiesFromDataBaseUseCase,
+    private val mGetCountryNamesFromDataBaseUseCase: GetCountryNamesFromDataBaseUseCase,
+    private val mUpdateCountriesInDataBaseUseCase: UpdateCountriesInDataBaseUseCase,
+    private val mSaveCountiesInDatBaseUseCase: SaveCountiesInDatBaseUseCase,
     private val mFilterRepository: FilterRepository,
     private val mSharedPrefRepository: SharedPrefRepository
 ) : BaseViewModel(savedStateHandle) {
@@ -37,7 +42,6 @@ class CountryListViewModel(
     val mSortedCountryList =
         savedStateHandle.getLiveData<Outcome<MutableList<CountryDto>>>(SORTED_COUNTRY_DTO)
     private val mCurrentLocation = savedStateHandle.getLiveData<Location>(MY_CURRENT_LOCATION)
-    val mDataBase = mDataBaseRepository.getListCountryLiveData()
     private val mFilterSubject = mFilterRepository.getFilterSubject()
 
 
@@ -56,19 +60,15 @@ class CountryListViewModel(
     }
 
 
-    fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
+    private fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
         mCompositeDisposable.add(
-            mDataBaseRepository.getListCountryName()
-               // .map { it.count() }
-                .flatMap {
+            mGetCountryNamesFromDataBaseUseCase.execute()
+                .flatMap { it ->
                     if (it.count() > 0) {
-                        Flowable.just(mDataBaseRepository.saveListCountry(data))
-                            //  Flowable.just(mDataBaseRepository.updateListCountry(data))
-// работае как то странно - произвольно DB апдейтится ежеминутно - итересно твое мнение
-                            // заменил на saveList что бы обсудить этот момент
+                        mUpdateCountriesInDataBaseUseCase.setParams(data).execute()
                             .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                     } else {
-                        Flowable.just(mDataBaseRepository.saveListCountry(data))
+                        mSaveCountiesInDatBaseUseCase.setParams(data).execute()
                             .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                     }
                 }
@@ -89,13 +89,18 @@ class CountryListViewModel(
         )
     }
 
+    fun getCountryListFromDB() {
+        mCompositeDisposable.add(
+            executeJob(mGetCountiesFromDataBaseUseCase.execute(), mCountyLiveData)
+        )
+    }
+
     private fun getDistanceBettwenLocations(location: Location): Float {
         return (location.distanceTo(mCurrentLocation.value) / 1000)
-
     }
 
     fun putCurrentLocation(location: Location) {
-        mCurrentLocation.value = location
+        location.let { mCurrentLocation.value = it }
     }
 
     fun getSortedListCountry() {
@@ -106,7 +111,7 @@ class CountryListViewModel(
                     .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
                     .distinctUntilChanged()
                     .flatMap { countryFilter ->
-                        mNetworkRepository.getCountriesInfo().map { list ->
+                        mGetAllCountiesFromApiUseCase.execute().map { list ->
                             list.filter { countryDto3 ->
                                 val location = Location(LocationManager.GPS_PROVIDER)
                                 location.apply {
@@ -115,16 +120,16 @@ class CountryListViewModel(
                                 }
                                 getDistanceBettwenLocations(location) < countryFilter.distance
                             }
-                                .filter { countryDto ->
-                                    val mArea = countryDto.area.toString()
-                                    if (mArea.contains("E")) {
-                                        val (a, b) = mArea.split("E")
-                                        val country = a.toFloat() * 10F.pow(b.toInt())
-                                        country in countryFilter.minArea..countryFilter.maxArea
-                                    } else {
-                                        countryDto.area in countryFilter.minArea..countryFilter.maxArea
-                                    }
+                            list.filter { countryDto ->
+                                val mArea = countryDto.area.toString()
+                                if (mArea.contains("E")) {
+                                    val (a, b) = mArea.split("E")
+                                    val country = a.toFloat() * 10F.pow(b.toInt())
+                                    country in countryFilter.minArea..countryFilter.maxArea
+                                } else {
+                                    countryDto.area in countryFilter.minArea..countryFilter.maxArea
                                 }
+                            }
                                 .filter { countryDto2 ->
                                     countryDto2
                                         .population
@@ -133,29 +138,16 @@ class CountryListViewModel(
                                     countryDto4.name.contains(countryFilter.name, true)
                                 }.toMutableList()
                         }
-                    }
-                    , mSortedCountryList
+                    }, mSortedCountryList
             )
         )
     }
 
-    fun getCountriesInfoApi() {
+    fun getCountriesFromApi() {
         mCompositeDisposable.add(
             executeJob(
-                mNetworkRepository.getCountriesInfo(), mCountyLiveData
-            )
-        )
-    }
-//    fun getCountryFilter(behaviorSubject: BehaviorSubject<CountryFilter>) {
-//        executeJob(behaviorSubject.toFlowable(BackpressureStrategy.LATEST), mMyFilter)
-//    }
-
-
-
-        fun getCountryListSearchByName(name: String) {
-        mCompositeDisposable.add(
-            executeJob(
-                mNetworkRepository.geCountryListByName(name), mSortedCountryList
+                mGetAllCountiesFromApiUseCase.execute()
+                    .doOnNext { saveDataFromApiToDB(it) }, mCountyLiveData
             )
         )
     }

@@ -1,7 +1,5 @@
 package com.lavyshyk.countrycity.ui.countryListFragment
 
-
-//import com.lavyshyk.countrycity.CountryApp.Companion.database
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -26,11 +24,10 @@ import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
 import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
-import com.lavyshyk.countrycity.dto.CountryDto
-import com.lavyshyk.countrycity.repository.filter.FilterRepository
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.checkLocationPermission
-import com.lavyshyk.countrycity.util.transformDbEntitiesToCountryDto
+import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
@@ -61,12 +58,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     private lateinit var mTextMinArea: AppCompatTextView
     private lateinit var mTextMaxPopulation: AppCompatTextView
     private lateinit var mTextMinPopulation: AppCompatTextView
-    private val mLocationRequest: LocationRequest = LocationRequest.create()
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            mViewModel.putCurrentLocation(locationResult.lastLocation)
-        }
-    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,15 +99,9 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         bottomSheetFragmentBinding?.rangeSliderPopulation?.let { mRSliderPopulation = it }
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        mViewModel.getCountriesInfoApi()
+        mViewModel.getCountryListFromDB()
+        mViewModel.getCountriesFromApi()
 
-        mViewModel.mDataBase.observe(viewLifecycleOwner, {
-            if (it.isNullOrEmpty()) {
-                showCountryData(mutableListOf<CountryDto>())
-            } else {
-                showCountryData(it.transformDbEntitiesToCountryDto())
-            }
-        })
 
         mViewModel.mSortedCountryList.observe(viewLifecycleOwner, {
             when (it) {
@@ -141,12 +128,14 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                     showProgress()
                 }
                 is Outcome.Next -> {
-                    mViewModel.saveDataFromApiToDB(it.data)
+                    showCountryData(it.data)
                     hideProgress()
                 }
                 is Outcome.Failure -> {
                     hideProgress()
+
                     showError( it.t.message.toString(),it.t)
+
                 }
                 is Outcome.Success -> {
                     hideProgress()
@@ -300,6 +289,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     }
 
     override fun showError(error: String, throwable: Throwable) {
+
         Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -309,6 +299,22 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     override fun hideProgress() {
         mProgress.visibility = View.GONE
+    }
+
+    val mLocationRequest: LocationRequest = LocationRequest.create().apply {
+        this.interval = 60000
+        this.fastestInterval = 5000
+        this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+    val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            for (location in locationResult.locations) {
+                if (location != null) {
+                    mViewModel.putCurrentLocation(location)
+                }
+            }
+        }
     }
 }
 

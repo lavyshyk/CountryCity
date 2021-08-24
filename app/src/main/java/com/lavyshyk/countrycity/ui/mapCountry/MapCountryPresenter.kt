@@ -1,15 +1,15 @@
 package com.lavyshyk.countrycity.ui.mapCountry
 
 import com.lavyshyk.countrycity.base.mvp.BaseMvpPresenter
-import com.lavyshyk.countrycity.repository.networkRepository.NetworkRepository
+import com.lavyshyk.domain.useCase.implementetion.netCase.GetCountriesForMapFromApiUseCase
 
-class MapCountryPresenter(private val mNetworkRepository: NetworkRepository) : BaseMvpPresenter<IMapCountryView>() {
+class MapCountryPresenter(
+private val mGetCountriesForMapFromApiUseCase: GetCountriesForMapFromApiUseCase) : BaseMvpPresenter<IMapCountryView>() {
 
     fun getAllCountryData() {
         addDisposable(
             inBackground(
-                handleProgress(mNetworkRepository.getInfoAboutAllCountryForMap())
-
+                handleProgress(mGetCountriesForMapFromApiUseCase.execute())
             ).subscribe({
                 getView()?.showCountryOnMap( it )
             }, {

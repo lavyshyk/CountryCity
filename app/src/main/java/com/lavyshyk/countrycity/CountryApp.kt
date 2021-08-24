@@ -14,7 +14,7 @@ class CountryApp : Application() {
 
 //    companion object {
 //        private lateinit var logging: HttpLoggingInterceptor
-//        private lateinit var retrofit: Retrofit
+//        private lateinit var retrofit: MyRetrofit
 //        private lateinit var httpClient: OkHttpClient.Builder
 //        lateinit var retrofitService: RESTCountryService
 //        var database: CountryDatabase? = null
@@ -43,7 +43,7 @@ class CountryApp : Application() {
 
 
 
-//    private fun getRetrofit(): Retrofit {
+//    private fun getRetrofit(): MyRetrofit {
 //        logging = HttpLoggingInterceptor().setLevel(
 //            HttpLoggingInterceptor.Level.BASIC
 //        )
@@ -54,7 +54,7 @@ class CountryApp : Application() {
 //            .writeTimeout(30, TimeUnit.SECONDS)
 //            .addInterceptor(logging)
 //
-//        return Retrofit.Builder()
+//        return MyRetrofit.Builder()
 //            .baseUrl(BASE_URL)
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())

@@ -12,7 +12,7 @@ import com.lavyshyk.domain.dto.CapitalDto
 class CapitalsAdapter: BaseAdapter<CapitalDto>() {
 
     class CapitalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var mTVCapital: AppCompatTextView = view.findViewById(R.id.mTVCapital)
+        var mTvCapital: AppCompatTextView = view.findViewById(R.id.mTvCapital)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -24,9 +24,9 @@ class CapitalsAdapter: BaseAdapter<CapitalDto>() {
         if (holder is CapitalViewHolder){
             val item = mDataList[position]
             if (item.capital != ""){
-                holder.mTVCapital.text = item.capital
+                holder.mTvCapital.text = item.capital
             }else {
-                holder.mTVCapital.visibility =View.GONE
+                holder.mTvCapital.visibility =View.GONE
             }
         }
     }

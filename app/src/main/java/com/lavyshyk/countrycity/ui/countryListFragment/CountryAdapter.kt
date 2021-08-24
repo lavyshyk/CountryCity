@@ -11,7 +11,6 @@ import com.lavyshyk.domain.dto.CountryDto
 
 class CountryAdapter : BaseAdapter<CountryDto>() {
 
-
     class CountryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val tvCountry: AppCompatTextView = view.findViewById(R.id.textViewCountry)
@@ -19,6 +18,8 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
         val tvPopulation: AppCompatTextView = view.findViewById(R.id.textViewPopulation)
         val tvArea: AppCompatTextView = view.findViewById(R.id.textViewArea)
         val tvNativeName: AppCompatTextView = view.findViewById(R.id.textViewNativName)
+        val tvDistance: AppCompatTextView = view.findViewById(R.id.distance)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
@@ -39,6 +40,8 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
             holder.tvArea.text = if(item.area.toString().isEmpty()) "" else mArea
             holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
+            val mDistance = item.distance
+            holder.tvDistance.text = if(item.distance.toString().isEmpty()) "" else mDistance
             //val strLang = list.languages?.joinToString { it.name }
             // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
         }
@@ -65,5 +68,7 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
     }
 
     fun getCurrentListCountries() = mDataList
+
+
 
 }

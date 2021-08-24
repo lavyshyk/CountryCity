@@ -29,7 +29,8 @@ fun MutableList<Country?>.transformDbEntitiesToCountryDto(): MutableList<Country
                     mutableListOf(item?.lat?:0.0, item?.lng?:0.0),
                     item?.area?:0F,
                     item?.nativeName?:"",
-                    mutableListOf()
+                    mutableListOf(),
+                    ""
                 )
             )
         }
@@ -46,7 +47,8 @@ fun Country.transformCountryBDToEntitiesDto(): CountryDto {
         mutableListOf(this.lat, this.lng),
         this.area,
         this.nativeName,
-        mutableListOf()
+        mutableListOf(),
+        ""
     )
 }
 
@@ -78,7 +80,8 @@ fun Pair<Country, MutableList<Language>>.transformDbEntityToCountryDto(): Countr
             list.forEach { language ->
                 this.add(language.transformLanguageToLanguageDto())
             }
-        }
+        },
+        ""
     )
 
 }
@@ -172,7 +175,8 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                             it.transformLanguageDataToLanguageDto()
                                 .also { i -> listOfLanguageDto.add(i) }
                         }
-                    }
+                    },
+                    ""
                 )
             )
         }

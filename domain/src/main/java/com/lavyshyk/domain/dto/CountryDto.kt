@@ -9,4 +9,5 @@ data class CountryDto(
     var area: Float,
     val nativeName: String,
     var languages: MutableList<LanguageDto>,
+    var distance: String
 )

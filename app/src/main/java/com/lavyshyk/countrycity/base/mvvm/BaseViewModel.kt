@@ -8,11 +8,11 @@ import kotlinx.coroutines.Job
 open class BaseViewModel( val savedStateHandle: SavedStateHandle): ViewModel() {
 
     protected val mCompositeDisposable: CompositeDisposable = CompositeDisposable()
-    protected lateinit var  mJob : Job
+    protected var  mJob : Job ?= null
 
     override fun onCleared() {
         super.onCleared()
         mCompositeDisposable.clear()
-        mJob.cancel()
+        mJob?.cancel()
     }
 }

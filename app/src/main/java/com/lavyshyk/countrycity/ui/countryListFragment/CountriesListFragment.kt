@@ -116,7 +116,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 }
                 is Outcome.Failure -> {
                     hideProgress()
-                    showError( it.t.message.toString(),it.t)
+                    showError(it.t.message.toString(), it.t)
                 }
                 is Outcome.Success -> {
                     hideProgress()
@@ -136,7 +136,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 is Outcome.Failure -> {
                     hideProgress()
 
-                    showError( it.t.message.toString(),it.t)
+                    showError(it.t.message.toString(), it.t)
 
                 }
                 is Outcome.Success -> {
@@ -144,20 +144,28 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 }
             }
         })
-
-        mAdapter.setItemClick { item ->
-            bundle.putString(COUNTRY_NAME_KEY, item.name)
-            findNavController().navigate(
-                R.id.action_listFragment_to_countryDetailsFragment,
-                bundle
-            )
-            mViewModel.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, item.name)
+        mAdapter.setItemClick { name, item ->
+            when (name) {
+                item.nativeName -> {
+                    bundle.putString(COUNTRY_NAME_KEY, item.name)
+                    findNavController().navigate(
+                        R.id.action_listFragment_to_countryDetailsFragment,
+                        bundle
+                    )
+                    mViewModel.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, item.name)
+                }
+                "LIKE_DOWN" -> mAdapter.refreshItem(item, false)
+                "LIKE_UP" -> mAdapter.refreshItem(item, true)
+            }
         }
 
         headerPeek.setOnClickListener {
             if (sheetBehavior.state == STATE_EXPANDED) {
                 sheetBehavior.state = STATE_COLLAPSED
-                imm.hideSoftInputFromWindow(headerPeek.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+                imm.hideSoftInputFromWindow(
+                    headerPeek.windowToken,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+                )
             } else {
                 sheetBehavior.state = STATE_EXPANDED
             }
@@ -167,16 +175,21 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
-                        STATE_EXPANDED -> { setStartStateOfBottomSheet() }
+                        STATE_EXPANDED -> {
+                            setStartStateOfBottomSheet()
+                        }
                         STATE_COLLAPSED -> {
                             if (!mEditText.text.isNullOrEmpty()) {
-                                mFilterRepository.processNewDistance(mEditText.text.toString().toFloat())
+                                mFilterRepository.processNewDistance(
+                                    mEditText.text.toString().toFloat()
+                                )
                             }
                             mViewModel.getSortedListCountry()
                             sheetBehavior.peekHeight = PEEK_HEIGHT
                         }
                     }
                 }
+
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
@@ -196,6 +209,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 mTextMaxPopulation.text = rightPopulation.toString()
                 mFilterRepository.processNewPopulation(leftPopulation, rightPopulation)
             })
+        // проба разграничить кликабельность разных областей в Item ---
     }
 
     override fun onDestroyView() {
@@ -226,7 +240,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
             activity?.showDialogQuickSearch(
                 "Search country", R.string.no, null,
                 R.string.yes, {
-                    search = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
+                    search =
+                        bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
                     mFilterRepository.processNewQuery(search)
                     mViewModel.getSortedListCountry()
                 }, bundle

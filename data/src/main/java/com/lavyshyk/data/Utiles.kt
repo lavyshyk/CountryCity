@@ -11,7 +11,7 @@ import com.lavyshyk.domain.dto.*
 
 fun MutableList<Capital>.transformToListCapitalDto(): MutableList<CapitalDto> {
     val list = mutableListOf<CapitalDto>()
-    this.forEach { list.add(CapitalDto(it.capital?:"")) }
+    this.forEach { list.add(CapitalDto(it.capital ?: "")) }
     return list
 }
 
@@ -22,15 +22,17 @@ fun MutableList<Country?>.transformDbEntitiesToCountryDto(): MutableList<Country
         it.forEach { item ->
             list.add(
                 CountryDto(
-                    item?.nameCountry?:"",
-                    item?.capital?:"",
-                    item?.region?:"",
-                    item?.population?:0L,
-                    mutableListOf(item?.lat?:0.0, item?.lng?:0.0),
-                    item?.area?:0F,
-                    item?.nativeName?:"",
+                    item?.nameCountry ?: "",
+                    item?.capital ?: "",
+                    item?.region ?: "",
+                    item?.population ?: 0L,
+                    mutableListOf(item?.lat ?: 0.0, item?.lng ?: 0.0),
+                    item?.area ?: 0F,
+                    item?.nativeName ?: "",
                     mutableListOf(),
-                    ""
+                    0f,
+                    0,
+                    0
                 )
             )
         }
@@ -48,7 +50,10 @@ fun Country.transformCountryBDToEntitiesDto(): CountryDto {
         this.area,
         this.nativeName,
         mutableListOf(),
-        ""
+        0f,
+        0,
+        0
+
     )
 }
 
@@ -81,7 +86,9 @@ fun Pair<Country, MutableList<Language>>.transformDbEntityToCountryDto(): Countr
                 this.add(language.transformLanguageToLanguageDto())
             }
         },
-        ""
+        0f,
+        0,
+        0
     )
 
 }
@@ -176,7 +183,9 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                                 .also { i -> listOfLanguageDto.add(i) }
                         }
                     },
-                    ""
+                    0f,
+                    0,
+                    0
                 )
             )
         }

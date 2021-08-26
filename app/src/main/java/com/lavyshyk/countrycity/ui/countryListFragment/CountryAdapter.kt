@@ -3,11 +3,14 @@ package com.lavyshyk.countrycity.ui.countryListFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
 import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.dto.setDislike
+import com.lavyshyk.domain.dto.setLike
 
 class CountryAdapter : BaseAdapter<CountryDto>() {
 
@@ -19,6 +22,9 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
         val tvArea: AppCompatTextView = view.findViewById(R.id.textViewArea)
         val tvNativeName: AppCompatTextView = view.findViewById(R.id.textViewNativName)
         val tvDistance: AppCompatTextView = view.findViewById(R.id.distance)
+        val ivLikeUp: ImageView = view.findViewById(R.id.arrowUp)
+        val ivLikeDown: ImageView = view.findViewById(R.id.arrowDown)
+        val tvLikeDislike: AppCompatTextView = view.findViewById(R.id.tVLikeMinusDis)
 
     }
 
@@ -39,11 +45,12 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             holder.tvPopulation.text = if(item.population == 0L) "" else mPopulation
             val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
             holder.tvArea.text = if(item.area.toString().isEmpty()) "" else mArea
-            holder.itemView.setOnClickListener { mClickFunction?.invoke(item) }
-            val mDistance = item.distance
+            val mDistance =  String.format("%3.2f Kkm",item.distance)
+            holder.tvNativeName.setOnClickListener { mClickFunction?.invoke(item.nativeName, item) }
             holder.tvDistance.text = if(item.distance.toString().isEmpty()) "" else mDistance
-            //val strLang = list.languages?.joinToString { it.name }
-            // holder.tvLanguages.text = holder.itemView.context.getString(R.string.languages,strLang)
+            holder.ivLikeUp.setOnClickListener { mClickFunction?.invoke("LIKE_UP",item) }
+            holder.ivLikeDown.setOnClickListener { mClickFunction?.invoke("LIKE_DOWN",item) }
+            holder.tvLikeDislike.text = (item.like - item.dislike).toString()
         }
     }
 
@@ -69,6 +76,20 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
 
     fun getCurrentListCountries() = mDataList
 
+    fun refreshItem(item: CountryDto,boolean: Boolean){
+
+        val index =  mDataList.indexOf(item)
+        if (boolean){
+            item.setLike()
+        }else {
+            item.setDislike()
+        }
+
+
+        notifyDataSetChanged()
+
+
+    }
 
 
 }

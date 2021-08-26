@@ -152,7 +152,7 @@ class CountryListViewModel(
                             saveDataFromApiToDB(it)
                             it.forEach { countryDto ->
                                 val location = countryDto.getLocationCountry()
-                                countryDto.distance = getDistanceBettwenLocations(location).toString()+ " km"
+                                countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
                             }
                         }, mCountyLiveData
                 )

@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.lavyshyk.countrycity.DISLIKE
+import com.lavyshyk.countrycity.LIKE
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
 import com.lavyshyk.domain.dto.CountryDto
@@ -29,7 +31,8 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CountryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.fragment_item, parent, false)
         return CountryViewHolder(view)
     }
 
@@ -38,18 +41,19 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             val item = mDataList[position]
             holder.tvCountry.text = item.name
             val mCapital = holder.itemView.context.getString(R.string.capital_is, item.capital)
-            holder.tvCapital.text = if(item.capital.isEmpty()) "" else mCapital
+            holder.tvCapital.text = if (item.capital.isEmpty()) "" else mCapital
             val mNativeName = item.nativeName
-            holder.tvNativeName.text = if(item.nativeName.isEmpty()) "" else mNativeName
-            val mPopulation = holder.itemView.context.getString(R.string.population_is, item.population)
-            holder.tvPopulation.text = if(item.population == 0L) "" else mPopulation
+            holder.tvNativeName.text = if (item.nativeName.isEmpty()) "" else mNativeName
+            val mPopulation =
+                holder.itemView.context.getString(R.string.population_is, item.population)
+            holder.tvPopulation.text = if (item.population == 0L) "" else mPopulation
             val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
-            holder.tvArea.text = if(item.area.toString().isEmpty()) "" else mArea
-            val mDistance =  String.format("%3.2f Kkm",item.distance)
+            holder.tvArea.text = if (item.area.toString().isEmpty()) "" else mArea
+            val mDistance = String.format("%3.2f Kkm", item.distance)
             holder.tvNativeName.setOnClickListener { mClickFunction?.invoke(item.nativeName, item) }
-            holder.tvDistance.text = if(item.distance.toString().isEmpty()) "" else mDistance
-            holder.ivLikeUp.setOnClickListener { mClickFunction?.invoke("LIKE_UP",item) }
-            holder.ivLikeDown.setOnClickListener { mClickFunction?.invoke("LIKE_DOWN",item) }
+            holder.tvDistance.text = if (item.distance.toString().isEmpty()) "" else mDistance
+            holder.ivLikeUp.setOnClickListener { mClickFunction?.invoke(LIKE, item) }
+            holder.ivLikeDown.setOnClickListener { mClickFunction?.invoke(DISLIKE, item) }
             holder.tvLikeDislike.text = (item.like - item.dislike).toString()
         }
     }
@@ -76,19 +80,13 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
 
     fun getCurrentListCountries() = mDataList
 
-    fun refreshItem(item: CountryDto,boolean: Boolean){
-
-        val index =  mDataList.indexOf(item)
-        if (boolean){
+    fun refreshLikeItem(item: CountryDto, boolean: Boolean) {
+        if (boolean) {
             item.setLike()
-        }else {
+        } else {
             item.setDislike()
         }
-
-
         notifyDataSetChanged()
-
-
     }
 
 

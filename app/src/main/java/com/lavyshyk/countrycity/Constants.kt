@@ -50,3 +50,10 @@ TimeUnits
  */
 
 const val TIME_PAUSE_500 = 500L
+
+/*
+adapter
+ */
+
+const val LIKE = "like"
+const val DISLIKE = "dislike"

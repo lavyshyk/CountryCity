@@ -154,8 +154,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                     )
                     mViewModel.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, item.name)
                 }
-                "LIKE_DOWN" -> mAdapter.refreshItem(item, false)
-                "LIKE_UP" -> mAdapter.refreshItem(item, true)
+                DISLIKE -> mAdapter.refreshLikeItem(item, false)
+                LIKE -> mAdapter.refreshLikeItem(item, true)
             }
         }
 

@@ -42,7 +42,7 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         super.onViewCreated(view, savedInstanceState)
         binding.recViewCapital.layoutManager = LinearLayoutManager(this.activity)
         mCapitalAdapter = CapitalsAdapter()
-        binding.recViewCapital.adapter = mCapitalAdapter
+
         binding.mPBarListCapitals.let { mProgress = it }
         mViewModel.getListOfCapital()
         mViewModel.mCapitalList.observe(viewLifecycleOwner,
@@ -56,6 +56,7 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
                         }
                     }
                     is OutcomeCoroutine.Result -> {
+
                         showCountryData(it.data)
                     }
                     is OutcomeCoroutine.Cancel -> {
@@ -77,8 +78,8 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
 
     private fun showCountryData(capitals: MutableList<CapitalDto>) {
         capitals.let {
-
-            mCapitalAdapter.repopulate(capitals)
+            mCapitalAdapter.submitList(capitals)
+            binding.recViewCapital.adapter = mCapitalAdapter
         }
     }
 

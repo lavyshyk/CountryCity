@@ -1,7 +1,7 @@
 package com.lavyshyk.domain.useCase
 
 
-abstract class UseCaseCoroutine<Params : Any, Result>  {
+abstract class CoroutineUseCase<Params : Any, Result>  {
 
     private var mParams: Params? = null
 
@@ -9,7 +9,7 @@ abstract class UseCaseCoroutine<Params : Any, Result>  {
 
     abstract val mIsParamsRequired: Boolean
 
-    fun setParams(params: Params): UseCaseCoroutine<Params, Result> {
+    fun setParams(params: Params): CoroutineUseCase<Params, Result> {
         mParams = params
         return this
 

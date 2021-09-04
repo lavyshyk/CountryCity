@@ -5,7 +5,7 @@
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gLineEnd"
-        android:layout_width="@dimen/zero_dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/zero_dp"
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/_16" />
@@ -26,7 +26,7 @@
 
     <LinearLayout
         android:id="@+id/centerGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_100dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center"
@@ -63,7 +63,7 @@
 
     <LinearLayout
         android:id="@+id/startGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_100dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         app:layout_constraintHorizontal_weight="1"
@@ -101,7 +101,7 @@
 
     <LinearLayout
         android:id="@+id/endGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/_100dp"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         app:layout_constraintHorizontal_weight="1"
@@ -121,7 +121,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/direction"
-            android:layout_weight="1"
             android:foregroundGravity="left"
             android:layout_gravity="center_vertical"
             android:src="@drawable/navigation"

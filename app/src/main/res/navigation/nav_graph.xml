@@ -48,6 +48,8 @@
         android:id="@+id/capitalsList"
         android:name="com.lavyshyk.countrycity.ui.capitaslListOfCountries.FragmentListOfCapitals"
         android:label="CapitalsListFragment">
-
+        <action
+            android:id="@+id/action_capitalsList_to_mapCountiesFragment"
+            app:destination="@id/mapCountiesFragment" />
     </fragment>
 </navigation>

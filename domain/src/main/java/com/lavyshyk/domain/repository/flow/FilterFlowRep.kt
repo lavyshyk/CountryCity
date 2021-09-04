@@ -1,12 +1,11 @@
-package com.lavyshyk.domain.repository
+package com.lavyshyk.domain.repository.flow
 
 import com.lavyshyk.domain.filter.Filter
-import io.reactivex.rxjava3.subjects.BehaviorSubject
+import kotlinx.coroutines.flow.MutableStateFlow
 
+interface FilterFlowRep {
 
-interface FilterRepository {
-
-    fun getFilterSubject(): BehaviorSubject<Filter>
+    fun getFilterSubject(): MutableStateFlow<Filter>
 
     fun processNewQuery(query: String)
 
@@ -15,9 +14,4 @@ interface FilterRepository {
     fun processNewPopulation(minPopulation: Float, maxPopulation: Float)
 
     fun processNewDistance(distance: Float)
-
-    fun cleanFilterSubject()
-
-
-
 }

@@ -9,9 +9,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.mvp.BaseMvpKoinFragment
 import com.lavyshyk.domain.dto.CountryInfoMapDto
@@ -25,6 +27,12 @@ class MapCountryFragment : BaseMvpKoinFragment<IMapCountryView, MapCountryPresen
     private lateinit var mProgress: FrameLayout
     private val mMapCountryPresenter: MapCountryPresenter by inject()
     private lateinit var mapFragment: SupportMapFragment
+    private lateinit var mCountryName: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mCountryName = arguments?.getString(COUNTRY_NAME_KEY) ?: ""
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +61,14 @@ class MapCountryFragment : BaseMvpKoinFragment<IMapCountryView, MapCountryPresen
                 MarkerOptions()
                     .position(LatLng(it.latlng[0], it.latlng[1]))
                     .title(it.name)
+                    .apply {
+                        if (mCountryName == it.name.lowercase() ) {
+                            this.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            this.snippet("${it.capital}, ${it.latlng}")
+                        }
+                    }
+
+
             )
         }
     }
@@ -68,7 +84,11 @@ class MapCountryFragment : BaseMvpKoinFragment<IMapCountryView, MapCountryPresen
         findNavController().navigateUp()
     }
 
-    override fun showProgress() { mProgress.visibility = View.VISIBLE }
+    override fun showProgress() {
+        mProgress.visibility = View.VISIBLE
+    }
 
-    override fun hideProgress() { mProgress.visibility = View.GONE }
+    override fun hideProgress() {
+        mProgress.visibility = View.GONE
+    }
 }

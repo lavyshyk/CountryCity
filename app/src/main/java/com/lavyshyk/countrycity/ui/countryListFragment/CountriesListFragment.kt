@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -21,12 +22,12 @@ import com.google.android.material.slider.RangeSlider
 import com.google.android.material.snackbar.Snackbar
 import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
-import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.checkLocationPermission
 import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeFragment
@@ -100,6 +101,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         bottomSheetFragmentBinding?.rangeSliderArea?.let { mRSliderArea = it }
         bottomSheetFragmentBinding?.rangeSliderPopulation?.let { mRSliderPopulation = it }
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding.recView)
 
         mViewModel.getCountryListFromDB()
         mViewModel.getCountriesFromApi()
@@ -209,7 +212,6 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 mTextMaxPopulation.text = rightPopulation.toString()
                 mFilterRepository.processNewPopulation(leftPopulation, rightPopulation)
             })
-        // проба разграничить кликабельность разных областей в Item ---
     }
 
     override fun onDestroyView() {

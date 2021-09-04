@@ -15,7 +15,6 @@ abstract class BaseAdapter<ItemType> : RecyclerView.Adapter<RecyclerView.ViewHol
     override fun getItemCount(): Int = mDataList.size
 
 
-
     open fun repopulate(list: MutableList<ItemType>) {
         mDataList.clear()
         mDataList.addAll(list)

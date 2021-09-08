@@ -145,17 +145,16 @@ class CountryListViewModel(
     }
 
     fun getCountriesFromApi() {
-        (
-                executeJob(
-                    mGetAllCountiesFromApiUseCase.execute()
-                        .doOnNext {
-                            saveDataFromApiToDB(it)
-                            it.forEach { countryDto ->
-                                val location = countryDto.getLocationCountry()
-                                countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
-                            }
-                        }, mCountyLiveData
-                )
+        (executeJob(
+            mGetAllCountiesFromApiUseCase.execute()
+                .doOnNext {
+                    saveDataFromApiToDB(it)
+                    it.forEach { countryDto ->
+                        val location = countryDto.getLocationCountry()
+                        countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                    }
+                }, mCountyLiveData
+        )
                 ).addToComposite(mCompositeDisposable)
     }
 

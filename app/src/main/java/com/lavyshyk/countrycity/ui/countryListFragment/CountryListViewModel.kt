@@ -62,32 +62,32 @@ class CountryListViewModel(
 
 
     private fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
-       (
-            mGetCountryNamesFromDataBaseUseCase.execute()
-                .flatMap { it ->
-                    if (it.count() > 0) {
-                        mUpdateCountriesInDataBaseUseCase.setParams(data).execute()
-                            .map { action -> Pair<MutableList<String>, Unit>(it, action) }
-                    } else {
-                        mSaveCountiesInDatBaseUseCase.setParams(data).execute()
-                            .map { action -> Pair<MutableList<String>, Unit>(it, action) }
-                    }
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    {
-                        if (it.first.count() > 0) {
-                            Log.i("SUCCESS", "DataBase was updated")
+        (
+                mGetCountryNamesFromDataBaseUseCase.execute()
+                    .flatMap { it ->
+                        if (it.count() > 0) {
+                            mUpdateCountriesInDataBaseUseCase.setParams(data).execute()
+                                .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                         } else {
-                            Log.i("SUCCESS", "DataBase was  saved")
+                            mSaveCountiesInDatBaseUseCase.setParams(data).execute()
+                                .map { action -> Pair<MutableList<String>, Unit>(it, action) }
                         }
-                    },
-                    {
-                        Log.e(" ERROR", "error save or update DB")
-                    },
-                )
-        ).addToComposite(mCompositeDisposable)
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                        {
+                            if (it.first.count() > 0) {
+                                Log.i("SUCCESS", "DataBase was updated")
+                            } else {
+                                Log.i("SUCCESS", "DataBase was  saved")
+                            }
+                        },
+                        {
+                            Log.e(" ERROR", "error save or update DB")
+                        },
+                    )
+                ).addToComposite(mCompositeDisposable)
     }
 
     fun getCountryListFromDB() {
@@ -105,52 +105,68 @@ class CountryListViewModel(
     }
 
     fun getSortedListCountry() {
-       (
-            executeJob(
-                mFilterSubject
-                    .toFlowable(BackpressureStrategy.LATEST)
-                    .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
-                    .distinctUntilChanged()
-                    .flatMap { countryFilter ->
-                        mGetAllCountiesFromApiUseCase.execute().map { list ->
-                            list.filter { countryDto3 ->
-                                val location = Location(LocationManager.GPS_PROVIDER)
-                                location.apply {
-                                    location.latitude = countryDto3.latlng[0]
-                                    location.longitude = countryDto3.latlng[1]
+        (
+                executeJob(
+                    mFilterSubject
+                        .toFlowable(BackpressureStrategy.LATEST)
+                        .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
+                        .distinctUntilChanged()
+                        .flatMap { countryFilter ->
+                            mGetAllCountiesFromApiUseCase.execute().map { list ->
+                                list.filter { countryDto3 ->
+                                    val location = Location(LocationManager.GPS_PROVIDER)
+                                    location.apply {
+                                        location.latitude = countryDto3.latlng[0]
+                                        location.longitude = countryDto3.latlng[1]
+                                    }
+                                    getDistanceBettwenLocations(location) < countryFilter.distance
                                 }
-                                getDistanceBettwenLocations(location) < countryFilter.distance
-                            }
-                            list.filter { countryDto ->
-                                val mArea = countryDto.area.toString()
-                                if (mArea.contains("E")) {
-                                    val (a, b) = mArea.split("E")
-                                    val country = a.toFloat() * 10F.pow(b.toInt())
-                                    country in countryFilter.minArea..countryFilter.maxArea
-                                } else {
-                                    countryDto.area in countryFilter.minArea..countryFilter.maxArea
+                                list.filter { countryDto ->
+                                    val mArea = countryDto.area.toString()
+                                    if (mArea.contains("E")) {
+                                        val (a, b) = mArea.split("E")
+                                        val country = a.toFloat() * 10F.pow(b.toInt())
+                                        country in countryFilter.minArea..countryFilter.maxArea
+                                    } else {
+                                        countryDto.area in countryFilter.minArea..countryFilter.maxArea
+                                    }
                                 }
+                                    .filter { countryDto2 ->
+                                        countryDto2
+                                            .population
+                                            .toFloat() in countryFilter.minPopulation..countryFilter.maxPopulation
+                                    }.filter { countryDto4 ->
+                                        countryDto4.name.contains(countryFilter.name, true)
+                                    }.toMutableList()
                             }
-                                .filter { countryDto2 ->
-                                    countryDto2
-                                        .population
-                                        .toFloat() in countryFilter.minPopulation..countryFilter.maxPopulation
-                                }.filter { countryDto4 ->
-                                    countryDto4.name.contains(countryFilter.name, true)
-                                }.toMutableList()
-                        }
-                    }, mSortedCountryList
-            )
-        ).addToComposite( mCompositeDisposable)
+                        }, mSortedCountryList
+                )
+                ).addToComposite(mCompositeDisposable)
     }
 
     fun getCountriesFromApi() {
         (
-            executeJob(
-                mGetAllCountiesFromApiUseCase.execute()
-                    .doOnNext { saveDataFromApiToDB(it) }, mCountyLiveData
-            )
-        ).addToComposite(mCompositeDisposable)
+                executeJob(
+                    mGetAllCountiesFromApiUseCase.execute()
+                        .doOnNext {
+                            saveDataFromApiToDB(it)
+                            it.forEach { countryDto ->
+                                val location = countryDto.getLocationCountry()
+                                countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                            }
+                        }, mCountyLiveData
+                )
+                ).addToComposite(mCompositeDisposable)
     }
 
+}
+
+fun CountryDto.getLocationCountry(): Location {
+    val location = Location(android.location.LocationManager.GPS_PROVIDER)
+    val countryDto = this
+    location.apply {
+        this.latitude = countryDto.latlng[0]
+        this.longitude = countryDto.latlng[1]
+        return location
+    }
 }

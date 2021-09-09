@@ -6,9 +6,9 @@ abstract class BaseAdapter<ItemType> : RecyclerView.Adapter<RecyclerView.ViewHol
 
     protected var mDataList: MutableList<ItemType> = mutableListOf()
 
-    protected var mClickFunction: ((ItemType) -> Unit?)? = null
+    protected var mClickFunction: ((String,ItemType) -> Unit?)? = null
 
-    fun setItemClick(clickListener: (ItemType) -> Unit) {
+    fun setItemClick(clickListener: (String,ItemType) -> Unit) {
         mClickFunction = clickListener
     }
 
@@ -31,5 +31,6 @@ abstract class BaseAdapter<ItemType> : RecyclerView.Adapter<RecyclerView.ViewHol
         mDataList.add(item)
         notifyItemChanged(mDataList.size - 1)
     }
+
 
 }

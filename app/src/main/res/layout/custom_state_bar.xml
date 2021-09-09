@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gLineEnd"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gLineStart"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_16" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gLineCenter"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <LinearLayout
+        android:id="@+id/centerGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="@+id/startGroup"
+        app:layout_constraintBaseline_toBaselineOf="@id/centerGroup"
+        app:layout_constraintEnd_toStartOf="@id/endGroup"
+        app:layout_constraintStart_toEndOf="@id/startGroup"
+        app:layout_constraintTop_toTopOf="@+id/startGroup">
+
+        <ImageView
+            android:id="@+id/iVMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/message"
+            tools:visibility="visible"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="4dp"
+
+           />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tVCountMessages"
+            android:text="@string/_120"
+            tools:visibility="visible"
+            android:layout_gravity="center_vertical"
+           android:gravity="start"
+            android:layout_marginStart="@dimen/_4dp"
+          />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/startGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toStartOf="@id/centerGroup"
+        app:layout_constraintStart_toEndOf="@id/gLineStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/arrowUp"
+            android:src="@drawable/ic_arrow_up"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/_4dp"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tVLikeMinusDis"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:text="@string/_1256"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/arrowDown"
+            android:src="@drawable/ic_arrow_dowm"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/_4dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/endGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="@+id/centerGroup"
+        app:layout_constraintEnd_toStartOf="@id/gLineEnd"
+        app:layout_constraintStart_toEndOf="@id/centerGroup"
+        app:layout_constraintTop_toTopOf="@+id/centerGroup">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/distance"
+            android:text="@string/_120555"
+            android:gravity="end"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/direction"
+            android:layout_weight="1"
+            android:foregroundGravity="left"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/navigation"
+            android:layout_marginStart="@dimen/_4dp"/>
+
+    </LinearLayout>
+
+
+</merge>

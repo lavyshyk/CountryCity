@@ -2,10 +2,10 @@ package com.lavyshyk.domain.useCase.implementetion.netCase
 
 import com.lavyshyk.domain.dto.CapitalDto
 import com.lavyshyk.domain.repository.NetworkRepositoryOnCoroutine
-import com.lavyshyk.domain.useCase.UseCaseCoroutine
+import com.lavyshyk.domain.useCase.CoroutineUseCase
 
 class GetAllCapitalsFromApiUseCase(private val mNetworkRepositoryOnCoroutine: NetworkRepositoryOnCoroutine) :
-    UseCaseCoroutine<Unit, MutableList<CapitalDto>>() {
+    CoroutineUseCase<Unit, MutableList<CapitalDto>>() {
 
     override suspend fun buildCoroutine(params: Unit?): MutableList<CapitalDto> =
         mNetworkRepositoryOnCoroutine.getAllCapitals()

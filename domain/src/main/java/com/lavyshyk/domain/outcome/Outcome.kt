@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.base.mvvm
+package com.lavyshyk.domain.outcome
 
 sealed class Outcome<T> {
     data class Progress<T>(var loading: Boolean): Outcome<T>()

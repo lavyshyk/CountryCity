@@ -9,16 +9,18 @@ java {
 }
 
 def rxjavaVersion = '3.0.13'
+def coroutineCoreVersion = '1.5.1'
 
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    api "io.reactivex.rxjava3:rxjava:$rxjavaVersion"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
 
+    api "io.reactivex.rxjava3:rxjava:$rxjavaVersion"
+    //Flow
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutineCoreVersion"
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 buildscript {

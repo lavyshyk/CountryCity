@@ -1,13 +1,13 @@
 package com.lavyshyk.data.repository
 
-import com.lavyshyk.domain.filter.CountryFilter
+import com.lavyshyk.domain.filter.Filter
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class FilterRepositoryImpl : com.lavyshyk.domain.repository.FilterRepository {
 
-    private val mFilterSubject = BehaviorSubject.createDefault(CountryFilter())
+    private val mFilterSubject = BehaviorSubject.createDefault(Filter())
 
-    override fun getFilterSubject(): BehaviorSubject<CountryFilter> = mFilterSubject
+    override fun getFilterSubject(): BehaviorSubject<Filter> = mFilterSubject
 
 
     override fun processNewQuery(query: String) {

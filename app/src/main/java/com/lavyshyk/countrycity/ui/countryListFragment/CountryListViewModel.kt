@@ -9,11 +9,11 @@ import com.lavyshyk.countrycity.MY_CURRENT_LOCATION
 import com.lavyshyk.countrycity.SORTED_COUNTRY_DTO
 import com.lavyshyk.countrycity.TIME_PAUSE_500
 import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
-import com.lavyshyk.countrycity.base.mvvm.Outcome
 import com.lavyshyk.countrycity.base.mvvm.addToComposite
 import com.lavyshyk.countrycity.base.mvvm.executeJob
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
 import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
 import com.lavyshyk.domain.useCase.implementetion.databaseCase.GetCountiesFromDataBaseUseCase
 import com.lavyshyk.domain.useCase.implementetion.databaseCase.GetCountryNamesFromDataBaseUseCase

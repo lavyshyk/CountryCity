@@ -14,9 +14,6 @@ import com.lavyshyk.domain.dto.CapitalDto
 class CapitalsAdapter :
     ListAdapter<CapitalDto, CapitalsAdapter.ListViewHolder>(DifferItemCallback()) {
 
-    private var mDataList: MutableList<CapitalDto> = mutableListOf()
-
-
     class DifferItemCallback : DiffUtil.ItemCallback<CapitalDto>() {
         @SuppressLint("DiffUtilEquals")
         override fun areContentsTheSame(oldItem: CapitalDto, newItem: CapitalDto): Boolean {
@@ -27,7 +24,7 @@ class CapitalsAdapter :
             return oldItem == newItem
         }
     }
-    //inner class ListViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
+
     inner class ListViewHolder(containerView: View) : RecyclerView.ViewHolder(containerView) {
         var mTvCapital: AppCompatTextView = containerView.findViewById(R.id.mTvCapital)
         fun bind(item: CapitalDto) {

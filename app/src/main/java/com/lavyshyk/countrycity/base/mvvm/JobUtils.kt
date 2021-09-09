@@ -1,6 +1,7 @@
  package com.lavyshyk.countrycity.base.mvvm
 
 import androidx.lifecycle.MutableLiveData
+import com.lavyshyk.domain.outcome.Outcome
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.disposables.Disposable

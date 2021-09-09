@@ -93,6 +93,7 @@ class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryD
         mMapView.onResume()
         super.onResume()
     }
+
     override fun onPause() {
         super.onPause()
         mMapView.onPause()
@@ -113,6 +114,7 @@ class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryD
         super.onLowMemory()
         mMapView.onLowMemory()
     }
+
     private fun getCurrentLocationOnMap(latLng: LatLng, countryName: String, zoom: Float) {
         mGoogleMap.moveCamera(newLatLngZoom(latLng, zoom))
         mGoogleMap.addMarker(
@@ -126,7 +128,7 @@ class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryD
         mGoogleMap = map
     }
 
-    override fun showCountryDetail(country: CountryDataDetailDto,zoom: Float) {
+    override fun showCountryDetail(country: CountryDataDetailDto, zoom: Float) {
         binding.srCountryDetails.isRefreshing = false
         binding.mTvCountryName.text = country.name
         mAreaCounty = country.area
@@ -159,7 +161,10 @@ class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryD
                     val nameCountry = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString()
                     mCountryDetailPresenter.setArgumentFromView(nameCountry)
                     mCountryDetailPresenter.getCountryByName(false)
-                    mCountryDetailPresenter.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, nameCountry)
+                    mCountryDetailPresenter.putSharedPrefString(
+                        COUNTRY_NAME_FOR_NAV_KEY,
+                        nameCountry
+                    )
                 },
                 bundle
             )

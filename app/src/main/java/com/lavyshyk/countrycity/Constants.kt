@@ -57,3 +57,9 @@ adapter
 
 const val LIKE = "like"
 const val DISLIKE = "dislike"
+
+/*
+dispatchers
+ */
+
+const val DISPATCHER_IO = "dispatchers.io"

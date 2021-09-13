@@ -41,8 +41,8 @@ class LocationTrackingService : Service(), LocationListener {
     }
 
     private fun initNotification() {
-        val intent = Intent()
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val intent = Intent(this,MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         //val penIntent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel =
@@ -65,9 +65,9 @@ class LocationTrackingService : Service(), LocationListener {
                 .setStyle(mBigTextStyle)
                 .setSmallIcon(R.drawable.navigation)
                 .setContentText(getString(R.string.text_notification_location_tracking))
-                //.setContentIntent(penIntent) -> to Fragment?
-                //.addAction()
-                .setFullScreenIntent(pendingIntent, true)
+                .setContentIntent(pendingIntent)
+               // .addAction()
+                //.setFullScreenIntent(pendingIntent, true)  --- Only for use with extremely high-priority notifications
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 this.priority = NotificationManager.IMPORTANCE_DEFAULT
             } else {

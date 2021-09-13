@@ -62,30 +62,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recViewCapital)
 
-        // mViewModel.getListOfCapital()
-//        mViewModel.mCapitalList.observe(viewLifecycleOwner,
-//            {
-//                when (it) {
-//                    is OutcomeCoroutine.Running -> {
-//                        if (it.loading) {
-//                            showProgress()
-//                        } else {
-//                            hideProgress()
-//                        }
-//                    }
-//                    is OutcomeCoroutine.Result -> {
-//
-//                        showCountryData(it.data)
-//                    }
-//                    is OutcomeCoroutine.Cancel -> {
-//                        showError(it.c.message.toString(), it.c)
-//                    }
-//                    is OutcomeCoroutine.FailureCor -> {
-//                        showError(it.t.message.toString(), it.t)
-//                    }
-//                }
-//            })
-
         mViewModel.getListOfCapitalsByFlow().asLiveData(lifecycleScope.coroutineContext)
             .observe(viewLifecycleOwner, {
                 when (it) {
@@ -108,7 +84,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
             })
 
     }
-
 
     private fun showCountryData(capitals: MutableList<CapitalDto>) {
         capitals.let {

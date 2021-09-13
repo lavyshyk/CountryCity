@@ -1,4 +1,5 @@
 package com.lavyshyk.countrycity
+
 object Constants {
 
 }
@@ -7,10 +8,11 @@ const val APP_PREFERENCES: String = "my_preferences_file"
 const val SORT_TO_BIG: Boolean = false
 const val SORT_TO_SMALL: Boolean = true
 const val ITEM_SORT_STATUS: String = "status_item"
+
 /*
 for bottom navigation
  */
-const val COUNTRY_NAME_FOR_NAV_KEY =  "key_country_name"
+const val COUNTRY_NAME_FOR_NAV_KEY = "key_country_name"
 const val COUNTRY_NAME_KEY_FOR_DIALOG = "key_dialog"
 
 /*
@@ -63,3 +65,13 @@ dispatchers
  */
 
 const val DISPATCHER_IO = "dispatchers.io"
+
+/*
+LocationTrackingService
+ */
+
+const val SERVICE_ID = 359548
+const val DISTANCE_CHANGE_FOR_UPDATE = 0f
+const val TIME_INTERVAL_UPDATES = 1000L
+const val KILL_SERVICE = "kill service"
+const val CHANNEL_ID = "channel_007"

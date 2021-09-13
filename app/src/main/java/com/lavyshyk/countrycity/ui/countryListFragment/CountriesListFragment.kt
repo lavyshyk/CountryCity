@@ -1,7 +1,13 @@
 package com.lavyshyk.countrycity.ui.countryListFragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -12,10 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.slider.RangeSlider
@@ -24,15 +26,14 @@ import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
+import com.lavyshyk.countrycity.service.LocationTrackingService
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
-import com.lavyshyk.countrycity.util.checkLocationPermission
 import com.lavyshyk.domain.dto.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
-import org.koin.core.scope.Scope
 
 
 class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
@@ -60,17 +61,17 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     private lateinit var mTextMinArea: AppCompatTextView
     private lateinit var mTextMaxPopulation: AppCompatTextView
     private lateinit var mTextMinPopulation: AppCompatTextView
-    override val scope: Scope
-        get() = super.scope
-
+    private val intentFilter =
+        IntentFilter().apply { addAction(LocationTrackingService.NEW_LOCATION_ACTION) }
+    private lateinit var mBroadcastReceiver: BroadcastReceiver
+    private var mLocationTemp = Location(LocationManager.GPS_PROVIDER).apply {
+        this.latitude = 0.0
+        this.longitude = 0.0
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        if (context?.checkLocationPermission() == true) {
-            LocationServices.getFusedLocationProviderClient(this.requireActivity())
-                .requestLocationUpdates(mLocationRequest, mLocationCallback, null);
-        }
     }
 
     override fun onCreateView(
@@ -83,30 +84,30 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mProgress = binding.mPBarList
-        mAdapter = CountryAdapter()
-        binding.recView.adapter = mAdapter
-        binding.recView.layoutManager = LinearLayoutManager(this.activity)
-        bottomSheet = view.findViewById(R.id.mBottomSheetFilter)
-        bottomSheetFragmentBinding = BottomSheetFragmentBinding.bind(bottomSheet)
-        sheetBehavior = from(bottomSheet)
-        sheetBehavior.peekHeight = PEEK_HEIGHT
-        bottomSheetFragmentBinding?.textStartRangeArea?.let { mTextMinArea = it }
-        bottomSheetFragmentBinding?.textEndRangeArea?.let { mTextMaxArea = it }
-        bottomSheetFragmentBinding?.textStartRangePopulation?.let { mTextMinPopulation = it }
-        bottomSheetFragmentBinding?.textEndRangePopulation?.let { mTextMaxPopulation = it }
-        bottomSheetFragmentBinding?.peekIcon?.let { headerPeek = it }
-        bottomSheetFragmentBinding?.mEIDistance?.let { mEditText = it }
-        bottomSheetFragmentBinding?.rangeSliderArea?.let { mRSliderArea = it }
-        bottomSheetFragmentBinding?.rangeSliderPopulation?.let { mRSliderPopulation = it }
+        initUI(view)
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(binding.recView)
+        mBroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent != null && intent.action != null) {
+                    when (intent.action) {
+                        LocationTrackingService.NEW_LOCATION_ACTION -> {
+                            intent.getParcelableExtra<Location>("location")
+                                ?.let { mLocationTemp = it }
+                            Log.e(
+                                "Current loc",
+                                "${intent.getParcelableExtra<Location>("location").toString()}"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        context?.registerReceiver(mBroadcastReceiver, intentFilter)
+            ?.getParcelableExtra<Location>("location")
 
-        mViewModel.getCountryListFromDB()
+        mViewModel.putCurrentLocation(mLocationTemp)
+
         mViewModel.getCountriesFromApi()
-
 
         mViewModel.mSortedCountryList.observe(viewLifecycleOwner, {
             when (it) {
@@ -135,12 +136,12 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 is Outcome.Next -> {
                     showCountryData(it.data)
                     hideProgress()
+                    mViewModel.saveDataFromApiToDB(it.data)
                 }
                 is Outcome.Failure -> {
+                    mViewModel.getCountryListFromDB()
                     hideProgress()
-
                     showError(it.t.message.toString(), it.t)
-
                 }
                 is Outcome.Success -> {
                     hideProgress()
@@ -218,7 +219,9 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         bottomSheetFragmentBinding = null
         fragmentListBinding = null
         super.onDestroyView()
+        context?.unregisterReceiver(mBroadcastReceiver)
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_sort_and_search, menu)
@@ -281,6 +284,42 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         }
     }
 
+    override fun showError(error: String, throwable: Throwable) {
+
+        Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun showProgress() {
+        mProgress.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        mProgress.visibility = View.GONE
+    }
+
+    private fun initUI(view: View) {
+        mProgress = binding.mPBarList
+        mAdapter = CountryAdapter()
+        binding.recView.adapter = mAdapter
+        binding.recView.layoutManager = LinearLayoutManager(this.activity)
+        bottomSheet = view.findViewById(R.id.mBottomSheetFilter)
+        bottomSheetFragmentBinding = BottomSheetFragmentBinding.bind(bottomSheet)
+        sheetBehavior = from(bottomSheet)
+        sheetBehavior.peekHeight = PEEK_HEIGHT
+        bottomSheetFragmentBinding?.textStartRangeArea?.let { mTextMinArea = it }
+        bottomSheetFragmentBinding?.textEndRangeArea?.let { mTextMaxArea = it }
+        bottomSheetFragmentBinding?.textStartRangePopulation?.let { mTextMinPopulation = it }
+        bottomSheetFragmentBinding?.textEndRangePopulation?.let { mTextMaxPopulation = it }
+        bottomSheetFragmentBinding?.peekIcon?.let { headerPeek = it }
+        bottomSheetFragmentBinding?.mEIDistance?.let { mEditText = it }
+        bottomSheetFragmentBinding?.rangeSliderArea?.let { mRSliderArea = it }
+        bottomSheetFragmentBinding?.rangeSliderPopulation?.let { mRSliderPopulation = it }
+
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(binding.recView)
+
+    }
+
     fun setStartStateOfBottomSheet() {
         mFilterRepository.processNewQuery("")
         val currentListCountries = mAdapter.getCurrentListCountries()
@@ -307,34 +346,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         mEditText.setText("")
     }
 
-    override fun showError(error: String, throwable: Throwable) {
 
-        Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun showProgress() {
-        mProgress.visibility = View.VISIBLE
-    }
-
-    override fun hideProgress() {
-        mProgress.visibility = View.GONE
-    }
-
-    val mLocationRequest: LocationRequest = LocationRequest.create().apply {
-        this.interval = 60000
-        this.fastestInterval = 5000
-        this.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-    }
-
-    val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            for (location in locationResult.locations) {
-                if (location != null) {
-                    mViewModel.putCurrentLocation(location)
-                }
-            }
-        }
-    }
 }
 
 

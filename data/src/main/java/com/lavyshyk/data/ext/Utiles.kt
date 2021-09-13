@@ -173,7 +173,10 @@ fun MutableList<CountryDataInfo>.transformToCountryDto(): MutableList<CountryDto
                     if (item.latlng.isNullOrEmpty()) {
                         mutableListOf<Double>(0.0, 0.0)
                     } else {
-                        mutableListOf(item.latlng[0] ?: 0.0, item.latlng[1] ?: 0.0)
+                        mutableListOf(
+                            item.latlng[0] ?: 0.0,
+                            item.latlng[1] ?: 0.0
+                        )
                     },
                     item.area ?: 0.0F,
                     item.nativeName ?: "",

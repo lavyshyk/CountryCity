@@ -3,6 +3,7 @@ package com.lavyshyk.countrycity.ui.capitaslListOfCountries
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
+import androidx.annotation.NonNull
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +35,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         )
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -46,7 +46,9 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentListCapitalsBinding.inflate(inflater, container, false)
+        fragmentListCapitalsBinding =
+            FragmentListCapitalsBinding.inflate(inflater, container, false)
+        binding = fragmentListCapitalsBinding as @NonNull FragmentListCapitalsBinding
         return binding.root
     }
 
@@ -59,30 +61,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
         binding.searchList.adapter = mSearchResultAdapter
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.recViewCapital)
-
-        // mViewModel.getListOfCapital()
-//        mViewModel.mCapitalList.observe(viewLifecycleOwner,
-//            {
-//                when (it) {
-//                    is OutcomeCoroutine.Running -> {
-//                        if (it.loading) {
-//                            showProgress()
-//                        } else {
-//                            hideProgress()
-//                        }
-//                    }
-//                    is OutcomeCoroutine.Result -> {
-//
-//                        showCountryData(it.data)
-//                    }
-//                    is OutcomeCoroutine.Cancel -> {
-//                        showError(it.c.message.toString(), it.c)
-//                    }
-//                    is OutcomeCoroutine.FailureCor -> {
-//                        showError(it.t.message.toString(), it.t)
-//                    }
-//                }
-//            })
 
         mViewModel.getListOfCapitalsByFlow().asLiveData(lifecycleScope.coroutineContext)
             .observe(viewLifecycleOwner, {
@@ -107,14 +85,11 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
 
     }
 
-
     private fun showCountryData(capitals: MutableList<CapitalDto>) {
         capitals.let {
-            mCapitalAdapter.submitList(capitals.toList())
-
+            mCapitalAdapter.submitList(capitals)
         }
     }
-
 
     override fun showError(error: String, throwable: Throwable) {
         Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
@@ -131,7 +106,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_with_search_view, menu)
         super.onCreateOptionsMenu(menu, inflater)
-
         val mSearch = menu.findItem(R.id.searchView)
         val mSearchView = mSearch.actionView as SearchView
         mSearchView.queryHint = context?.getString(R.string.enter_your_keyword)
@@ -140,14 +114,12 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
                 binding.recViewCapital.alpha = 0.2f
                 return true
             }
-
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
                 mSearchResultAdapter.setResultData(mutableListOf())
                 binding.recViewCapital.alpha = 1.0f
                 return true
             }
         })
-
         mSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
@@ -157,7 +129,6 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
                 }
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     if (it.length > 2) {
@@ -212,11 +183,13 @@ class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
                     }
                     is Outcome.Success -> {
                         bundle.putString(COUNTRY_NAME_KEY, it.data[0].name.lowercase())
-                        findNavController().navigate(R.id.action_capitalsList_to_mapCountiesFragment, bundle)
+                        findNavController().navigate(
+                            R.id.action_capitalsList_to_mapCountiesFragment,
+                            bundle
+                        )
                     }
                 }
             })
-
     }
 
     private fun onClickItemSearch(capitalDto: CapitalDto) {

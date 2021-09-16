@@ -43,5 +43,4 @@ class CapitalListViewModel(
     fun setFilter(capitalDto: CapitalDto){
         mIteratorFilterCountyByCapitalName.setCapitalQuery(capitalDto.capital.lowercase())
     }
-
 }

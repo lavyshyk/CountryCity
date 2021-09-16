@@ -1,7 +1,6 @@
 package com.lavyshyk.countrycity.ui.countryListFragment
 
 import android.location.Location
-import android.location.LocationManager
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.lavyshyk.countrycity.COUNTRY_DTO
@@ -61,101 +60,109 @@ class CountryListViewModel(
     }
 
 
-    private fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
-        (
-                mGetCountryNamesFromDataBaseUseCase.execute()
-                    .flatMap { it ->
-                        if (it.count() > 0) {
-                            mUpdateCountriesInDataBaseUseCase.setParams(data).execute()
-                                .map { action -> Pair<MutableList<String>, Unit>(it, action) }
-                        } else {
-                            mSaveCountiesInDatBaseUseCase.setParams(data).execute()
-                                .map { action -> Pair<MutableList<String>, Unit>(it, action) }
-                        }
+    fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
+        (mGetCountryNamesFromDataBaseUseCase.execute()
+            .flatMap { it ->
+                if (it.count() > 0) {
+                    mUpdateCountriesInDataBaseUseCase.setParams(data).execute()
+                        .map { action -> Pair<MutableList<String>, Unit>(it, action) }
+                } else {
+                    mSaveCountiesInDatBaseUseCase.setParams(data).execute()
+                        .map { action -> Pair<MutableList<String>, Unit>(it, action) }
+                }
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    if (it.first.count() > 0) {
+                        Log.i("SUCCESS", "DataBase was updated")
+                    } else {
+                        Log.i("SUCCESS", "DataBase was  saved")
                     }
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            if (it.first.count() > 0) {
-                                Log.i("SUCCESS", "DataBase was updated")
-                            } else {
-                                Log.i("SUCCESS", "DataBase was  saved")
-                            }
-                        },
-                        {
-                            Log.e(" ERROR", "error save or update DB")
-                        },
-                    )
+                },
+                {
+                    Log.e(" ERROR", "error save or update DB")
+                },
+            )
                 ).addToComposite(mCompositeDisposable)
     }
 
     fun getCountryListFromDB() {
         mCompositeDisposable.add(
-            executeJob(mGetCountiesFromDataBaseUseCase.execute(), mCountyLiveData)
+            executeJob(
+                mGetCountiesFromDataBaseUseCase.execute()
+                    .doOnNext {
+                        it.forEach { countryDto ->
+                            val location = countryDto.getLocationCountry()
+                            countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                        }
+                    }, mCountyLiveData
+            )
         )
     }
 
     private fun getDistanceBettwenLocations(location: Location): Float {
-        return (location.distanceTo(mCurrentLocation.value) / 1000)
+        return mCurrentLocation.value?.let { (location.distanceTo(it) / 1000) } ?: 0f
     }
 
-    fun putCurrentLocation(location: Location) {
+    fun putCurrentLocation(location: Location?) {
         location.let { mCurrentLocation.value = it }
     }
 
     fun getSortedListCountry() {
-        (
-                executeJob(
-                    mFilterSubject
-                        .toFlowable(BackpressureStrategy.LATEST)
-                        .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
-                        .distinctUntilChanged()
-                        .flatMap { countryFilter ->
-                            mGetAllCountiesFromApiUseCase.execute().map { list ->
-                                list.filter { countryDto3 ->
-                                    val location = Location(LocationManager.GPS_PROVIDER)
-                                    location.apply {
-                                        location.latitude = countryDto3.latlng[0]
-                                        location.longitude = countryDto3.latlng[1]
-                                    }
-                                    getDistanceBettwenLocations(location) < countryFilter.distance
+        (executeJob(
+            mFilterSubject
+                .toFlowable(BackpressureStrategy.LATEST)
+                .debounce(TIME_PAUSE_500, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .flatMap { countryFilter ->
+                    mGetAllCountiesFromApiUseCase.execute().map { list ->
+                        list.filter { countryDto3 ->
+                            val location = countryDto3.getLocationCountry()
+                            val l = getDistanceBettwenLocations(location)
+                            l < countryFilter.distance
+                        }
+                            .filter { countryDto ->
+                                val mArea = countryDto.area.toString()
+                                if (mArea.contains("E")) {
+                                    val (a, b) = mArea.split("E")
+                                    val country = a.toFloat() * 10F.pow(b.toInt())
+                                    country in countryFilter.minArea..countryFilter.maxArea
+                                } else {
+                                    countryDto.area in countryFilter.minArea..countryFilter.maxArea
                                 }
-                                list.filter { countryDto ->
-                                    val mArea = countryDto.area.toString()
-                                    if (mArea.contains("E")) {
-                                        val (a, b) = mArea.split("E")
-                                        val country = a.toFloat() * 10F.pow(b.toInt())
-                                        country in countryFilter.minArea..countryFilter.maxArea
-                                    } else {
-                                        countryDto.area in countryFilter.minArea..countryFilter.maxArea
-                                    }
-                                }
-                                    .filter { countryDto2 ->
-                                        countryDto2
-                                            .population
-                                            .toFloat() in countryFilter.minPopulation..countryFilter.maxPopulation
-                                    }.filter { countryDto4 ->
-                                        countryDto4.name.contains(countryFilter.name, true)
-                                    }.toMutableList()
                             }
-                        }, mSortedCountryList
-                )
+                            .filter { countryDto2 ->
+                                countryDto2
+                                    .population
+                                    .toFloat() in countryFilter.minPopulation..countryFilter.maxPopulation
+                            }.filter { countryDto4 ->
+                                countryDto4.name.contains(countryFilter.name, true)
+                            }.toMutableList()
+                    }.doOnNext {
+                        it.forEach { countryDto ->
+                            val location = countryDto.getLocationCountry()
+                            countryDto.distance =
+                                (getDistanceBettwenLocations(location) / 1000)
+                        }
+                    }
+
+                }, mSortedCountryList
+        )
                 ).addToComposite(mCompositeDisposable)
     }
 
     fun getCountriesFromApi() {
-        (
-                executeJob(
-                    mGetAllCountiesFromApiUseCase.execute()
-                        .doOnNext {
-                            saveDataFromApiToDB(it)
-                            it.forEach { countryDto ->
-                                val location = countryDto.getLocationCountry()
-                                countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
-                            }
-                        }, mCountyLiveData
-                )
+        (executeJob(
+            mGetAllCountiesFromApiUseCase.execute()
+                .doOnNext {
+                    it.forEach { countryDto ->
+                        val location = countryDto.getLocationCountry()
+                        countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                    }
+                }, mCountyLiveData
+        )
                 ).addToComposite(mCompositeDisposable)
     }
 

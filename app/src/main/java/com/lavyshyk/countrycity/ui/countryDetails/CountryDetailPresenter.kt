@@ -53,6 +53,7 @@ class CountryDetailPresenter(
             in 120001F..1600000F -> { zoom = 4F }
             in 1600001F..3000000F -> { zoom = 3F }
             in 3000001F..10000000F -> { zoom = 2F }
+            else -> { zoom }
         }
         return zoom
     }

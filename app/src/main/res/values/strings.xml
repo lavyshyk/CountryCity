@@ -49,4 +49,11 @@
     <string name="_120555">120555</string>
     <string name="_1256">1256</string>
     <string name="_120">120</string>
+    <string name="no_location_permission_error">Location tracking will not work does not work</string>
+    <string name="foreground_channel_id">id</string>
+    <string name="foreground_notification_name">name</string>
+    <string name="foreground_channel_name">Location service by CountryCity</string>
+    <string name="text_notification_location_tracking">Now app CountryCity execute a location tracking</string>
+
+
 </resources>

@@ -25,7 +25,7 @@ import com.lavyshyk.countrycity.databinding.FragmentCountryDetailsBinding
 import com.lavyshyk.countrycity.ui.ext.getDescription
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
 import com.lavyshyk.countrycity.util.loadSvgFlag
-import com.lavyshyk.domain.dto.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
 import org.koin.android.ext.android.inject
 
 class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryDetailPresenter>(),

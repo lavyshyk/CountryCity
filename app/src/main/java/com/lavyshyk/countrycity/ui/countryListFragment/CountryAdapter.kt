@@ -10,9 +10,9 @@ import com.lavyshyk.countrycity.DISLIKE
 import com.lavyshyk.countrycity.LIKE
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.setDislike
-import com.lavyshyk.domain.dto.setLike
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.setDislike
+import com.lavyshyk.domain.dto.country.setLike
 
 class CountryAdapter : BaseAdapter<CountryDto>() {
 

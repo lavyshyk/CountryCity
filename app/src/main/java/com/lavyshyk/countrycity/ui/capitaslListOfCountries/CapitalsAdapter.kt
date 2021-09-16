@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 
 class CapitalsAdapter :
     ListAdapter<CapitalDto, CapitalsAdapter.ListViewHolder>(DifferItemCallback()) {

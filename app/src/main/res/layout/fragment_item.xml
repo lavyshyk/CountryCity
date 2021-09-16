@@ -59,8 +59,6 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:textSize="@dimen/_10sp" />
-
-
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </FrameLayout>
@@ -71,6 +69,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_view"
+        android:layout_margin="@dimen/_4dp"
         android:foreground="@color/black"
         tools:visibility="visible" />
 

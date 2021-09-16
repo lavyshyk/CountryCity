@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
@@ -28,7 +27,7 @@ import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
 import com.lavyshyk.countrycity.service.LocationTrackingService
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
 import org.koin.android.ext.android.inject
@@ -93,17 +92,12 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                         LocationTrackingService.NEW_LOCATION_ACTION -> {
                             intent.getParcelableExtra<Location>("location")
                                 ?.let { mLocationTemp = it }
-                            Log.e(
-                                "Current loc",
-                                "${intent.getParcelableExtra<Location>("location").toString()}"
-                            )
                         }
                     }
                 }
             }
         }
         context?.registerReceiver(mBroadcastReceiver, intentFilter)
-            ?.getParcelableExtra<Location>("location")
 
         mViewModel.putCurrentLocation(mLocationTemp)
 

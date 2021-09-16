@@ -1,6 +1,6 @@
 package com.lavyshyk.domain.useCase.implementetion.databaseCase
 
-import com.lavyshyk.domain.dto.LanguageDto
+import com.lavyshyk.domain.dto.country.LanguageDto
 import com.lavyshyk.domain.repository.DataBaseRepository
 import com.lavyshyk.domain.useCase.UseCase
 import io.reactivex.rxjava3.core.Flowable

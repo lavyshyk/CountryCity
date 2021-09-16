@@ -1,7 +1,7 @@
 package com.lavyshyk.data.network
 
-import com.lavyshyk.data.model.Capital
-import com.lavyshyk.data.model.CountryDataInfo
+import com.lavyshyk.data.model.capitals.Capital
+import com.lavyshyk.data.model.countries.CountryDataInfo
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 

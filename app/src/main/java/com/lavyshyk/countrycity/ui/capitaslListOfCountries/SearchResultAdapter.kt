@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 
 class SearchResultAdapter (
     private val layoutInflater: LayoutInflater,

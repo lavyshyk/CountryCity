@@ -1,6 +1,6 @@
 package com.lavyshyk.data.iterator
 
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.flow.FilterFlowRep
 import com.lavyshyk.domain.repository.flow.NetworkFlowCapitalRepository

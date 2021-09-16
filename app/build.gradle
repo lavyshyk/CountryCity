@@ -58,6 +58,9 @@ def rxAndroidVersion = '3.0.0'
 dependencies {
 
 
+  // dagger2
+    implementation 'com.google.dagger:dagger:2.36'
+    kapt 'com.google.dagger:dagger-compiler:2.36'
 
     implementation project (":domain")
     implementation project (":data")

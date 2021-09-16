@@ -1,6 +1,6 @@
 package com.lavyshyk.domain.useCase.implementetion.netCase
 
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 import com.lavyshyk.domain.repository.NetworkRepositoryOnCoroutine
 import com.lavyshyk.domain.useCase.CoroutineUseCase
 

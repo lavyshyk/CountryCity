@@ -67,7 +67,7 @@ class LocationTrackingService : Service(), LocationListener {
                 .setContentText(getString(R.string.text_notification_location_tracking))
                 .setContentIntent(pendingIntent)
                // .addAction()
-                //.setFullScreenIntent(pendingIntent, true)  --- Only for use with extremely high-priority notifications
+                //.setFullScreenIntent(pendingIntent, true)  --- Only for use with extremely high-priority notifications like Call phone
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 this.priority = NotificationManager.IMPORTANCE_DEFAULT
             } else {

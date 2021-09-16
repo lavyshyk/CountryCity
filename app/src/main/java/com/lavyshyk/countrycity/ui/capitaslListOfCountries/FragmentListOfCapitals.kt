@@ -15,13 +15,13 @@ import com.lavyshyk.countrycity.COUNTRY_NAME_KEY
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
 import com.lavyshyk.countrycity.databinding.FragmentListCapitalsBinding
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 import com.lavyshyk.domain.outcome.Outcome
 import org.koin.androidx.scope.ScopeFragment
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 
-class FragmentListOfCapitals : ScopeFragment(), IBaseMvvmView {
+class FragmentListOfCapitals(): ScopeFragment(), IBaseMvvmView {
     private var fragmentListCapitalsBinding: FragmentListCapitalsBinding? = null
     private lateinit var binding: FragmentListCapitalsBinding
     private lateinit var mCapitalAdapter: CapitalsAdapter

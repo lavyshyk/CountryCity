@@ -1,4 +1,4 @@
-package com.lavyshyk.domain.useCase
+package com.lavyshyk.domain.useCase.implementetion
 
 
 abstract class FlowUseCase<Params : Any, Result> {
@@ -14,7 +14,7 @@ abstract class FlowUseCase<Params : Any, Result> {
         return this
     }
 
-    fun execute(): Result {
+    fun  execute(): Result {
         require(!(mIsParamsRequired && mParams == null)) { "Params are required" }
         return buildFlow(mParams)
     }

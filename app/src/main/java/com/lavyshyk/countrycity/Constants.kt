@@ -72,6 +72,6 @@ LocationTrackingService
 
 const val SERVICE_ID = 359548
 const val DISTANCE_CHANGE_FOR_UPDATE = 0f
-const val TIME_INTERVAL_UPDATES = 1000L
+const val TIME_INTERVAL_UPDATES = 500L
 const val KILL_SERVICE = "kill service"
 const val CHANNEL_ID = "channel_007"

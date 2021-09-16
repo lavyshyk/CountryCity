@@ -1,8 +1,8 @@
 package com.lavyshyk.domain.repository
 
 
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.LanguageDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.LanguageDto
 import io.reactivex.rxjava3.core.Flowable
 
 interface DataBaseRepository {

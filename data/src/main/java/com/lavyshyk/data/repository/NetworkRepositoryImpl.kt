@@ -4,9 +4,9 @@ import com.lavyshyk.data.network.RESTCountryService
 import com.lavyshyk.data.transformToCountryDetailDto
 import com.lavyshyk.data.transformToCountryDto
 import com.lavyshyk.data.transformToCountryInfoMapDto
-import com.lavyshyk.domain.dto.CountryDataDetailDto
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.CountryInfoMapDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.CountryInfoMapDto
 import com.lavyshyk.domain.repository.NetworkRepository
 import io.reactivex.rxjava3.core.Flowable
 

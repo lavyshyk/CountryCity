@@ -1,4 +1,4 @@
-package com.lavyshyk.data.model
+package com.lavyshyk.data.model.capitals
 
 import com.google.gson.annotations.SerializedName
 

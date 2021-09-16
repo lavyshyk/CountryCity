@@ -5,47 +5,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     android:background="@color/white">
-    <androidx.constraintlayout.widget.Guideline
-        android:layout_width="@dimen/zero_dp"
-        android:layout_height="@dimen/zero_dp"
-        android:id="@+id/guideline_centr"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.2"/>
+<!--    <androidx.constraintlayout.widget.Guideline-->
+<!--        android:layout_width="@dimen/zero_dp"-->
+<!--        android:layout_height="@dimen/zero_dp"-->
+<!--        android:id="@+id/guideline_centr"-->
+<!--        android:orientation="vertical"-->
+<!--        app:layout_constraintGuide_percent="0.2"/>-->
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_dialog"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/text_view_18sp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/quick_search"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toTopOf="@id/mETNameCountry"
+        android:textSize="@dimen/text_view_32"
+        android:layout_margin="@dimen/_24pd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/mETNameCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/title_dialog"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:hint="@string/enter_name_country"
-        android:id="@+id/mETNameCountry"/>
+        android:textSize="@dimen/_16sp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_dialog" />
+
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mButtonNo"
-        app:layout_constraintStart_toStartOf="@id/guideline_centr"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/mButtonYes"
         app:layout_constraintTop_toBottomOf="@id/mETNameCountry"
         android:text="@string/no"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:textColor="@color/teal_200"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"/>
+
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mButtonYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/mButtonNo"
-        app:layout_constraintTop_toBottomOf="@id/mETNameCountry"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="@string/yes"
+        android:layout_marginStart="4dp"
         android:clickable="false"
-        android:id="@+id/mButtonYes"
-        android:layout_marginStart="@dimen/padding8"/>
+        android:background="@color/white"
+        android:text="@string/yes"
+        android:textColor="@color/teal_200"
+        android:textColorHint="@color/teal_700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mButtonNo"
+        app:layout_constraintTop_toBottomOf="@id/mETNameCountry" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,12 +5,16 @@
       <map>
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/activity_main.xml" value="1.6458333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/custom_state_bar.xml" value="0.825" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/dialog_search.xml" value="1.7041666666666666" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_country_details.xml" value="0.965625" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item.xml" value="0.8541666666666666" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item_language.xml" value="1.6375" />
-        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_list.xml" value="1.659375" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item_news.xml" value="0.8472222222222222" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_list.xml" value="1.043010752688172" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_list_capitals.xml" value="1.659375" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_map_of_countries.xml" value="1.659375" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_news_item.xml" value="1.5" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_start.xml" value="0.5961538461538461" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/menu/bottom_nav_view.xml" value="1.6458333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/menu/tool_bar_sort_and_search.xml" value="0.8471074380165289" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/menu/tool_bar_with_search_view.xml" value="0.965625" />

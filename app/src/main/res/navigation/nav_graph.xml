@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="com.lavyshyk.countrycity.ui.StartFragment"
+        android:name="com.lavyshyk.countrycity.ui.startFragment.StartFragment"
         android:label="Country App"
         tools:layout="@layout/fragment_start" >
         <action

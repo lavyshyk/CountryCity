@@ -10,7 +10,7 @@ import com.lavyshyk.domain.useCase.implementetion.netCase.flow.GetAllCapitalsFro
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val capitalListModel = module {
+val capitalListModule = module {
     scope<FragmentListOfCapitals> {
         scoped { GetAllCapitalsFromApiUseCase(get()) }
         scoped { GetAllCapitalsFromApiFlowUseCase(get()) }

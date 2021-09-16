@@ -1,6 +1,6 @@
 package com.lavyshyk.data.iterator
 
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.flow.FilterFlowRep
 import com.lavyshyk.domain.repository.flow.NetworkFlowCountryRepository

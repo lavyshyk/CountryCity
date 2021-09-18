@@ -90,7 +90,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 if (intent != null && intent.action != null) {
                     when (intent.action) {
                         LocationTrackingService.NEW_LOCATION_ACTION -> {
-                            intent.getParcelableExtra<Location>("location")
+                            intent.getParcelableExtra<Location>(LOCATION_KEY)
                                 ?.let { mLocationTemp = it }
                         }
                     }
@@ -133,7 +133,6 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                     mViewModel.saveDataFromApiToDB(it.data)
                 }
                 is Outcome.Failure -> {
-                    mViewModel.getCountryListFromDB()
                     hideProgress()
                     showError(it.t.message.toString(), it.t)
                 }

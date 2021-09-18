@@ -97,6 +97,9 @@ class CountryListViewModel(
                             val location = countryDto.getLocationCountry()
                             countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
                         }
+                    }
+                    .doOnError{
+                              mGetCountiesFromDataBaseUseCase.execute()
                     }, mCountyLiveData
             )
         )

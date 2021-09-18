@@ -7,7 +7,8 @@ import com.lavyshyk.countrycity.base.mvi.ViewIntent
  **/
 sealed class StartIntent : ViewIntent {
 
-    data class LoadNews(val countryCode: String) : StartIntent()
+    data class LoadNewsByCode(val countryCode: String) : StartIntent()
+    object LoadNews : StartIntent()
     data class Exception(val t: Throwable): StartIntent()
 
 }

@@ -7,5 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsNetworkRepositoryOnFlow {
 
-    fun getNews(countryCode: String): Flow<Outcome<List<ArticleDto>>>
+    fun getNewsByCountryCode(countryCode: String): Flow<Outcome<List<ArticleDto>>>
+
+    fun getNewsByCountryName(countryName: String): Flow<Outcome<List<ArticleDto>>>
 }

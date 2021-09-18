@@ -75,3 +75,10 @@ const val DISTANCE_CHANGE_FOR_UPDATE = 0f
 const val TIME_INTERVAL_UPDATES = 500L
 const val KILL_SERVICE = "kill service"
 const val CHANNEL_ID = "channel_007"
+const val LOCATION_KEY= "location"
+
+/*
+NEWS API
+ */
+const val KEY_HEADER = "X-Api-Key"
+const val VALUE_HEADER = "a46503b629984dc0a3b9996ea564a340"

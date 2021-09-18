@@ -129,7 +129,7 @@ class LocationTrackingService : Service(), LocationListener {
     override fun onLocationChanged(location: Location) {
         val intent = Intent().apply {
             action = NEW_LOCATION_ACTION
-            putExtra("location", mLocation)
+            putExtra(LOCATION_KEY, mLocation)
             Log.e("location", " put location")
         }
         sendBroadcast(intent)

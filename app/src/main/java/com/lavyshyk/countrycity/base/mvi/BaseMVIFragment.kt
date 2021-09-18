@@ -1,17 +1,32 @@
 package com.lavyshyk.countrycity.base.mvi
 
+import android.os.Bundle
 import android.view.View
-import androidx.annotation.LayoutRes
-import org.koin.androidx.scope.ScopeFragment
 
-abstract class BaseMVIFragment<INTENT : ViewIntent, ACTION : ViewAction, STATE : ViewState>(@LayoutRes val layoutId: Int) : ScopeFragment(layoutId),
-     IViewRenderer<STATE> {
+abstract class BaseMVIFragment<INTENT : ViewIntent, ACTION : ViewAction, STATE : ViewState, VMODEL : BaseViewModel<INTENT, ACTION, STATE>>(
+    private val modelClass: Class<VMODEL>
+) :
+    RootFragment(), IViewRenderer<STATE> {
 
-   protected lateinit  var viewState: STATE
+    protected lateinit var viewState: STATE
     val mState get() = viewState
+
+    private val mViewModel: VMODEL by lazy {
+        viewModelProvider(this.viewModelFactory, modelClass.kotlin)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mViewModel.state.observe(viewLifecycleOwner, {
+            viewState = it
+            render(it)
+        })
+    }
 
     abstract fun initUI(view: View)
     abstract fun initData()
     abstract fun initEvent()
     abstract fun showError(error: String, throwable: Throwable)
+    fun dispatchIntent(intent: INTENT) {
+        mViewModel.dispatchIntent(intent)
+    }
 }

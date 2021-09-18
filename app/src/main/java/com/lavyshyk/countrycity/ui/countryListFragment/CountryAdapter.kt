@@ -86,7 +86,7 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
         } else {
             item.setDislike()
         }
-        notifyDataSetChanged()
+        notifyItemChanged(mDataList.indexOf(item))
     }
 
 

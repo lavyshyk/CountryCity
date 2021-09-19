@@ -2,6 +2,7 @@ package com.lavyshyk.countrycity.ui.ext
 
 import android.content.Context
 import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.util.convertToCorrectArea
 import com.lavyshyk.domain.dto.country.CountryDataDetailDto
 
 fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): String {
@@ -14,7 +15,7 @@ fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): S
     }. \n${
         context.getString(
             R.string.description_of_country,
-            countryDataDetail.area.toString(),
+            countryDataDetail.convertToCorrectArea().toString(),
             countryDataDetail.population.toString()
         )
     } \n${

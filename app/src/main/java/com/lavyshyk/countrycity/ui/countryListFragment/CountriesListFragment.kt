@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.slider.RangeSlider
@@ -25,8 +26,10 @@ import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvvm.IBaseMvvmView
 import com.lavyshyk.countrycity.databinding.BottomSheetFragmentBinding
 import com.lavyshyk.countrycity.databinding.FragmentListBinding
+import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
 import com.lavyshyk.countrycity.service.LocationTrackingService
 import com.lavyshyk.countrycity.ui.ext.showDialogQuickSearch
+import com.lavyshyk.countrycity.util.convertToCorrectArea
 import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
@@ -37,12 +40,12 @@ import org.koin.androidx.viewmodel.ext.android.stateViewModel
 
 class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
-
     private var fragmentListBinding: FragmentListBinding? = null
     private lateinit var binding: FragmentListBinding
     private lateinit var mAdapter: CountryAdapter
     private lateinit var mProgress: FrameLayout
     private lateinit var bottomSheet: ConstraintLayout
+    private lateinit var mSRCountryList: SwipeRefreshLayout
     private lateinit var sheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var bottomSheetFragmentBinding: BottomSheetFragmentBinding? = null
     private var leftPopulation: Float = MIN_POPULATION
@@ -51,6 +54,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     private var rightArea: Float = MAX_AREA
     private val mViewModel: CountryListViewModel by stateViewModel()
     private val mFilterRepository: FilterRepository by inject()
+    private val mSharedPreferences: SharedPrefRepository by inject()
     private lateinit var headerPeek: AppCompatImageView
     private var bundle = Bundle()
     private lateinit var mEditText: AppCompatEditText
@@ -83,7 +87,9 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initUI(view)
+
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         mBroadcastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -101,19 +107,23 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
         mViewModel.putCurrentLocation(mLocationTemp)
 
+        mSRCountryList.setOnRefreshListener { mViewModel.getCountriesFromApi(true) }
+
         mViewModel.getCountriesFromApi()
 
         mViewModel.mSortedCountryList.observe(viewLifecycleOwner, {
             when (it) {
                 is Outcome.Progress -> {
-                    showProgress()
+                    if (it.loading) {
+                        showProgress()
+                    } else {
+                        hideProgress()
+                    }
                 }
                 is Outcome.Next -> {
-                    hideProgress()
                     showCountryData(it.data)
                 }
                 is Outcome.Failure -> {
-                    hideProgress()
                     showError(it.t.message.toString(), it.t)
                 }
                 is Outcome.Success -> {
@@ -125,15 +135,18 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         mViewModel.mCountyLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Outcome.Progress -> {
-                    showProgress()
+                    if (it.loading) {
+                        showProgress()
+                    } else {
+                        hideProgress()
+                    }
                 }
                 is Outcome.Next -> {
                     showCountryData(it.data)
-                    hideProgress()
                     mViewModel.saveDataFromApiToDB(it.data)
                 }
                 is Outcome.Failure -> {
-                    hideProgress()
+                    mViewModel.getCountryListFromDB()
                     showError(it.t.message.toString(), it.t)
                 }
                 is Outcome.Success -> {
@@ -147,9 +160,8 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                     bundle.putString(COUNTRY_NAME_KEY, item.name)
                     findNavController().navigate(
                         R.id.action_listFragment_to_countryDetailsFragment,
-                        bundle
-                    )
-                    mViewModel.putSharedPrefString(COUNTRY_NAME_FOR_NAV_KEY, item.name)
+                        bundle )
+                    mSharedPreferences.putStringSharedPref(COUNTRY_NAME_FOR_NAV_KEY, item.name)
                 }
                 DISLIKE -> mAdapter.refreshLikeItem(item, false)
                 LIKE -> mAdapter.refreshLikeItem(item, true)
@@ -186,7 +198,6 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                         }
                     }
                 }
-
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
 
@@ -194,16 +205,16 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
             RangeSlider.OnChangeListener { slider, value, fromUser ->
                 leftArea = slider.values[0]
                 rightArea = slider.values[1]
-                mTextMinArea.text = leftArea.toString()
-                mTextMaxArea.text = rightArea.toString()
+                mTextMinArea.text = String.format("%5.0f km2",leftArea)
+                mTextMaxArea.text = String.format("%5.0f km2",rightArea)
                 mFilterRepository.processNewArea(leftArea, rightArea)
             })
         mRSliderPopulation.addOnChangeListener(
             RangeSlider.OnChangeListener { slider, value, fromUser ->
                 leftPopulation = slider.values[0]
                 rightPopulation = slider.values[1]
-                mTextMinPopulation.text = leftPopulation.toString()
-                mTextMaxPopulation.text = rightPopulation.toString()
+                mTextMinPopulation.text = String.format("%5.0f ppl",leftPopulation)
+                mTextMaxPopulation.text = String.format("%5.0f ppl",rightPopulation)
                 mFilterRepository.processNewPopulation(leftPopulation, rightPopulation)
             })
     }
@@ -215,19 +226,18 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         context?.unregisterReceiver(mBroadcastReceiver)
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tool_bar_sort_and_search, menu)
         super.onCreateOptionsMenu(menu, inflater)
-        if (mViewModel.getSharedPrefBoolean(ITEM_SORT_STATUS)) {
+        if (mSharedPreferences.getBooleanFromSharedPref(ITEM_SORT_STATUS)) {
             menu.findItem(R.id.sortCountries)
                 .setIcon(R.drawable.ic_action_list_sort_to_big)
-                .isChecked = mViewModel.getSharedPrefBoolean(ITEM_SORT_STATUS)
+                .isChecked = mSharedPreferences.getBooleanFromSharedPref(ITEM_SORT_STATUS)
             mAdapter.sortAndReplaceItem()
         } else {
             menu.findItem(R.id.sortCountries)
                 .setIcon(R.drawable.ic_action_list_sort_to_small)
-                .isChecked = mViewModel.getSharedPrefBoolean(ITEM_SORT_STATUS)
+                .isChecked = mSharedPreferences.getBooleanFromSharedPref(ITEM_SORT_STATUS)
             mAdapter.sortDescendingAndReplaceItem()
         }
     }
@@ -236,11 +246,13 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         R.id.searchCountry -> {
             var search = ""
             activity?.showDialogQuickSearch(
-                "Search country", R.string.no, null,
+                getString(R.string.search_country), R.string.no, null,
                 R.string.yes, {
-                    search =
-                        bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
+                    search = bundle.getString(COUNTRY_NAME_KEY_FOR_DIALOG, "").toString().lowercase()
                     mFilterRepository.processNewQuery(search)
+                    mFilterRepository.processNewArea(MIN_AREA, MAX_AREA)
+                    mFilterRepository.processNewDistance(Float.MAX_VALUE)
+                    mFilterRepository.processNewPopulation(MIN_POPULATION, MAX_POPULATION)
                     mViewModel.getSortedListCountry()
                 }, bundle
             )
@@ -254,12 +266,12 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
             if (item.isChecked) {
                 mAdapter.sortDescendingAndReplaceItem()
                 item.isChecked = SORT_TO_BIG
-                mViewModel.putSharedPrefBoolean(ITEM_SORT_STATUS, item.isChecked)
+                mSharedPreferences.putBooleanSharedPref(ITEM_SORT_STATUS, item.isChecked)
                 item.setIcon(R.drawable.ic_action_list_sort_to_big)
             } else {
                 mAdapter.sortAndReplaceItem()
                 item.isChecked = SORT_TO_SMALL
-                mViewModel.putSharedPrefBoolean(ITEM_SORT_STATUS, item.isChecked)
+                mSharedPreferences.putBooleanSharedPref(ITEM_SORT_STATUS, item.isChecked)
                 item.setIcon(R.drawable.ic_action_list_sort_to_small)
             }
             true
@@ -268,17 +280,11 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
     }
 
     private fun showCountryData(countries: MutableList<CountryDto>) {
-        countries.let {
-            if (mViewModel.getSharedPrefBoolean(ITEM_SORT_STATUS)) {
-                mAdapter.repopulateSorted(it)
-            } else {
-                mAdapter.repopulateDescendingSorted(it)
-            }
-        }
+        countries.let { mAdapter.repopulate(it) }
+        mSRCountryList.isRefreshing = false
     }
 
     override fun showError(error: String, throwable: Throwable) {
-
         Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -295,6 +301,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         mAdapter = CountryAdapter()
         binding.recView.adapter = mAdapter
         binding.recView.layoutManager = LinearLayoutManager(this.activity)
+        binding.mSrCountryList?.let { mSRCountryList = it }
         bottomSheet = view.findViewById(R.id.mBottomSheetFilter)
         bottomSheetFragmentBinding = BottomSheetFragmentBinding.bind(bottomSheet)
         sheetBehavior = from(bottomSheet)
@@ -317,29 +324,26 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
         mFilterRepository.processNewQuery("")
         val currentListCountries = mAdapter.getCurrentListCountries()
         if (currentListCountries.size > 1) {
-            val maxArea = currentListCountries.maxOf { it.area }
-            val minArea = currentListCountries.minOf { it.area }
+            val maxArea = currentListCountries.maxOf { it.convertToCorrectArea().toFloat() }
+            val minArea = currentListCountries.minOf { it.convertToCorrectArea().toFloat() }
             val maxPopulation = currentListCountries.maxOf { it.population.toFloat() }
             val minPopulation = currentListCountries.minOf { it.population.toFloat() }
             mRSliderArea.setValues(minArea, maxArea)
             mRSliderPopulation.setValues(minPopulation, maxPopulation)
-            mTextMinArea.text = minArea.toString()
-            mTextMaxArea.text = maxArea.toString()
-            mTextMinPopulation.text = minPopulation.toString()
-            mTextMaxPopulation.text = maxPopulation.toString()
+            mTextMinArea.text = String.format("%5.0f km2", minArea)
+            mTextMaxArea.text = String.format("%5.0f km2", maxArea)
+            mTextMinPopulation.text =  String.format("%5.0f ppl", minPopulation)
+            mTextMaxPopulation.text = String.format("%5.0f ppl", maxPopulation)
         } else {
-
             mRSliderArea.setValues(MIN_AREA, MAX_AREA)
             mRSliderPopulation.setValues(MIN_POPULATION, MAX_POPULATION)
-            mTextMinArea.text = MIN_AREA.toString()
-            mTextMaxArea.text = MAX_AREA.toString()
-            mTextMinPopulation.text = MIN_POPULATION.toString()
-            mTextMaxPopulation.text = MAX_POPULATION.toString()
+            mTextMinArea.text = String.format("%5.0f km2", MIN_AREA)
+            mTextMaxArea.text = String.format("%5.0f km2", MAX_AREA)
+            mTextMinPopulation.text = String.format("%5.0f ppl", MIN_POPULATION)
+            mTextMaxPopulation.text = String.format("%5.0f ppl", MAX_POPULATION)
         }
         mEditText.setText("")
     }
-
-
 }
 
 

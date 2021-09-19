@@ -46,6 +46,7 @@ const val SORTED_COUNTRY_DTO = "sortedCountryDto"
 const val SEARCHED_LIST_COUNTRIES = "searchListCountries"
 const val MY_CURRENT_LOCATION = "myCurrentLocation"
 const val CAPITAL_DTO = "capitalDto"
+const val TO_K_KM = 1000_000
 
 /*
 TimeUnits

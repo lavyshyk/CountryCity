@@ -31,16 +31,11 @@ class StartViewModel @Inject constructor(
                 is StartAction.GetNewsByCode -> {
                     mNewsNetworkRepositoryOnFlowForDaggerImpl
                         .getNewsByCountryCodeDagger(action.countryCode.lowercase())
-                        .collect {
-                            mState.value = it.reduce()
-                        }
+                        .collect { mState.value = it.reduce() }
                 }
                 is StartAction.GetNews -> {
                     mNewsNetworkRepositoryOnFlowForDaggerImpl.getNewsDagger()
-                        .collect {
-                            mState.value = it.reduce()
-                        }
-
+                        .collect { mState.value = it.reduce() }
                 }
                 is StartAction.Fail -> {
                     mState.value = (Outcome.failure<List<ArticleDto>>(action.t)).reduce()

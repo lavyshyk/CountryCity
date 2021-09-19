@@ -10,6 +10,7 @@ import com.lavyshyk.countrycity.DISLIKE
 import com.lavyshyk.countrycity.LIKE
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
+import com.lavyshyk.countrycity.util.convertToCorrectArea
 import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.dto.country.setDislike
 import com.lavyshyk.domain.dto.country.setLike
@@ -47,7 +48,7 @@ class CountryAdapter : BaseAdapter<CountryDto>() {
             val mPopulation =
                 holder.itemView.context.getString(R.string.population_is, item.population)
             holder.tvPopulation.text = if (item.population == 0L) "" else mPopulation
-            val mArea = holder.itemView.context.getString(R.string.area_is, item.area.toString())
+            val mArea = holder.itemView.context.getString(R.string.area_is, item.convertToCorrectArea().toString())
             holder.tvArea.text = if (item.area.toString().isEmpty()) "" else mArea
             val mDistance = String.format("%3.2f Kkm", item.distance)
             holder.tvNativeName.setOnClickListener { mClickFunction?.invoke(item.nativeName, item) }

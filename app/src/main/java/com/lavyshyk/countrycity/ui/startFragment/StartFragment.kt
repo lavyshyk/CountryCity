@@ -48,9 +48,8 @@ class StartFragment :
             this.longitude = 0.0
         }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        mGeocoder = Geocoder(context, Locale.getDefault())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (context?.checkLocationPermission() == true) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 this.context?.startForegroundService(
@@ -68,7 +67,26 @@ class StartFragment :
                 )
             }
         }
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mGeocoder = Geocoder(context, Locale.getDefault())
+
+        mBroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent != null && intent.action != null) {
+                    when (intent.action) {
+                        LocationTrackingService.NEW_LOCATION_ACTION -> {
+                            intent.getParcelableExtra<Location>(LOCATION_KEY)
+                                ?.let { mLocationTemp = it }
+                            getGetNewsFromLocation(mLocationTemp)
+                        }
+                    }
+                }
+            }
+        }
+        context?.registerReceiver(mBroadcastReceiver, intentFilter)
         initUI(view)
         initData()
         initEvent()
@@ -85,22 +103,7 @@ class StartFragment :
         mRecycler.adapter = mAdapter
     }
 
-    override fun initData() {
-        mBroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent != null && intent.action != null) {
-                when (intent.action) {
-                    LocationTrackingService.NEW_LOCATION_ACTION -> {
-                        intent.getParcelableExtra<Location>(LOCATION_KEY)
-                            ?.let { mLocationTemp = it }
-                        getGetNewsFromLocation(mLocationTemp)
-                    }
-                }
-            }
-        }
-    }
-        context?.registerReceiver(mBroadcastReceiver, intentFilter)
-    }
+    override fun initData() {}
     override fun initEvent() {}
 
     override fun render(state: StartState) {
@@ -116,8 +119,8 @@ class StartFragment :
             is StartState.ResultNews -> {
                 if (state.data.isNotEmpty()){
                     mAdapter.repopulate(state.data.toMutableList())
-                    activity?.showAlertDialog()
                 } else {
+                    activity?.showAlertDialog()
                     dispatchIntent(StartIntent.LoadNews)
                 }
             }

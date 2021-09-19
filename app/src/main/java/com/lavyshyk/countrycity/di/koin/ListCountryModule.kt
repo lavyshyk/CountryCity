@@ -22,9 +22,8 @@ val countryListModule = module {
 
         viewModel { (handle: SavedStateHandle) ->
             CountryListViewModel(
-                handle, get(), get(), get(), get(), get(), get(), get()
+                handle, get(), get(), get(), get(), get(), get()
             )
         }
-
     }
 }

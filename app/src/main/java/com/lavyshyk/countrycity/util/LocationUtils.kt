@@ -3,11 +3,13 @@ package com.lavyshyk.countrycity.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import android.location.LocationManager
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
+import com.lavyshyk.domain.dto.country.CountryDto
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.core.Flowable
 
@@ -56,4 +58,13 @@ fun getCurrentLocationFlowable(context: Context): Flowable<Location> {
         LocationServices.getFusedLocationProviderClient(context)
             .requestLocationUpdates(mLocationRequest, mLocationCallback, null)
     }, BackpressureStrategy.LATEST)
+}
+fun CountryDto.getLocationCountry(): Location {
+    val location = Location(LocationManager.GPS_PROVIDER)
+    val countryDto = this
+    location.apply {
+        this.latitude = countryDto.latlng[0]
+        this.longitude = countryDto.latlng[1]
+        return location
+    }
 }

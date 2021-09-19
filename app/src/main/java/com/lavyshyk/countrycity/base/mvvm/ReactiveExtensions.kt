@@ -30,8 +30,8 @@ fun  Completable.executeOnIOThread(): Completable{
  * Extension function to subscribe [Flowable] on IO thread and observe in UI thread.
  */
 fun <T> Flowable<T>.executeOnIOThread(): Flowable<T> {
-    return this.subscribeOn(Schedulers.io()).
-            observeOn(AndroidSchedulers.mainThread())
+    return this.
+            observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
 }
 
 /**

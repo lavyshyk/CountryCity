@@ -3,10 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/drawable/drawable_dialog.xml" value="1.6958333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/activity_main.xml" value="1.6458333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/custom_state_bar.xml" value="0.825" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/dialog_search.xml" value="1.7041666666666666" />
-        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_country_details.xml" value="0.965625" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_country_details.xml" value="0.1" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item.xml" value="0.8541666666666666" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item_language.xml" value="1.6375" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item_news.xml" value="0.8472222222222222" />

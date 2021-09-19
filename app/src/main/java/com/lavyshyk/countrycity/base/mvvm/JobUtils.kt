@@ -53,8 +53,21 @@ fun <T> MutableLiveData<Outcome<T>>.failed(t: Throwable) {
  */
 
 
-fun <T> executeJob(job: Flowable<T>, outcome: MutableLiveData<Outcome<T>>): Disposable {
+fun <T> executeJob(job: Flowable<T>, outcome: MutableLiveData<Outcome<T>> ): Disposable {
     outcome.loading(true)
+    return job.executeOnIOThread()
+        .subscribe({
+            outcome.next(it)
+        }, {
+            outcome.failed(it)
+        }, {
+            if (outcome.value is Outcome.Next) {
+                outcome.success((outcome.value as Outcome.Next).data)
+            }
+        })
+}
+ fun <T> executeJobWithHandleProgress(job: Flowable<T>, outcome: MutableLiveData<Outcome<T>>, isRefresh: Boolean ): Disposable {
+    outcome.loading(!isRefresh)
     return job.executeOnIOThread()
         .subscribe({
             outcome.next(it)

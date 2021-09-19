@@ -43,7 +43,6 @@ class LocationTrackingService : Service(), LocationListener {
     private fun initNotification() {
         val intent = Intent(this,MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        //val penIntent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val mChannel =
                 NotificationChannel(
@@ -66,8 +65,6 @@ class LocationTrackingService : Service(), LocationListener {
                 .setSmallIcon(R.drawable.navigation)
                 .setContentText(getString(R.string.text_notification_location_tracking))
                 .setContentIntent(pendingIntent)
-               // .addAction()
-                //.setFullScreenIntent(pendingIntent, true)  --- Only for use with extremely high-priority notifications like Call phone
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 this.priority = NotificationManager.IMPORTANCE_DEFAULT
             } else {
@@ -107,14 +104,11 @@ class LocationTrackingService : Service(), LocationListener {
                             if (mLocationManager != null) {
                                 mLocation =
                                     mLocationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                                Log.e("location", " get location")
-
                             }
                         }
                     }
                 }
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -125,12 +119,10 @@ class LocationTrackingService : Service(), LocationListener {
         return null
     }
 
-
     override fun onLocationChanged(location: Location) {
         val intent = Intent().apply {
             action = NEW_LOCATION_ACTION
             putExtra(LOCATION_KEY, mLocation)
-            Log.e("location", " put location")
         }
         sendBroadcast(intent)
     }

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">CountryCity</string>
-    <string name="API_KEY">AIzaSyBTfSjSNEkLmpJ6Lmv7w_gLZAStxVIK428</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">     Hello it is Country and city App.\nLet you show you the latest news relevant to your location.</string>
     <string name="start">Start</string>

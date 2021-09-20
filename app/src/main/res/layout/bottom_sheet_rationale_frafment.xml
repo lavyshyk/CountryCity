@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iVLocationSet2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_32"
+        android:src="@drawable/location_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/lineGreen2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_view"
+        android:layout_marginTop="@dimen/_32"
+        android:layout_marginBottom="@dimen/_4dp"
+        android:foreground="@color/teal_200"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iVLocationSet2"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textDontAsk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16"
+        android:layout_marginTop="@dimen/_32"
+        android:layout_marginEnd="@dimen/_16"
+        android:text="@string/permission_rationale_location"
+        android:textSize="@dimen/text_view_18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lineGreen2" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_32"
+        android:layout_marginBottom="@dimen/_32"
+        android:background="@drawable/drawable_button"
+        android:text="@string/allow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textDontAsk" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

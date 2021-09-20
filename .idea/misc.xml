@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/drawable/drawable_button.xml" value="1.5833333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/drawable/drawable_dialog.xml" value="1.6958333333333333" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/activity_main.xml" value="1.6458333333333333" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/bottom_sheet_dont_ask_fragment.xml" value="1.1" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/bottom_sheet_racionale_fragment.xml" value="2.2" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/bottom_sheet_rationale_frafment.xml" value="0.7031578947368421" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/custom_state_bar.xml" value="0.825" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/dialog_search.xml" value="1.7041666666666666" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_country_details.xml" value="0.1" />
@@ -13,7 +17,7 @@
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_item_news.xml" value="0.8472222222222222" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_list.xml" value="1.043010752688172" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_list_capitals.xml" value="1.659375" />
-        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_map_of_countries.xml" value="1.659375" />
+        <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_map_of_countries.xml" value="0.8492462311557789" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_news_item.xml" value="1.5" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/layout/fragment_start.xml" value="0.5961538461538461" />
         <entry key="..\:/kotlin/CountryCity/app/src/main/res/menu/bottom_nav_view.xml" value="1.6458333333333333" />

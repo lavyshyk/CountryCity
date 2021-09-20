@@ -83,3 +83,12 @@ NEWS API
  */
 const val KEY_HEADER = "X-Api-Key"
 const val VALUE_HEADER = "a46503b629984dc0a3b9996ea564a340"
+
+/*
+Location Permission
+ */
+const val TAG_RATION = "rationale_tag"
+const val RATIONALE_KEY = "rationale_tag"
+const val SETTINGS_KEY = "settings_tag"
+const val RESULT_KEY = "camera_result_key"
+const val TAG_ASK = "dont_ask_tag"

@@ -1,5 +1,6 @@
 package com.lavyshyk.countrycity.ui.startFragment
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -8,15 +9,19 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.lavyshyk.countrycity.LOCATION_KEY
-import com.lavyshyk.countrycity.R
+import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvi.BaseMVIFragment
 import com.lavyshyk.countrycity.databinding.FragmentStartBinding
 import com.lavyshyk.countrycity.service.LocationTrackingService
@@ -47,9 +52,24 @@ class StartFragment :
             this.latitude = 0.0
             this.longitude = 0.0
         }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val mLocationPermission =
+        registerForActivityResult(ActivityResultContracts.RequestPermission())
+        { granted ->
+        when {
+            granted -> {
+                // user granted permission
+                startLocationService()
+            }
+            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                // user denied permission and set Don't ask again.
+                showSettingsDialog()
+            }
+            else -> {
+                //showToast(R.string.denied_toast)
+            }
+        }
+    }
+    private fun startLocationService() {
         if (context?.checkLocationPermission() == true) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 this.context?.startForegroundService(
@@ -87,6 +107,27 @@ class StartFragment :
             }
         }
         context?.registerReceiver(mBroadcastReceiver, intentFilter)
+
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // we need to tell user why do we need permission
+            showRationaleDialog()
+        } else {
+            mLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+
+        setFragmentResultListener(RATIONALE_KEY) { _, bundle ->
+            val isWantToAllowAfterRationale = bundle.getBoolean(RESULT_KEY)
+            if (isWantToAllowAfterRationale) {
+                mLocationPermission.launch(Manifest.permission.CAMERA)
+            }
+        }
+
+        setFragmentResultListener(SETTINGS_KEY) { _, bundle ->
+            val isWantToOpenSettings = bundle.getBoolean(RESULT_KEY)
+            if (isWantToOpenSettings) {
+                openSettings()
+            }
+        }
         initUI(view)
         initData()
         initEvent()
@@ -154,6 +195,28 @@ class StartFragment :
             dispatchIntent(StartIntent.Exception(e))
         }
     }
+    private fun showToast(textId: Int) {
+        Toast.makeText(context, textId, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showRationaleDialog() {
+        RationaleFragment().show(parentFragmentManager, TAG_RATION)
+    }
+
+    private fun showSettingsDialog() {
+        DontAskAgainFragment().show(parentFragmentManager, TAG_ASK)
+    }
+    private fun openSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            .setData(Uri.fromParts("package", requireContext().packageName, null))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+//    companion object {
+//        const val RATIONALE_KEY = "rationale_tag"
+//        const val SETTINGS_KEY = "settings_tag"
+//        const val RESULT_KEY = "camera_result_key"
+//    }
 }
 
 

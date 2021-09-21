@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
+import com.lavyshyk.countrycity.NEWS
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
 import com.lavyshyk.countrycity.util.loadJpgFlag
@@ -30,10 +31,10 @@ class NewsAdapter : BaseAdapter<ArticleDto>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is NewsViewHolder) {
             val item = mDataList[position]
-
             holder.mTvTitle.text = item.title
             holder.mTvDescription.text = item.description
             holder.mIvNews.loadJpgFlag(item.urlToImage)
+            holder.itemView.setOnClickListener { mClickFunction?.invoke(NEWS, item) }
         }
     }
 }

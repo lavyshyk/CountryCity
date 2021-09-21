@@ -82,7 +82,7 @@ const val LOCATION_KEY= "location"
 NEWS API
  */
 const val KEY_HEADER = "X-Api-Key"
-const val VALUE_HEADER = "a46503b629984dc0a3b9996ea564a340"
+const val VALUE_HEADER = "0d3142f5fd4145058b9f30e19b3a21ef"
 
 /*
 Location Permission
@@ -92,3 +92,4 @@ const val RATIONALE_KEY = "rationale_tag"
 const val SETTINGS_KEY = "settings_tag"
 const val RESULT_KEY = "location_result_key"
 const val TAG_ASK = "dont_ask_tag"
+const val NEWS = "news"

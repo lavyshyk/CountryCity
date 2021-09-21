@@ -15,6 +15,9 @@ abstract class BaseMVIFragment<INTENT : ViewIntent, ACTION : ViewAction, STATE :
         viewModelProvider(this.viewModelFactory, modelClass.kotlin)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initUI(view)
+        initData()
+        initEvent()
         super.onViewCreated(view, savedInstanceState)
         mViewModel.state.observe(viewLifecycleOwner, {
             viewState = it

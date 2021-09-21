@@ -2,6 +2,7 @@ package com.lavyshyk.countrycity.ui.startFragment
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -12,10 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.RATIONALE_KEY
-import com.lavyshyk.countrycity.RESULT_KEY
-import com.lavyshyk.countrycity.TAG_RATION
+import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvi.BaseMVIFragment
 import com.lavyshyk.countrycity.databinding.FragmentStartBinding
 import com.lavyshyk.countrycity.service.LocationTrackingService
@@ -52,22 +50,16 @@ class StartFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showRationaleDialog()
-            } else {
-                mLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            showRationaleDialog()
+        } else {
+            mLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        initUI(view)
-        initData()
-        initEvent()
-
-
 
         setFragmentResultListener(RATIONALE_KEY) { _, bundle ->
             val allowAfterRationale = bundle.getBoolean(RESULT_KEY)
@@ -109,18 +101,27 @@ class StartFragment :
             }
             is StartState.Exception -> {
                 showError(state.t.message.toString(), state.t)
-                dispatchIntent(StartIntent.LoadNews)
             }
         }
     }
 
     override fun initData() {
-            dispatchIntent(StartIntent.LoadNewsByCode)
+        dispatchIntent(StartIntent.LoadNewsByCode)
     }
 
     override fun initEvent() {
         mSRefresh.setOnRefreshListener {
             initData()
+        }
+
+        mAdapter.setItemClick { key, item ->
+            when (key) {
+                NEWS -> {
+                    val openURL = Intent(Intent.ACTION_VIEW)
+                    openURL.data = Uri.parse(item.url)
+                    startActivity(openURL)
+                }
+            }
         }
     }
 

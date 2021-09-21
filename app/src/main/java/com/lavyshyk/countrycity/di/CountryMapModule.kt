@@ -5,7 +5,7 @@ import com.lavyshyk.countrycity.ui.mapCountry.MapCountryPresenter
 import com.lavyshyk.domain.useCase.implementetion.netCase.GetCountriesForMapFromApiUseCase
 import org.koin.dsl.module
 
-val countryMapModel = module {
+val countryMapModule = module {
     scope<MapCountryFragment> {
         scoped { GetCountriesForMapFromApiUseCase(get()) }
         scoped { MapCountryPresenter(get()) }

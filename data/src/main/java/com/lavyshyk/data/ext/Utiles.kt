@@ -2,11 +2,15 @@ package com.lavyshyk.data
 
 import com.lavyshyk.data.database.room.entyties.Country
 import com.lavyshyk.data.database.room.entyties.Language
-import com.lavyshyk.data.model.Capital
-import com.lavyshyk.data.model.CountryDataDetail
-import com.lavyshyk.data.model.CountryDataInfo
-import com.lavyshyk.data.model.CountryInfoForMap
-import com.lavyshyk.domain.dto.*
+import com.lavyshyk.data.model.capitals.Capital
+import com.lavyshyk.data.model.countries.CountryDataDetail
+import com.lavyshyk.data.model.countries.CountryDataInfo
+import com.lavyshyk.data.model.countries.CountryInfoForMap
+import com.lavyshyk.domain.dto.capital.CapitalDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.CountryInfoMapDto
+import com.lavyshyk.domain.dto.country.LanguageDto
 
 
 fun MutableList<Capital>.transformToListCapitalDto(): MutableList<CapitalDto> {

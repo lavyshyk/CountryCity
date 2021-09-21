@@ -1,7 +1,7 @@
 package com.lavyshyk.data.ext
 
-import com.lavyshyk.data.model.CountryDataInfo
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.data.model.countries.CountryDataInfo
+import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Transformer
 
 class ListCountryTransformer : Transformer<MutableList<CountryDataInfo>, MutableList<CountryDto>> {

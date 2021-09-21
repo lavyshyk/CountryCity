@@ -1,8 +1,8 @@
 package com.lavyshyk.domain.repository
 
-import com.lavyshyk.domain.dto.CountryDataDetailDto
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.CountryInfoMapDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.CountryInfoMapDto
 import io.reactivex.rxjava3.core.Flowable
 
 interface NetworkRepository {

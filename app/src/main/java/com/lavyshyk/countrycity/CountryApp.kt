@@ -17,8 +17,9 @@ class CountryApp : Application() {
                 appModule,
                 countryListModule,
                 countryDetailModule,
-                countryMapModel,
-                capitalListModel
+                countryMapModule,
+                capitalListModule,
+                startCountryModule
             )
         }
     }

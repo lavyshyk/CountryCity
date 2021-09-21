@@ -6,8 +6,8 @@ import com.lavyshyk.data.*
 import com.lavyshyk.data.database.CountryDatabase
 import com.lavyshyk.data.database.room.entyties.Country
 import com.lavyshyk.data.database.room.entyties.Language
-import com.lavyshyk.domain.dto.CountryDto
-import com.lavyshyk.domain.dto.LanguageDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.country.LanguageDto
 import com.lavyshyk.domain.repository.DataBaseRepository
 import io.reactivex.rxjava3.core.Flowable
 

@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity.ui.countryDetails
 
 import com.lavyshyk.countrycity.base.mvp.BaseMvpPresenter
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
-import com.lavyshyk.domain.dto.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
 import com.lavyshyk.domain.useCase.implementetion.netCase.GetCountyDetailInfoFromApiUseCase
 
 class CountryDetailPresenter(

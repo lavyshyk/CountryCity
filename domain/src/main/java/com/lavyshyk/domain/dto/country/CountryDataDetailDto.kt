@@ -1,4 +1,4 @@
-package com.lavyshyk.domain.dto
+package com.lavyshyk.domain.dto.country
 
 class CountryDataDetailDto(
     val name: String,

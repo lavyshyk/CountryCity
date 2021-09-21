@@ -1,9 +1,9 @@
 package com.lavyshyk.data.repository.flow
 
 import com.lavyshyk.data.ext.modifyFlow
-import com.lavyshyk.data.model.Capital
+import com.lavyshyk.data.model.capitals.Capital
 import com.lavyshyk.data.network.CountryServiceFlow
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.outcome.Transformer
 import com.lavyshyk.domain.repository.flow.NetworkFlowCapitalRepository

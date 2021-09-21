@@ -8,7 +8,7 @@ import com.lavyshyk.countrycity.base.mvvm.OutcomeCoroutine
 import com.lavyshyk.countrycity.base.mvvm.coroutineJobIO
 import com.lavyshyk.data.iterator.IteratorFilterByNameCapital
 import com.lavyshyk.data.iterator.IteratorFilterCountyByCapitalName
-import com.lavyshyk.domain.dto.CapitalDto
+import com.lavyshyk.domain.dto.capital.CapitalDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.useCase.implementetion.netCase.GetAllCapitalsFromApiUseCase
 import com.lavyshyk.domain.useCase.implementetion.netCase.flow.GetAllCapitalsFromApiFlowUseCase

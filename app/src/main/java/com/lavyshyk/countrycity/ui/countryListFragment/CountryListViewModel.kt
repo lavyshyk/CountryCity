@@ -11,7 +11,7 @@ import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
 import com.lavyshyk.countrycity.base.mvvm.addToComposite
 import com.lavyshyk.countrycity.base.mvvm.executeJob
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
 import com.lavyshyk.domain.useCase.implementetion.databaseCase.GetCountiesFromDataBaseUseCase

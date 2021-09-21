@@ -7,7 +7,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.lavyshyk.countrycity.R
 import com.lavyshyk.countrycity.base.adapter.BaseAdapter
-import com.lavyshyk.domain.dto.LanguageDto
+import com.lavyshyk.domain.dto.country.LanguageDto
 
 class LanguageAdapter : BaseAdapter<LanguageDto>() {
     class LanguageViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity.ui.ext
 
 import android.content.Context
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.domain.dto.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
 
 fun getDescription(countryDataDetail: CountryDataDetailDto, context: Context): String {
 

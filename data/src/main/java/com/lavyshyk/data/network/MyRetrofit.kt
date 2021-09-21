@@ -3,6 +3,7 @@ package com.lavyshyk.data.network
 import com.chenxyu.retrofit.adapter.FlowCallAdapterFactory
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.lavyshyk.data.BASE_URL
+import com.lavyshyk.data.BASE_URL_NEWS
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -49,13 +50,23 @@ object MyRetrofit {
             .client(httpClient.build())
             .build()
 
+    private fun getRetrofitNewsFlow(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_NEWS)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(FlowCallAdapterFactory())
+            .client(httpClient.build())
+            .build()
+
 
     fun createService(): RESTCountryService = getRetrofit().create(RESTCountryService::class.java)
 
     fun createServiceCoroutine(): CountryServiceCoroutine = getRetrofitCoroutine().create(
-        CountryServiceCoroutine::class.java
-    )
+        CountryServiceCoroutine::class.java)
 
     fun createServiceFlow(): CountryServiceFlow =
         getRetrofitFlow().create(CountryServiceFlow::class.java)
+
+    fun createServiceNewsFlow(): NewsServiceFlow =
+        getRetrofitNewsFlow().create(NewsServiceFlow::class.java)
 }

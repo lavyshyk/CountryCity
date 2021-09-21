@@ -7,8 +7,10 @@ import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
 import com.lavyshyk.data.database.CountryDatabase
 import com.lavyshyk.data.ext.ListCapitalTransformer
 import com.lavyshyk.data.ext.ListCountryTransformer
-import com.lavyshyk.data.model.Capital
-import com.lavyshyk.data.model.CountryDataInfo
+import com.lavyshyk.data.ext.NewsCountryTransformer
+import com.lavyshyk.data.model.capitals.Capital
+import com.lavyshyk.data.model.countries.CountryDataInfo
+import com.lavyshyk.data.model.news.NewsCountry
 import com.lavyshyk.data.network.MyRetrofit
 import com.lavyshyk.data.repository.DataBaseRepositoryImpl
 import com.lavyshyk.data.repository.FilterRepositoryImpl
@@ -17,8 +19,10 @@ import com.lavyshyk.data.repository.NetworkRepositoryOnCoroutineImpl
 import com.lavyshyk.data.repository.flow.FilterFlowRepImpl
 import com.lavyshyk.data.repository.flow.NetworkFlowCapitalRepositoryImpl
 import com.lavyshyk.data.repository.flow.NetworkFlowCountryRepositoryImpl
-import com.lavyshyk.domain.dto.CapitalDto
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.data.repository.flow.NewsNetworkRepositoryOnFlowImpl
+import com.lavyshyk.domain.dto.capital.CapitalDto
+import com.lavyshyk.domain.dto.country.CountryDto
+import com.lavyshyk.domain.dto.news.ArticleDto
 import com.lavyshyk.domain.outcome.Transformer
 import com.lavyshyk.domain.repository.DataBaseRepository
 import com.lavyshyk.domain.repository.FilterRepository
@@ -27,6 +31,7 @@ import com.lavyshyk.domain.repository.NetworkRepositoryOnCoroutine
 import com.lavyshyk.domain.repository.flow.FilterFlowRep
 import com.lavyshyk.domain.repository.flow.NetworkFlowCapitalRepository
 import com.lavyshyk.domain.repository.flow.NetworkFlowCountryRepository
+import com.lavyshyk.domain.repository.flow.NewsNetworkRepositoryOnFlow
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -39,6 +44,7 @@ val appModule = module {
     single { MyRetrofit.createService() }
     single { MyRetrofit.createServiceCoroutine() }
     single { MyRetrofit.createServiceFlow() }
+    single { MyRetrofit.createServiceNewsFlow() }
     single(named(DISPATCHER_IO)) { Dispatchers.IO }
 
     //Data level
@@ -52,10 +58,11 @@ val appModule = module {
 
     single<Transformer<MutableList<Capital>, MutableList<CapitalDto>>>(named("capital")) { ListCapitalTransformer() }
     single<Transformer<MutableList<CountryDataInfo>, MutableList<CountryDto>>>(named("country")) { ListCountryTransformer() }
+    single<Transformer<NewsCountry, List<ArticleDto>>>(named("news")) { NewsCountryTransformer() }
+
     single<NetworkFlowCapitalRepository> {
         NetworkFlowCapitalRepositoryImpl(
             get(),
-            //get(named("country")),  почему то меняет местами модели страны и столицы?????????
             get(named("capital")),
             get(named(DISPATCHER_IO))
         )
@@ -67,4 +74,12 @@ val appModule = module {
             get(named(DISPATCHER_IO))
         )
     }
+    single<NewsNetworkRepositoryOnFlow> {
+        NewsNetworkRepositoryOnFlowImpl(
+            get(),
+            get(named("news")),
+            get(named(DISPATCHER_IO))
+        )
+    }
+
 }

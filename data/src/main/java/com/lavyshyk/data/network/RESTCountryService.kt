@@ -1,9 +1,9 @@
 package com.lavyshyk.data.network
 
 
-import com.lavyshyk.data.model.CountryDataDetail
-import com.lavyshyk.data.model.CountryDataInfo
-import com.lavyshyk.data.model.CountryInfoForMap
+import com.lavyshyk.data.model.countries.CountryDataDetail
+import com.lavyshyk.data.model.countries.CountryDataInfo
+import com.lavyshyk.data.model.countries.CountryInfoForMap
 import io.reactivex.rxjava3.core.Flowable
 import retrofit2.http.GET
 import retrofit2.http.Path

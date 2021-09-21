@@ -26,3 +26,21 @@ import java.util.*
             }
         }
     }
+fun AppCompatImageView.loadJpgFlag(myUrl: String?) {
+        myUrl?.let {
+            if (it.lowercase(Locale.ENGLISH).endsWith("svg")) {
+                val imageLoader = ImageLoader.Builder(this.context)
+                    .componentRegistry {
+                        add(SvgDecoder(this@loadJpgFlag.context))
+                    }
+                    .build()
+                val request = LoadRequest.Builder(this.context)
+                    .data(it)
+                    .target(this)
+                    .build()
+                imageLoader.execute(request)
+            } else {
+                this.load(myUrl)
+            }
+        }
+    }

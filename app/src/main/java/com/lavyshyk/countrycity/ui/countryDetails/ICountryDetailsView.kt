@@ -1,7 +1,7 @@
 package com.lavyshyk.countrycity.ui.countryDetails
 
 import com.lavyshyk.countrycity.base.mvp.IBaseMvpView
-import com.lavyshyk.domain.dto.CountryDataDetailDto
+import com.lavyshyk.domain.dto.country.CountryDataDetailDto
 
 interface ICountryDetailsView : IBaseMvpView {
 

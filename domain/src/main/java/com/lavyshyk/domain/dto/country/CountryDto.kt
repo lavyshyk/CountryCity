@@ -1,4 +1,4 @@
-package com.lavyshyk.domain.dto
+package com.lavyshyk.domain.dto.country
 
 data class CountryDto(
     var name: String,

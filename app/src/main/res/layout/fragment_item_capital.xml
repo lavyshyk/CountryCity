@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/mTvCapital"
-        android:textSize="@dimen/text_size_24"/>
+        android:textSize="@dimen/text_size_24"
+        android:gravity="center"
+        android:padding="@dimen/_8dp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

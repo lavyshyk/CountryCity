@@ -1,9 +1,9 @@
 package com.lavyshyk.data.repository.flow
 
 import com.lavyshyk.data.ext.modifyFlow
-import com.lavyshyk.data.model.CountryDataInfo
+import com.lavyshyk.data.model.countries.CountryDataInfo
 import com.lavyshyk.data.network.CountryServiceFlow
-import com.lavyshyk.domain.dto.CountryDto
+import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.outcome.Transformer
 import com.lavyshyk.domain.repository.flow.NetworkFlowCountryRepository

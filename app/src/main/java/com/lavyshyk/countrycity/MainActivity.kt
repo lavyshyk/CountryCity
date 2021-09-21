@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme_BrandedLaunch)
         binding = ActivityMainBinding.inflate(layoutInflater)
         view = binding.root
         setContentView(view)

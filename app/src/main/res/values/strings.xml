@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">CountryCity</string>
-    <string name="API_KEY">AIzaSyBTfSjSNEkLmpJ6Lmv7w_gLZAStxVIK428</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">    Hello it is Country and city App.\n    Let you show you the latest news relevant to your location.</string>
+
+    <string name="hello_blank_fragment">     Hello it is Country and city App.\nLet you show you the latest news relevant to your location.</string>
     <string name="start">Start</string>
     <string name="list_frag">List</string>
     <string name="item_text">TextView</string>
     <string name="item_sort_to_small">Big -> small (by area)</string>
     <string name="item_sort_to_big">Small -> big (by area)</string>
-    <string name="capital_is">capital is %1$s</string>
+    <string name="capital_is">Capital is %1$s</string>
     <string name="population_is">population is %1$d people</string>
     <string name="area_is">area is %1$s square km</string>
     <string name="languages">languages : %1$s </string>
@@ -19,7 +18,7 @@
     <string name="enter_name_country">Enter name country</string>
     <string name="quick_search">Quick search</string>
     <string name="yes">YES</string>
-    <string name="hi_app">Hi, glad to see you, I hope you like my application.</string>
+    <string name="hi_app">Sorry, but we can\'t find news in you location.\n Let\'s see some articles.</string>
     <string name="wrong_county">Wrong name of country!</string>
     <string name="map">map</string>
     <string name="mapCountry">Map</string>
@@ -30,8 +29,8 @@
     <string name="enter_your_keyword">Enter your keyword</string>
 
     <!-- Permissions -->
-    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
-    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_rationale_location">Access to the location service is required to app, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This  requires location permission to enable . Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings </string>
     <string name="permission_required_toast">Location permission is required for this demo.</string>
     <string name="area_of_country">Area of country</string>
     <string name="_100">100</string>
@@ -54,6 +53,11 @@
     <string name="foreground_notification_name">name</string>
     <string name="foreground_channel_name">Location service by CountryCity</string>
     <string name="text_notification_location_tracking">Now app CountryCity execute a location tracking</string>
-
-
+    <string name="search_country">Search country</string>
+    <string name="setting">Setting</string>
+    <string name="allow">ALLOW</string>
+    <string name="denied_toast">Access is denied</string>
+    <string name="country">CountryCity</string>
+    <string name="denny">DENNY</string>
+    <string name="deny">DENY</string>
 </resources>

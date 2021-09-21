@@ -2,7 +2,7 @@ package com.lavyshyk.countrycity.ui.countryDetails
 
 import com.lavyshyk.countrycity.base.mvp.BaseMvpPresenter
 import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
-import com.lavyshyk.domain.dto.country.CountryDataDetailDto
+import com.lavyshyk.countrycity.util.getCurrentZoomFofMap
 import com.lavyshyk.domain.useCase.implementetion.netCase.GetCountyDetailInfoFromApiUseCase
 
 class CountryDetailPresenter(
@@ -18,7 +18,6 @@ class CountryDetailPresenter(
     fun putSharedPrefString(key: String, string: String){
         mSharedPrefRepository.putStringSharedPref(key, string)
     }
-
 
     fun setArgumentFromView(argument : String){
         nameCountry = argument
@@ -41,20 +40,5 @@ class CountryDetailPresenter(
                 }
             })
         )
-
-    }
-    private fun getCurrentZoomFofMap(country: CountryDataDetailDto):Float {
-        var zoom = 1F
-        when(country.area){
-            in 0F .. 1000F -> { zoom = 10F }
-            in 1001F..10000F -> { zoom = 8F }
-            in 10001F..70000F -> { zoom = 6F }
-            in 700001F..120000F -> { zoom = 5F }
-            in 120001F..1600000F -> { zoom = 4F }
-            in 1600001F..3000000F -> { zoom = 3F }
-            in 3000001F..10000000F -> { zoom = 2F }
-            else -> { zoom }
-        }
-        return zoom
     }
 }

@@ -6,11 +6,13 @@ import com.lavyshyk.domain.repository.flow.NewsNetworkRepositoryOnFlow
 import com.lavyshyk.domain.useCase.implementetion.FlowUseCase
 import kotlinx.coroutines.flow.Flow
 
-class GetNewsFromApiFlowUseCase(private val mNewsNetworkRepositoryOnFlow: NewsNetworkRepositoryOnFlow) :
+
+
+class GetNewsByCodeFromApiFlowUseCase(private val mNewsNetworkRepositoryOnFlow: NewsNetworkRepositoryOnFlow) :
 FlowUseCase<String, Flow<Outcome<List<ArticleDto>>>>()
 {
     override fun buildFlow(params: String?): Flow<Outcome<List<ArticleDto>>> =
-        mNewsNetworkRepositoryOnFlow.getNews(params?: "")
+        mNewsNetworkRepositoryOnFlow.getNewsByCountryCode(params?: "")
 
 
     override val mIsParamsRequired: Boolean

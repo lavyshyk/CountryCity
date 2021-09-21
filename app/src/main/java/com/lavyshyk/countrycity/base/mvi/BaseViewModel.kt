@@ -16,13 +16,12 @@ abstract class BaseViewModel<INTENT : ViewIntent, ACTION : ViewAction, STATE : V
         get() {
             return mState
         }
-
-
     fun launchOnUI(block: suspend CoroutineScope.() -> Unit) {
         viewModelScope.launch { block() }
     }
 
-     override fun dispatchIntent(intent: INTENT) {
+
+    override fun dispatchIntent(intent: INTENT) {
         handleAction(intentToAction(intent))
     }
 

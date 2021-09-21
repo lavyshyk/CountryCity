@@ -11,18 +11,18 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.WindowInsetsControllerCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.lavyshyk.countrycity.COUNTRY_NAME_KEY_FOR_DIALOG
 import com.lavyshyk.countrycity.R
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
-val DIALOG_WIDTH_DELTA_7: Float = 0.7F
+val DIALOG_WIDTH_DELTA_7: Float = 0.9F
 lateinit var dis: CompositeDisposable
 
 fun Activity.showAlertDialog() {
@@ -55,12 +55,8 @@ private fun createDialog(activity: Activity): Dialog {
 //                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 //                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-        }
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) }
     }
-
-
-
     return dialog
 }
 
@@ -71,20 +67,18 @@ private fun Activity.withButtonContent(
     dialog.setCanceledOnTouchOutside(false)
     val contentView = LayoutInflater.from(this)
         .inflate(R.layout.dialog_search, null)
-
     val tvTitle: TextView = contentView.findViewById(R.id.title_dialog)
     title?.let {
         tvTitle.text = it
         tvTitle.visibility = View.VISIBLE
     }
-
     return Pair(dialog, contentView)
 }
 
 private fun setContentView(dialog: Dialog, contentView: View) {
     dialog.setContentView(contentView)
     val window = dialog.window
-    window?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+    window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     val resources = dialog.context
         .resources
     val params = contentView.layoutParams as FrameLayout.LayoutParams
@@ -101,7 +95,7 @@ fun Activity.showDialogQuickSearch(
 ): Dialog {
     val (dialog, contentView) = withButtonContent(title)
 
-    val btnLeft: Button = contentView.findViewById(R.id.mButtonNo)
+    val btnLeft: AppCompatTextView = contentView.findViewById(R.id.mButtonNo)
     btnLeft.setText(leftButtonTextId)
     btnLeft.setOnClickListener {
         dialog.dismiss()
@@ -109,7 +103,7 @@ fun Activity.showDialogQuickSearch(
         dis.clear()
 
     }
-    val btnRight: Button = contentView.findViewById(R.id.mButtonYes)
+    val btnRight: AppCompatTextView = contentView.findViewById(R.id.mButtonYes)
     btnRight.setText(rightButtonTextId)
     val mEditText: AppCompatEditText = contentView.findViewById(R.id.mETNameCountry)
     var tt = ""
@@ -119,12 +113,12 @@ fun Activity.showDialogQuickSearch(
         override fun afterTextChanged(s: Editable?) {
             val text = s.toString()
             if (text.length > 2) {
-                btnRight.isEnabled = true
+                btnRight.visibility = View.VISIBLE
             }
             tt = text
         }
     })
-    btnRight.isEnabled = false
+    btnRight.visibility = View.GONE
     btnRight.setOnClickListener {
         bundle.putString(COUNTRY_NAME_KEY_FOR_DIALOG, tt)
 

@@ -17,7 +17,6 @@ val capitalListModule = module {
         scoped { IteratorFilterByNameCapital(get(), get()) }
         scoped { IteratorFilterCountyByCapitalName(get(), get()) }
 
-
         viewModel { (handle: SavedStateHandle) ->
             CapitalListViewModel(
                 handle,

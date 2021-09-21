@@ -3,14 +3,13 @@ package com.lavyshyk.countrycity.ui.countryListFragment
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
-import com.lavyshyk.countrycity.COUNTRY_DTO
-import com.lavyshyk.countrycity.MY_CURRENT_LOCATION
-import com.lavyshyk.countrycity.SORTED_COUNTRY_DTO
-import com.lavyshyk.countrycity.TIME_PAUSE_500
+import com.lavyshyk.countrycity.*
 import com.lavyshyk.countrycity.base.mvvm.BaseViewModel
 import com.lavyshyk.countrycity.base.mvvm.addToComposite
 import com.lavyshyk.countrycity.base.mvvm.executeJob
-import com.lavyshyk.countrycity.repository.sharedPreference.SharedPrefRepository
+import com.lavyshyk.countrycity.base.mvvm.executeJobWithHandleProgress
+import com.lavyshyk.countrycity.util.convertToCorrectArea
+import com.lavyshyk.countrycity.util.getLocationCountry
 import com.lavyshyk.domain.dto.country.CountryDto
 import com.lavyshyk.domain.outcome.Outcome
 import com.lavyshyk.domain.repository.FilterRepository
@@ -23,7 +22,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.BackpressureStrategy
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
-import kotlin.math.pow
 
 class CountryListViewModel(
     savedStateHandle: SavedStateHandle,
@@ -33,9 +31,7 @@ class CountryListViewModel(
     private val mUpdateCountriesInDataBaseUseCase: UpdateCountriesInDataBaseUseCase,
     private val mSaveCountiesInDatBaseUseCase: SaveCountiesInDatBaseUseCase,
     private val mFilterRepository: FilterRepository,
-    private val mSharedPrefRepository: SharedPrefRepository
 ) : BaseViewModel(savedStateHandle) {
-
 
     val mCountyLiveData =
         savedStateHandle.getLiveData<Outcome<MutableList<CountryDto>>>(COUNTRY_DTO)
@@ -43,21 +39,6 @@ class CountryListViewModel(
         savedStateHandle.getLiveData<Outcome<MutableList<CountryDto>>>(SORTED_COUNTRY_DTO)
     private val mCurrentLocation = savedStateHandle.getLiveData<Location>(MY_CURRENT_LOCATION)
     private val mFilterSubject = mFilterRepository.getFilterSubject()
-
-
-    fun getSharedPrefString(key: String): String =
-        mSharedPrefRepository.getStringFromSharedPref(key)
-
-    fun putSharedPrefString(key: String, string: String) {
-        mSharedPrefRepository.putStringSharedPref(key, string)
-    }
-
-    fun getSharedPrefBoolean(key: String): Boolean =
-        mSharedPrefRepository.getBooleanFromSharedPref(key)
-
-    fun putSharedPrefBoolean(key: String, boolean: Boolean) {
-        mSharedPrefRepository.putBooleanSharedPref(key, boolean)
-    }
 
 
     fun saveDataFromApiToDB(data: MutableList<CountryDto>) {
@@ -94,16 +75,19 @@ class CountryListViewModel(
                 mGetCountiesFromDataBaseUseCase.execute()
                     .doOnNext {
                         it.forEach { countryDto ->
-                            val location = countryDto.getLocationCountry()
-                            countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                            countryDto.distance = (getDistanceBettwenLocations(countryDto))
                         }
+                    }
+                    .doOnError {
+                        mGetCountiesFromDataBaseUseCase.execute()
                     }, mCountyLiveData
             )
         )
     }
 
-    private fun getDistanceBettwenLocations(location: Location): Float {
-        return mCurrentLocation.value?.let { (location.distanceTo(it) / 1000) } ?: 0f
+    private fun getDistanceBettwenLocations(countryDto: CountryDto): Float {
+        val location = countryDto.getLocationCountry()
+        return mCurrentLocation.value?.let { (location.distanceTo(it) / TO_K_KM) } ?: 0f
     }
 
     fun putCurrentLocation(location: Location?) {
@@ -119,19 +103,10 @@ class CountryListViewModel(
                 .flatMap { countryFilter ->
                     mGetAllCountiesFromApiUseCase.execute().map { list ->
                         list.filter { countryDto3 ->
-                            val location = countryDto3.getLocationCountry()
-                            val l = getDistanceBettwenLocations(location)
-                            l < countryFilter.distance
-                        }
+                            getDistanceBettwenLocations(countryDto3) < countryFilter.distance / 1000
+                             }
                             .filter { countryDto ->
-                                val mArea = countryDto.area.toString()
-                                if (mArea.contains("E")) {
-                                    val (a, b) = mArea.split("E")
-                                    val country = a.toFloat() * 10F.pow(b.toInt())
-                                    country in countryFilter.minArea..countryFilter.maxArea
-                                } else {
-                                    countryDto.area in countryFilter.minArea..countryFilter.maxArea
-                                }
+                                countryDto.convertToCorrectArea().toFloat() in countryFilter.minArea..countryFilter.maxArea
                             }
                             .filter { countryDto2 ->
                                 countryDto2
@@ -142,38 +117,25 @@ class CountryListViewModel(
                             }.toMutableList()
                     }.doOnNext {
                         it.forEach { countryDto ->
-                            val location = countryDto.getLocationCountry()
                             countryDto.distance =
-                                (getDistanceBettwenLocations(location) / 1000)
+                                (getDistanceBettwenLocations(countryDto))
                         }
                     }
 
                 }, mSortedCountryList
-        )
-                ).addToComposite(mCompositeDisposable)
+        )).addToComposite(mCompositeDisposable)
     }
 
-    fun getCountriesFromApi() {
-        (executeJob(
+    fun getCountriesFromApi(isRefresh: Boolean = false) {
+        (executeJobWithHandleProgress(
             mGetAllCountiesFromApiUseCase.execute()
                 .doOnNext {
                     it.forEach { countryDto ->
-                        val location = countryDto.getLocationCountry()
-                        countryDto.distance = (getDistanceBettwenLocations(location) / 1000)
+                        countryDto.distance = (getDistanceBettwenLocations(countryDto))
                     }
-                }, mCountyLiveData
-        )
-                ).addToComposite(mCompositeDisposable)
-    }
-
-}
-
-fun CountryDto.getLocationCountry(): Location {
-    val location = Location(android.location.LocationManager.GPS_PROVIDER)
-    val countryDto = this
-    location.apply {
-        this.latitude = countryDto.latlng[0]
-        this.longitude = countryDto.latlng[1]
-        return location
+                }, mCountyLiveData, isRefresh
+        )).addToComposite(mCompositeDisposable)
     }
 }
+
+

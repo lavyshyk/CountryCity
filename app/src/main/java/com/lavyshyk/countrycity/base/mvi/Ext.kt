@@ -1,6 +1,7 @@
 package com.lavyshyk.countrycity.base.mvi
 
-//fun <T : ViewModel> RootBaseActivity.viewModelProvider(
+//
+//fun <T : ViewModel> RootActivity.viewModelProvider(
 //    factory: ViewModelProvider.Factory,
 //    model: KClass<T>
 //): T {

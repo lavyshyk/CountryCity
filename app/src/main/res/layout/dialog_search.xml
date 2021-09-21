@@ -3,14 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tool="http://schemas.android.com/tools"
-    android:background="@color/white">
-<!--    <androidx.constraintlayout.widget.Guideline-->
-<!--        android:layout_width="@dimen/zero_dp"-->
-<!--        android:layout_height="@dimen/zero_dp"-->
-<!--        android:id="@+id/guideline_centr"-->
-<!--        android:orientation="vertical"-->
-<!--        app:layout_constraintGuide_percent="0.2"/>-->
+    android:background="@drawable/drawable_dialog">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_dialog"
@@ -18,7 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/quick_search"
-        android:textSize="@dimen/text_view_32"
+        android:textSize="@dimen/text_size_24"
         android:layout_margin="@dimen/_24pd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,35 +20,38 @@
         android:id="@+id/mETNameCountry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/enter_name_country"
         android:textSize="@dimen/_16sp"
-
+        android:hint="@string/enter_name_country"
+        android:layout_margin="@dimen/_24pd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_dialog" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/mButtonNo"
+        android:layout_marginStart="@dimen/_100dp"
+        android:layout_marginTop="@dimen/_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/mButtonYes"
         app:layout_constraintTop_toBottomOf="@id/mETNameCountry"
         android:text="@string/no"
+        android:layout_marginBottom="@dimen/dimen_10"
+        android:textSize="@dimen/_14sp"
         android:textColor="@color/teal_200"
-        android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"/>
 
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/mButtonYes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:clickable="false"
-        android:background="@color/white"
+        android:layout_marginTop="@dimen/_16"
+        android:layout_marginBottom="@dimen/dimen_10"
         android:text="@string/yes"
+        android:visibility="gone"
+        android:textSize="@dimen/_14sp"
         android:textColor="@color/teal_200"
-        android:textColorHint="@color/teal_700"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/mButtonNo"

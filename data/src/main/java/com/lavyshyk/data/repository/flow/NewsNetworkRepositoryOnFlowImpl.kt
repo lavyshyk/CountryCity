@@ -15,7 +15,10 @@ class NewsNetworkRepositoryOnFlowImpl(
     private val transformer: Transformer<NewsCountry, List<ArticleDto>>,
     private val dispatcher: CoroutineDispatcher
 ) : NewsNetworkRepositoryOnFlow {
-    override fun getNews(countryCode: String): Flow<Outcome<List<ArticleDto>>> =
-        modifyFlow(service.getNews(countryCode),transformer,dispatcher)
 
+    override fun getNewsByCountryCode(countryCode: String): Flow<Outcome<List<ArticleDto>>> =
+        modifyFlow(service.getNewsByCountryCode(countryCode),transformer,dispatcher)
+
+    override fun getNewsByCountryName(countryName: String): Flow<Outcome<List<ArticleDto>>> =
+        modifyFlow(service.getNewsByCountryCode(countryName),transformer,dispatcher)
 }

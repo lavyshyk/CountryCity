@@ -46,6 +46,7 @@ const val SORTED_COUNTRY_DTO = "sortedCountryDto"
 const val SEARCHED_LIST_COUNTRIES = "searchListCountries"
 const val MY_CURRENT_LOCATION = "myCurrentLocation"
 const val CAPITAL_DTO = "capitalDto"
+const val TO_K_KM = 1000_000
 
 /*
 TimeUnits
@@ -75,3 +76,19 @@ const val DISTANCE_CHANGE_FOR_UPDATE = 0f
 const val TIME_INTERVAL_UPDATES = 500L
 const val KILL_SERVICE = "kill service"
 const val CHANNEL_ID = "channel_007"
+const val LOCATION_KEY= "location"
+
+/*
+NEWS API
+ */
+const val KEY_HEADER = "X-Api-Key"
+const val VALUE_HEADER = "a46503b629984dc0a3b9996ea564a340"
+
+/*
+Location Permission
+ */
+const val TAG_RATION = "rationale_tag"
+const val RATIONALE_KEY = "rationale_tag"
+const val SETTINGS_KEY = "settings_tag"
+const val RESULT_KEY = "location_result_key"
+const val TAG_ASK = "dont_ask_tag"

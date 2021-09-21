@@ -143,6 +143,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
                 }
                 is Outcome.Next -> {
                     showCountryData(it.data)
+
                     mViewModel.saveDataFromApiToDB(it.data)
                 }
                 is Outcome.Failure -> {
@@ -281,7 +282,6 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     private fun showCountryData(countries: MutableList<CountryDto>) {
         countries.let { mAdapter.repopulate(it) }
-        mSRCountryList.isRefreshing = false
     }
 
     override fun showError(error: String, throwable: Throwable) {
@@ -294,6 +294,7 @@ class CountriesListFragment : ScopeFragment(), IBaseMvvmView {
 
     override fun hideProgress() {
         mProgress.visibility = View.GONE
+        mSRCountryList.isRefreshing = false
     }
 
     private fun initUI(view: View) {

@@ -90,5 +90,5 @@ Location Permission
 const val TAG_RATION = "rationale_tag"
 const val RATIONALE_KEY = "rationale_tag"
 const val SETTINGS_KEY = "settings_tag"
-const val RESULT_KEY = "camera_result_key"
+const val RESULT_KEY = "location_result_key"
 const val TAG_ASK = "dont_ask_tag"

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/startFragment">
-
     <fragment
         android:id="@+id/startFragment"
         android:name="com.lavyshyk.countrycity.ui.startFragment.StartFragment"

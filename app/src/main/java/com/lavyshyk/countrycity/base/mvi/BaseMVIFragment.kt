@@ -20,6 +20,7 @@ abstract class BaseMVIFragment<INTENT : ViewIntent, ACTION : ViewAction, STATE :
             viewState = it
             render(it)
         })
+
     }
 
     abstract fun initUI(view: View)

@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/lineGreen2" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/buttonSetting"
+        android:id="@+id/buttonAllow"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/_32"
@@ -48,8 +48,21 @@
         android:background="@drawable/drawable_button"
         android:text="@string/allow"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonDeny"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textDontAsk" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonDeny"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_32"
+        android:layout_marginBottom="@dimen/_32"
+        android:background="@drawable/drawable_button"
+        android:text="@string/deny"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/buttonAllow"
         app:layout_constraintTop_toBottomOf="@id/textDontAsk" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

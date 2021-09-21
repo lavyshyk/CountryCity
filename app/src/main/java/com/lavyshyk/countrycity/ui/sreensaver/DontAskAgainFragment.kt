@@ -1,16 +1,12 @@
-package com.lavyshyk.countrycity.ui.startFragment
+package com.lavyshyk.countrycity.ui.sreensaver
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.lavyshyk.countrycity.R
-import com.lavyshyk.countrycity.RESULT_KEY
-import com.lavyshyk.countrycity.SETTINGS_KEY
 
 class DontAskAgainFragment : BottomSheetDialogFragment() {
 
@@ -25,12 +21,12 @@ class DontAskAgainFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mButton = view.findViewById<AppCompatButton>(R.id.buttonSetting)
-        mButton.setOnClickListener {
-            setFragmentResult(
-               SETTINGS_KEY,
-                bundleOf(RESULT_KEY to true)
-            )
-            dismiss()
-        }
+//        mButton.setOnClickListener {
+//            setFragmentResult(
+//               SETTINGS_KEY,
+//                bundleOf(RESULT_KEY to true)
+//            )
+//            dismiss()
+//        }
     }
 }

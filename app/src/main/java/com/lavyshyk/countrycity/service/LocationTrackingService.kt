@@ -1,6 +1,7 @@
 package com.lavyshyk.countrycity.service
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,7 +13,6 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.lavyshyk.countrycity.*
@@ -74,6 +74,7 @@ class LocationTrackingService : Service(), LocationListener {
         startForeground(SERVICE_ID, mBuilder.build())
     }
 
+    @SuppressLint("MissingPermission")
     private fun initLocationScan(): Location? {
         try {
             mLocationManager =
@@ -83,7 +84,6 @@ class LocationTrackingService : Service(), LocationListener {
             mCheckNetworkIsTurnedOn =
                 mLocationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
             if (!mCheckIsGPSTurnedOn) {
-                Log.e("location alert", "GPS turned off")
             } else {
                 applicationContext?.let {
                     if (mCheckIsGPSTurnedOn) {

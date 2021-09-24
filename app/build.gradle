@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -94,6 +95,10 @@ dependencies {
 
     //Rx
     implementation "io.reactivex.rxjava3:rxandroid:$rxAndroidVersion"
+
+    //FireBase
+    implementation platform('com.google.firebase:firebase-bom:28.4.1')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
 
 

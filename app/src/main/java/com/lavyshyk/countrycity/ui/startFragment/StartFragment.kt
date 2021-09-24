@@ -55,12 +55,6 @@ class StartFragment :
         } else {
             mLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         setFragmentResultListener(RATIONALE_KEY) { _, bundle ->
             val allowAfterRationale = bundle.getBoolean(RESULT_KEY)
             if (allowAfterRationale) {

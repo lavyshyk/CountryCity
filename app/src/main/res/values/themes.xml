@@ -15,8 +15,5 @@
     </style>
     <style name="AppTheme.BrandedLaunch" parent="Theme.CountryCity">
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:text">@string/country</item>
-        <item name="android:visibility">visible</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

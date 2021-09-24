@@ -1,4 +1,4 @@
-package com.lavyshyk.countrycity.di
+package com.lavyshyk.countrycity.di.koin
 
 import com.lavyshyk.countrycity.ui.countryDetails.CountryDetailPresenter
 import com.lavyshyk.countrycity.ui.countryDetails.CountryDetailsFragment

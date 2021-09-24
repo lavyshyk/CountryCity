@@ -104,9 +104,10 @@ class CountryListViewModel(
                     mGetAllCountiesFromApiUseCase.execute().map { list ->
                         list.filter { countryDto3 ->
                             getDistanceBettwenLocations(countryDto3) < countryFilter.distance / 1000
-                             }
+                        }
                             .filter { countryDto ->
-                                countryDto.convertToCorrectArea().toFloat() in countryFilter.minArea..countryFilter.maxArea
+                                countryDto.convertToCorrectArea()
+                                    .toFloat() in countryFilter.minArea..countryFilter.maxArea
                             }
                             .filter { countryDto2 ->
                                 countryDto2
@@ -121,7 +122,6 @@ class CountryListViewModel(
                                 (getDistanceBettwenLocations(countryDto))
                         }
                     }
-
                 }, mSortedCountryList
         )).addToComposite(mCompositeDisposable)
     }

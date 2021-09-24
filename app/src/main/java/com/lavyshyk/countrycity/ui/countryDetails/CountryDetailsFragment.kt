@@ -65,21 +65,16 @@ class CountryDetailsFragment : BaseMvpKoinFragment<ICountryDetailsView, CountryD
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // getPresenter().attachView(this)
-        // getPresenter().setArgumentFromView(mCountryName)
         mCountryDetailPresenter.setArgumentFromView(mCountryName)
         mCountryDetailPresenter.attachView(this)
 
         binding.mRecyclerCountryDescription.layoutManager = LinearLayoutManager(activity)
-
         mLanguageAdapter = LanguageAdapter()
         binding.mRecyclerCountryDescription.adapter = mLanguageAdapter
 
         mProcess = binding.mPBar
         mSRCountryDetail = binding.srCountryDetails
         mMapView = binding.mMapCountry
-
-
         mMapView.onCreate(savedInstanceState)
         mMapView.getMapAsync(this)
 

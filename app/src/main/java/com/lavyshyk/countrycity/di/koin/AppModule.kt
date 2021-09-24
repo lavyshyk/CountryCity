@@ -48,12 +48,11 @@ val appModule = module {
     single(named(DISPATCHER_IO)) { Dispatchers.IO }
 
     //Data level
-
-    single { NetworkRepositoryImpl(get()) as NetworkRepository }
-    single { DataBaseRepositoryImpl(get()) as DataBaseRepository }
-    single { FilterRepositoryImpl() as FilterRepository }
+    single<NetworkRepository> { NetworkRepositoryImpl(get()) }
+    single<DataBaseRepository> { DataBaseRepositoryImpl(get()) }
+    single<FilterRepository> { FilterRepositoryImpl() }
     single<FilterFlowRep> { FilterFlowRepImpl() }
-    single { SharedPrefRepositoryImpl(get()) as SharedPrefRepository }
+    single<SharedPrefRepository> { SharedPrefRepositoryImpl(get()) }
     single<NetworkRepositoryOnCoroutine> { NetworkRepositoryOnCoroutineImpl(get()) }
 
     single<Transformer<MutableList<Capital>, MutableList<CapitalDto>>>(named("capital")) { ListCapitalTransformer() }

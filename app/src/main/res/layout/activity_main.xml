@@ -14,12 +14,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/fragmentContainerView"
         app:layout_constraintStart_toStartOf="parent">
-<!--        <androidx.appcompat.widget.AppCompatTextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/text_toolbar"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/app_name"/>-->
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.fragment.app.FragmentContainerView

@@ -4,6 +4,7 @@ import android.app.Application
 import com.lavyshyk.countrycity.di.*
 import com.lavyshyk.countrycity.di.dagger.component.ApplicationComponent
 import com.lavyshyk.countrycity.di.dagger.component.DaggerApplicationComponent
+import com.lavyshyk.countrycity.di.koin.countryDetailModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
